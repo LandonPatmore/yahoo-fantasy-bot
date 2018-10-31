@@ -6,33 +6,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 public class Props {
     private static final Log logger = new Log(Props.class);
 
     private static final Properties properties = new Properties();
     private static final InputStream stream = Props.class.getResourceAsStream("/settings.properties");
-
-    /**
-     * Loads the settings file
-     *
-     * @return if the file was loaded or not
-     */
-    public static Properties loadSettings() {
-        try {
-            properties.load(stream);
-            if (properties.stringPropertyNames().size() == 0) {
-                logger.info("Settings have not been loaded.", false);
-                return null;
-            }
-            logger.info("Settings have been loaded.", false);
-            return properties;
-        } catch (IOException | NullPointerException e) {
-            logger.error(e.getLocalizedMessage(), true);
-            return null;
-        }
-    }
 
     /**
      * Saves the settings to the settings file
@@ -51,36 +33,28 @@ public class Props {
         }
     }
 
+    /**
+     * Loads the settings file
+     *
+     * @return if the file was loaded or not
+     */
+    public static void loadSettings() {
+        try {
+            properties.load(stream);
+            logger.info("Settings have been loaded.", false);
+        } catch (IOException | NullPointerException e) {
+            logger.error(e.getLocalizedMessage(), true);
+        }
+    }
+
     public static Properties getProperties() {
         return properties;
     }
 
-    public static String getYahooAccessToken() {
-        return properties.getProperty("yahooAccessToken");
-    }
-
-    public static String getYahooRefreshToken() {
-        return properties.getProperty("yahooRefreshToken");
-    }
-
-    public static int getYahooTokenExpireTime() {
-        return Integer.parseInt(properties.getProperty("yahooTokenExpireTime"));
-    }
-
-    public static long getYahooTokenRetrievedTime() {
-        return Long.parseLong(properties.getProperty("yahooTokenRetrievedTime"));
-    }
-
-    public static String getYahooTokenScope() {
-        return properties.getProperty("yahooTokenScope").equals("") ? null : properties.getProperty("yahooTokenScope");
-    }
-
-    public static String getYahooTokenRawResponse() {
-        return properties.getProperty("yahooTokenRawResponse");
-    }
-
-    public static String getYahooTokenType() {
-        return properties.getProperty("yahooTokenType");
+    public static boolean doesDataHaveIntegrity() {
+        return Stream.of(getYahooClientId(), getYahooClientSecret(),
+                getGroupMeAccessToken(), getGroupMeBotId(),
+                getGroupMeGroupId(), getYahooLeagueId(), getLastCheckedTransactions()).allMatch(Objects::nonNull);
     }
 
     public static String getYahooClientId() {
@@ -91,6 +65,10 @@ public class Props {
         return properties.getProperty("yahooClientSecret");
     }
 
+    public static String getGroupMeAccessToken() {
+        return properties.getProperty("groupMeAccessToken");
+    }
+
     public static String getGroupMeBotId() {
         return properties.getProperty("groupMeBotId");
     }
@@ -99,8 +77,54 @@ public class Props {
         return properties.getProperty("groupMeGroupId");
     }
 
-    public static String getGroupMeAccessToken() {
-        return properties.getProperty("groupMeAccessToken");
+    public static boolean doesOAuthTokenDataExist() {
+        return Stream.of(getYahooAccessToken(), getYahooRefreshToken(), getYahooTokenRawResponse(),
+                getYahooTokenScope(), getYahooTokenType(), getYahooTokenExpireTime(),
+                getYahooTokenRetrievedTime()).allMatch(Objects::nonNull);
+    }
+
+    public static String getYahooAccessToken() {
+        return properties.getProperty("yahooAccessToken");
+    }
+
+    public static String getYahooRefreshToken() {
+        return properties.getProperty("yahooRefreshToken");
+    }
+
+    public static String getYahooTokenRawResponse() {
+        return properties.getProperty("yahooTokenRawResponse");
+    }
+
+    public static String getYahooTokenScope() {
+        return properties.getProperty("yahooTokenScope");
+    }
+
+    public static String getYahooTokenType() {
+        return properties.getProperty("yahooTokenType");
+    }
+
+    public static String getYahooLeagueId() {
+        return properties.getProperty("yahooLeagueId");
+    }
+
+    public static Integer getYahooTokenExpireTime() {
+        final String prop = properties.getProperty("yahooTokenExpireTime");
+        return prop == null ? null : Integer.parseInt(prop);
+    }
+
+    public static Long getYahooTokenRetrievedTime() {
+        final String prop = properties.getProperty("yahooTokenRetrievedTime");
+        return prop == null ? null : Long.parseLong(prop);
+    }
+
+    public static void setLastCheckedTransactions() {
+        properties.setProperty("lastCheckedTransactions", Long.toString(new Date().getTime()));
+
+        saveSettings();
+    }
+
+    public static String getLastCheckedTransactions() {
+        return properties.getProperty("lastCheckedTransactions");
     }
 
     public static void setYahooTokenData(OAuth2AccessToken token) {
