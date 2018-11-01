@@ -5,6 +5,7 @@ import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import enums.YahooEnum;
+import helpers.YahooTeam;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,6 +16,7 @@ import utils.Props;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
@@ -118,43 +120,80 @@ public class Yahoo {
             final String type = trans.select("type").first().text();
             final String time = trans.select("timestamp").first().text();
             if (Long.parseLong(time) > Long.parseLong(Props.getLastCheckedTransactions())) {
-            switch (type) {
-                case "add": {
-                    addTransaction(trans.select("destination_team_name").text(), trans.select("source_type").text(), time, trans.select("player"));
-                    break;
-                }
-                case "drop": {
-                    dropTransaction(trans.select("source_team_name").text(), trans.select("destination_type").text(), time, trans.select("player"));
-                    break;
-                }
-                case "add/drop": {
-                    log.trace("Add/Drop Transaction has occurred after last check...notifying.", false);
-
-                    final ArrayList<String> addedPlayers = new ArrayList<>();
-                    final ArrayList<String> droppedPlayers = new ArrayList<>();
-
-                    final AddDropTransaction t = new AddDropTransaction(time);
-                    for (Element player : trans.select("player")) {
-                        if (player.select("type").first().text().equals("add")) {
-                            addedPlayers.add(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")");
-                            t.addTransaction(player.select("destination_team_name").text(), player.select("source_type").text(), addedPlayers); // TODO: Terrible fix this
-                        } else {
-                            droppedPlayers.add(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")");
-                            t.dropTransaction(player.select("source_team_name").text(), player.select("destination_type").text(), droppedPlayers);
-                        }
+                switch (type) {
+                    case "add": {
+                        addTransaction(trans.select("destination_team_name").text(), trans.select("source_type").text(), time, trans.select("player"));
+                        break;
                     }
-                    System.out.println(t.getTransactionString());
-                    break;
+                    case "drop": {
+                        dropTransaction(trans.select("source_team_name").text(), trans.select("destination_type").text(), time, trans.select("player"));
+                        break;
+                    }
+                    case "add/drop": {
+                        log.trace("Add/Drop Transaction has occurred after last check...notifying.", false);
+
+                        final ArrayList<String> addedPlayers = new ArrayList<>();
+                        final ArrayList<String> droppedPlayers = new ArrayList<>();
+
+                        final AddDropTransaction t = new AddDropTransaction(time);
+                        for (Element player : trans.select("player")) {
+                            if (player.select("type").first().text().equals("add")) {
+                                addedPlayers.add(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")");
+                                t.addTransaction(player.select("destination_team_name").text(), player.select("source_type").text(), addedPlayers); // TODO: Terrible fix this
+                            } else {
+                                droppedPlayers.add(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")");
+                                t.dropTransaction(player.select("source_team_name").text(), player.select("destination_type").text(), droppedPlayers);
+                            }
+                        }
+                        System.out.println(t.getTransactionString());
+                        break;
+                    }
+                    case "trade": {
+                        tradeTransaction(trans.select("trader_team_name").text(), trans.select("tradee_team_name").text(), time, trans.select("player"));
+                        break;
+                    }
                 }
-                case "trade": {
-                    tradeTransaction(trans.select("trader_team_name").text(), trans.select("tradee_team_name").text(), time, trans.select("player"));
-                    break;
+            } else {
+                log.trace("Transactions past this date are older than last checked time.  Not checking anymore.", false);
+                break;
+            }
+        }
+
+        Props.setLastCheckedTransactions();
+    }
+
+    public static HashMap<String, YahooTeam> getStandings(Document doc) {
+        final HashMap<String, YahooTeam> standings = new HashMap<>();
+        final Elements teams = doc.select("team");
+
+        for (Element t : teams) {
+            final String teamName = t.select("name").text();
+            final String rank = t.select("rank").text();
+            final String wins = t.select("wins").first().text();
+            final String losses = t.select("losses").first().text();
+            final String ties = t.select("ties").first().text();
+            final String streak = t.select("streak").select("value").text() + t.select("streak").select("type").text().substring(0, 1).toUpperCase();
+            final String pointsFor = t.select("points_for").text();
+            final String pointsAgainst = t.select("points_against").text();
+
+            final YahooTeam team = new YahooTeam(teamName, rank, wins, losses, ties, streak, pointsFor, pointsAgainst);
+            standings.put(teamName, team);
+        }
+
+        return standings;
+    }
+
+    public static void getMatchups(Document doc, HashMap<String, YahooTeam> standings) {
+        final Elements matchups = doc.select("matchup");
+
+        for(Element m : matchups){
+            for(Element te : m.select("teams")){
+                System.out.println(te.select("team").get(0).select("name").text() + " vs. " + te.select("team").get(1).select("name").text());
+                System.out.println();
+                for(Element t : te.select("team")) {
+//                    System.out.println(t.select("name").text());
                 }
             }
-        } else{
-            log.trace("Transactions past this date are older than last checked time.  Not checking anymore.", false);
-            break;
-        }
         }
     }
 
@@ -180,7 +219,7 @@ public class Yahoo {
         }
     }
 
-    public static void grabData(String URL) {
+    public static Document grabData(String URL) {
         try {
             log.debug("Grabbing Data...", false);
             final OAuthRequest request = new OAuthRequest(Verb.GET, URL);
@@ -188,13 +227,10 @@ public class Yahoo {
             final Response response = service.execute(request);
             log.debug("Data grabbed.", false);
 
-            final Document doc = Jsoup.parse(response.getBody(), "", Parser.xmlParser());
-            System.out.println(doc);
-//            parseTransaction(doc);
-
-            Props.setLastCheckedTransactions();
+            return Jsoup.parse(response.getBody(), "", Parser.xmlParser());
         } catch (IOException | InterruptedException | ExecutionException e) {
             log.error(e.getLocalizedMessage(), false);
+            return null;
         }
     }
 
