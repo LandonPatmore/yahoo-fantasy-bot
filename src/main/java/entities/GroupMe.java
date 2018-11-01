@@ -52,11 +52,11 @@ public class GroupMe {
     }
 
     public static void sendMessage(String data) {
-        if (data.length() < 450) {
+        if (data.length() < 1000) {
             createMessage(data);
         } else {
-            createMessage(data.substring(0, 451));
-            sendMessage(data.substring(451));
+            createMessage(data.substring(0, 1001));
+            sendMessage(data.substring(1001));
         }
     }
 

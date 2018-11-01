@@ -29,8 +29,7 @@ public class Yahoo {
     private static boolean isTokenExpired(long current, Long retrieved, Integer expiresIn) {
         final long timeElapsed = ((current - retrieved) / 1000);
         final boolean hasExpired = timeElapsed > expiresIn;
-        log.debug("Token expired: " + hasExpired + "\n" +
-                "Seconds remaining until expiration: " + (expiresIn - timeElapsed), false);
+        log.debug("Token expired: " + hasExpired + " | Seconds remaining until expiration: " + (expiresIn - timeElapsed), false);
         return hasExpired;
     }
 
@@ -49,7 +48,7 @@ public class Yahoo {
         Props.setYahooTokenData(currentToken);
     }
 
-    private static boolean initialAuthentication() {
+    private static void initialAuthentication() {
         try {
             final Scanner scanner = new Scanner(System.in);
 
@@ -69,14 +68,93 @@ public class Yahoo {
             currentToken = service.getAccessToken(oauthVerifier);
             saveAuthenticationData();
             log.trace("Access token received.  Authorized successfully.", false);
-
-            return true;
         } catch (InterruptedException | ExecutionException |
                 IOException e) {
             log.error("Access token not received.", false);
             log.error(e.getLocalizedMessage(), true);
+        }
+    }
 
-            return false;
+    private static void tradeTransaction(String entityOne, String entityTwo, String time, Elements players) {
+        log.trace("Trade Transaction has occurred after last check...notifying.", false);
+
+        final Transaction t = new TradeTransaction(entityOne, entityTwo, time);
+        for (Element player : players) {
+            final String playerName = player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")";
+            final String playerAssociatedWith = player.select("source_team_name").text();
+
+            t.addPlayerToEntity(playerName, playerAssociatedWith);
+        }
+    }
+
+    private static void addTransaction(String entityOne, String entityTwo, String time, Elements players) {
+        log.trace("Add Transaction has occurred after last check...notifying.", false);
+
+        final Transaction t = new AddTransaction(entityOne, entityTwo, time);
+        for (Element player : players) {
+            final String playerName = player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")";
+            final String playerAssociatedWith = player.select("source_type").first().text();
+
+            t.addPlayerToEntity(playerName, playerAssociatedWith);
+        }
+    }
+
+    private static void dropTransaction(String entityOne, String entityTwo, String time, Elements players) {
+        log.trace("Drop Transaction has occurred after last check...notifying.", false);
+
+        final Transaction t = new DropTransaction(entityOne, entityTwo, time);
+        for (Element player : players) {
+            final String playerName = player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")";
+            final String playerAssociatedWith = player.select("source_team_name").text();
+
+            t.addPlayerToEntity(playerName, playerAssociatedWith);
+        }
+    }
+
+    private static void parseTransaction(Document doc) {
+        final Elements elements = doc.select("transaction");
+
+        for (Element trans : elements) {
+            final String type = trans.select("type").first().text();
+            final String time = trans.select("timestamp").first().text();
+            if (Long.parseLong(time) > Long.parseLong(Props.getLastCheckedTransactions())) {
+            switch (type) {
+                case "add": {
+                    addTransaction(trans.select("destination_team_name").text(), trans.select("source_type").text(), time, trans.select("player"));
+                    break;
+                }
+                case "drop": {
+                    dropTransaction(trans.select("source_team_name").text(), trans.select("destination_type").text(), time, trans.select("player"));
+                    break;
+                }
+                case "add/drop": {
+                    log.trace("Add/Drop Transaction has occurred after last check...notifying.", false);
+
+                    final ArrayList<String> addedPlayers = new ArrayList<>();
+                    final ArrayList<String> droppedPlayers = new ArrayList<>();
+
+                    final AddDropTransaction t = new AddDropTransaction(time);
+                    for (Element player : trans.select("player")) {
+                        if (player.select("type").first().text().equals("add")) {
+                            addedPlayers.add(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")");
+                            t.addTransaction(player.select("destination_team_name").text(), player.select("source_type").text(), addedPlayers); // TODO: Terrible fix this
+                        } else {
+                            droppedPlayers.add(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")");
+                            t.dropTransaction(player.select("source_team_name").text(), player.select("destination_type").text(), droppedPlayers);
+                        }
+                    }
+                    System.out.println(t.getTransactionString());
+                    break;
+                }
+                case "trade": {
+                    tradeTransaction(trans.select("trader_team_name").text(), trans.select("tradee_team_name").text(), time, trans.select("player"));
+                    break;
+                }
+            }
+        } else{
+            log.trace("Transactions past this date are older than last checked time.  Not checking anymore.", false);
+            break;
+        }
         }
     }
 
@@ -104,83 +182,19 @@ public class Yahoo {
 
     public static void grabData(String URL) {
         try {
-            // Now let's go and ask for a protected resource!
             log.debug("Grabbing Data...", false);
             final OAuthRequest request = new OAuthRequest(Verb.GET, URL);
             service.signRequest(currentToken, request);
             final Response response = service.execute(request);
             log.debug("Data grabbed.", false);
-            Props.setLastCheckedTransactions();
 
             final Document doc = Jsoup.parse(response.getBody(), "", Parser.xmlParser());
-            parseTransaction(doc);
+            System.out.println(doc);
+//            parseTransaction(doc);
 
+            Props.setLastCheckedTransactions();
         } catch (IOException | InterruptedException | ExecutionException e) {
             log.error(e.getLocalizedMessage(), false);
-        }
-    }
-
-    public static void parseTransaction(Document doc) {
-        final Elements elements = doc.select("transaction");
-
-        for (Element trans : elements) {
-            final String type = trans.select("type").first().text();
-            final String time = trans.select("timestamp").first().text();
-            if (Long.parseLong(time) > Long.parseLong(Props.getLastCheckedTransactions())) {
-                switch (type) {
-                    case "add": {
-                        log.trace("Add Transaction has occurred after last check...notifying.", false);
-
-                        final Transaction t = new AddTransaction(trans.select("destination_team_name").text(), trans.select("source_type").text(), time);
-                        for (Element player : trans.select("player")) {
-                            t.addPlayerToEntity(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")", player.select("source_type").first().text());
-                        }
-                        GroupMe.sendMessage(t.getTransactionString());
-                        break;
-                    }
-                    case "drop": {
-                        log.trace("Drop Transaction has occurred after last check...notifying.", false);
-
-                        final Transaction t = new DropTransaction(trans.select("source_team_name").text(), trans.select("destination_type").text(), time);
-                        for (Element player : trans.select("player")) {
-                            t.addPlayerToEntity(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")", player.select("source_team_name").first().text());
-                        }
-                        GroupMe.sendMessage(t.getTransactionString());
-                        break;
-                    }
-                    case "add/drop": {
-                        log.trace("Add/Drop Transaction has occurred after last check...notifying.", false);
-
-                        final ArrayList<String> addedPlayers = new ArrayList<>();
-                        final ArrayList<String> droppedPlayers = new ArrayList<>();
-
-                        final AddDropTransaction t = new AddDropTransaction(time);
-                        for (Element player : trans.select("player")) {
-                            if (player.select("type").first().text().equals("add")) {
-                                addedPlayers.add(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")");
-                                t.addTransaction(player.select("destination_team_name").text(), player.select("source_type").text(), addedPlayers); // TODO: Terrible fix this
-                            } else {
-                                droppedPlayers.add(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")");
-                                t.dropTransaction(player.select("source_team_name").text(), player.select("destination_type").text(), droppedPlayers);
-                            }
-                        }
-                        GroupMe.sendMessage(t.getTransactionString());
-                        break;
-                    }
-                    case "trade": {
-                        log.trace("Trade Transaction has occurred after last check...notifying.", false);
-
-                        final Transaction t = new TradeTransaction(trans.select("trader_team_name").text(), trans.select("tradee_team_name").text(), trans.select("timestamp").first().text());
-                        for (Element player : trans.select("player")) {
-                            t.addPlayerToEntity(player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")", player.select("source_team_name").first().text());
-                        }
-                        GroupMe.sendMessage(t.getTransactionString());
-                        break;
-                    }
-                }
-            } else {
-                log.trace("Transaction was not new...not notifying.", false);
-            }
         }
     }
 
