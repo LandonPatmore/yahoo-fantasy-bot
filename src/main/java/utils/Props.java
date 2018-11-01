@@ -118,7 +118,7 @@ public class Props {
     }
 
     public static void setLastCheckedTransactions() {
-        properties.setProperty("lastCheckedTransactions", Long.toString(new Date().getTime()));
+        properties.setProperty("lastCheckedTransactions", Long.toString(new Date().getTime() / 1000));
 
         saveSettings();
     }

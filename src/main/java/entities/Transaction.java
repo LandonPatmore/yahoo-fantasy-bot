@@ -7,24 +7,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class Transaction {
+public abstract class Transaction {
+    protected String entityOne;
+    protected String entitiyTwo;
+    protected final String date;
+    protected final ArrayList<String> entityOneList;
+    protected final ArrayList<String> entityTwoList;
 
-    private final String teamOne;
-    private final String teamTwo;
-    private final String date;
-    private final ArrayList<String> teamOnePlayers;
-    private final ArrayList<String> teamTwoPlayers;
-
-
-    public Transaction(String teamOne, String teamTwo, String date) {
-        this.teamOne = teamOne;
-        this.teamTwo = teamTwo;
+    protected Transaction(String entityOne, String entitiyTwo, String date) {
+        this.entityOne = entityOne;
+        this.entitiyTwo = entitiyTwo;
         this.date = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(date)), ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("M/d/yyyy - h:mm a", Locale.US));
-        this.teamOnePlayers = new ArrayList<>();
-        this.teamTwoPlayers = new ArrayList<>();
+        this.entityOneList = new ArrayList<>();
+        this.entityTwoList = new ArrayList<>();
     }
 
-    private String listString(ArrayList<String> list) {
+    protected String listString(ArrayList<String> list) {
         if (list.size() == 1) {
             return list.get(0);
         } else if (list.size() == 2) {
@@ -43,16 +41,32 @@ public class Transaction {
         return "";
     }
 
-    public void addPlayerToTeam(String player, String teamName) {
-        if (teamName.equals(teamOne)) {
-            teamOnePlayers.add(player);
+    public String getEntityOne() {
+        return entityOne;
+    }
+
+    public String getEntitiyTwo() {
+        return entitiyTwo;
+    }
+
+    public void addPlayerToEntity(String player, String entityName) {
+        if (entityName.equals(entityOne)) {
+            entityOneList.add(player);
         } else {
-            teamTwoPlayers.add(player);
+            entityTwoList.add(player);
         }
     }
 
-    public String getTransactionString() {
-        return "===TRADE ALERT===\nTrade finalized on: " + date + "\n\n" + teamOne + " acquired: " + listString(teamTwoPlayers) + ".\n\n" +
-                teamTwo + " acquired: " + listString(teamOnePlayers) + ".";
+    public abstract String getTransactionString();
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "entityOne='" + entityOne + '\'' +
+                ", entitiyTwo='" + entitiyTwo + '\'' +
+                ", date='" + date + '\'' +
+                ", entityOneList=" + entityOneList +
+                ", entityTwoList=" + entityTwoList +
+                '}';
     }
 }

@@ -18,10 +18,10 @@ public class GroupMe {
 
     private static void createMessage(String message) {
         try {
-            final HttpResponse<InputStream> response = Unirest.post(GroupMeEnum.POST_URL.getValue())
+            final HttpResponse<JsonNode> response = Unirest.post(GroupMeEnum.POST_URL.getValue())
                     .header("Content-Type", "application/json")
                     .body("{\"text\" : \"" + message + "\", \"bot_id\" : \"" + GroupMeEnum.BOT_ID.getValue() + "\"}")
-                    .asBinary();
+                    .asJson();
             log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus(), false);
         } catch (UnirestException e) {
             log.error(e.getLocalizedMessage(), true);
