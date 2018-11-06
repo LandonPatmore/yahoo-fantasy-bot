@@ -4,26 +4,28 @@ import java.util.ArrayList;
 
 public class AddDropTransaction extends Transaction {
 
-    private String addTransaction;
-    private String dropTransaction;
+    private final ArrayList<Transaction> transactions;
 
     public AddDropTransaction(String date) {
         super(null, null, date);
+        this.type = TransactionType.ADD_DROP;
+
+        this.transactions = new ArrayList<>();
     }
 
-    public void addTransaction(String entity, String otherEntity, ArrayList<String> players) {
-        final String enitityTwoFixedName = otherEntity.substring(0, 1).toUpperCase() + otherEntity.substring(1);
-        addTransaction = entity + " added " + listString(players) + " from " + enitityTwoFixedName + ".";
-    }
-
-    public void dropTransaction(String entity, String otherEntity, ArrayList<String> players) {
-        final String enitityTwoFixedName = otherEntity.substring(0, 1).toUpperCase() + otherEntity.substring(1);
-        dropTransaction = entity + " dropped " + listString(players) + " to " + enitityTwoFixedName + ".";
+    public void addTransaction(Transaction addTransaction) {
+        transactions.add(addTransaction);
     }
 
     @Override
-    public String getTransactionString() {
-        return "===ADD/DROP ALERT===\\nDrop happened on: " + date + "\\n\\n" + addTransaction + "\\n\\n" + dropTransaction;
+    public String transactionBody() {
+        final StringBuilder builder = new StringBuilder();
+
+        for (Transaction t : transactions) {
+            builder.append(t.specialAddDropTransactionString());
+        }
+
+        return builder.toString();
     }
 
 

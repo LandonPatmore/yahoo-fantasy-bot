@@ -1,4 +1,4 @@
-package helpers;
+package entities;
 
 public class GroupMeUser {
     private final int userId;

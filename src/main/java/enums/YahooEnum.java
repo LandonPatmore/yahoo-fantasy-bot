@@ -1,17 +1,12 @@
 package enums;
 
-import utils.Props;
-
 public enum YahooEnum implements EnumInterface {
-    // URLS
-    BASE_URL("https://fantasysports.yahooapis.com/fantasy/v2/"),
-    LEAGUE_ENDPOINT("league/"),
-    LEAGUE_KEY("nfl.l." + Props.getYahooLeagueId()),
-
-
     // Authentication
-    CLIENT_ID(Props.getYahooClientId()),
-    CLIENT_SECRET(Props.getYahooClientSecret());
+    CLIENT_ID(System.getenv("YAHOO_CLIENT_ID")),
+    CLIENT_SECRET(System.getenv("YAHOO_CLIENT_SECRET")),
+    WEEKLY_UPDATE("weekly"),
+    SCORE_UPDATE("score"),
+    CLOSE_SCORE_UPDATE("close_score");
 
     private final String value;
 

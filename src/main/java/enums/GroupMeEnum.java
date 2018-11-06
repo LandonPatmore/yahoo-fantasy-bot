@@ -1,16 +1,10 @@
 package enums;
 
-import utils.Props;
-
 public enum GroupMeEnum implements EnumInterface {
-    // URLS
-    POST_URL("https://api.groupme.com/v3/bots/post"),
-    GROUP_URL("https://api.groupme.com/v3/groups/"),
-
     // Authentication
-    BOT_ID(Props.getGroupMeBotId()),
-    GROUP_ID(Props.getGroupMeGroupId()),
-    ACCESS_TOKEN(Props.getGroupMeAccessToken());
+    BOT_ID(System.getenv("GROUP_ME_BOT_ID")), // TODO: DO NOT COMMIT
+    GROUP_ID(System.getenv("GROUP_ME_GROUP_ID")),
+    ACCESS_TOKEN(System.getenv("GROUP_ME_ACCESS_TOKEN"));
 
     private final String value;
 

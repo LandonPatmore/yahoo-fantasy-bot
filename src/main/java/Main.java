@@ -1,31 +1,35 @@
-import entities.Yahoo;
-import enums.YahooEnum;
-import helpers.YahooTeam;
-import org.jsoup.nodes.Document;
-import utils.Props;
+import jobs.TransactionsJob;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
+import utils.Log;
 
-import java.util.HashMap;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
 
 public class Main {
-    public static void main(String[] args) {
-        System.setProperty("http.proxyHost", "127.0.0.1");
-        System.setProperty("https.proxyHost", "127.0.0.1");
-        System.setProperty("http.proxyPort", "8888");
-        System.setProperty("https.proxyPort", "8888");
+    private static final Log log = new Log(Main.class);
 
-//        final TimerTask timerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-        Props.loadSettings();
-        Yahoo.authenticate();
-        final Document doc = Yahoo.grabData("https://fantasysports.yahooapis.com/fantasy/v2/league/" + YahooEnum.LEAGUE_KEY.getValue() + "/standings");
-        final HashMap<String, YahooTeam> standings = Yahoo.getStandings(doc);
-        final Document doc1 = Yahoo.grabData("https://fantasysports.yahooapis.com/fantasy/v2/league/" + YahooEnum.LEAGUE_KEY.getValue() + "/scoreboard");
-        Yahoo.getMatchups(doc1, standings);
-//            }
-//        };
+    public static void main(String[] args) throws SchedulerException {
+        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+
+        scheduler.start();
+
+        JobDetail transactionJob = newJob(TransactionsJob.class).build();
+
+        Trigger transactionTrigger = newTrigger()
+                .startNow()
+                .withSchedule(CronScheduleBuilder.cronSchedule("0/15 * * ? 9-1 * 2018-2019"))
+                .build();
+
+        scheduler.scheduleJob(transactionJob, transactionTrigger);
+
+//        JobDetail weeklyJob = newJob(WeeklyUpdateJob.class).build();
 //
-//        final Timer timer = new Timer();
-//        timer.schedule(timerTask, 0, 60 * 1000);
+//        Trigger weeklyTrigger = newTrigger()
+//                .startNow()
+//                .withSchedule(CronScheduleBuilder.cronSchedule("0 30 19 ? 9-1 THU 2018-2019"))
+//                .build();
+//
+//        scheduler.scheduleJob(weeklyJob, weeklyTrigger);
     }
 }

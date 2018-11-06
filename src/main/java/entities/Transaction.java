@@ -7,22 +7,32 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public abstract class Transaction {
-    protected String entityOne;
-    protected String entitiyTwo;
-    protected final String date;
-    protected final ArrayList<String> entityOneList;
-    protected final ArrayList<String> entityTwoList;
+public abstract class Transaction implements Comparable<Transaction> {
 
-    protected Transaction(String entityOne, String entitiyTwo, String date) {
+    public enum TransactionType {
+        ADD,
+        DROP,
+        ADD_DROP,
+        TRADE,
+        COMMISH
+    }
+
+    public String entityOne;
+    public String entitiyTwo;
+    public final LocalDateTime date;
+    public final ArrayList<String> entityOneList;
+    public final ArrayList<String> entityTwoList;
+    public TransactionType type;
+
+    public Transaction(String entityOne, String entitiyTwo, String date) {
         this.entityOne = entityOne;
         this.entitiyTwo = entitiyTwo;
-        this.date = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(date)), ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("M/d/yyyy - h:mm a", Locale.US));
+        this.date = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(date)), ZoneId.systemDefault());
         this.entityOneList = new ArrayList<>();
         this.entityTwoList = new ArrayList<>();
     }
 
-    protected String listString(ArrayList<String> list) {
+    public String listString(ArrayList<String> list) {
         if (list.size() == 1) {
             return list.get(0);
         } else if (list.size() == 2) {
@@ -41,14 +51,6 @@ public abstract class Transaction {
         return "";
     }
 
-    public String getEntityOne() {
-        return entityOne;
-    }
-
-    public String getEntitiyTwo() {
-        return entitiyTwo;
-    }
-
     public void addPlayerToEntity(String player, String entityName) {
         if (entityName.equals(entityOne)) {
             entityOneList.add(player);
@@ -57,16 +59,55 @@ public abstract class Transaction {
         }
     }
 
-    public abstract String getTransactionString();
+    public String specialAddDropTransactionString() {
+        final StringBuilder builder = new StringBuilder();
+
+        switch (type) {
+            case ADD:
+            case DROP:
+                builder.append(transactionBody()).append(" ");
+                break;
+            default:
+                break;
+        }
+
+        return builder.toString();
+    }
+
+    public String getTransactionString() {
+        final StringBuilder builder = new StringBuilder();
+
+        switch (type) {
+            case ADD:
+                builder.append("===ADD ALERT===\\n");
+                break;
+            case DROP:
+                builder.append("===DROP ALERT===\\n");
+                break;
+            case ADD_DROP:
+                builder.append("===ADD/DROP ALERT===\\n");
+                break;
+            case TRADE:
+                builder.append("===TRADE ALERT===\\n");
+                break;
+            case COMMISH:
+                builder.append("===COMMISH CHANGE ALERT===\\n");
+                break;
+            default:
+                break;
+        }
+
+        builder.append("Time: ").append(date.format(DateTimeFormatter.ofPattern("M/d/yyyy - h:mm a", Locale.US))).append("\\n\\n");
+        builder.append(transactionBody());
+        builder.append("\\n\\n");
+
+        return builder.toString();
+    }
 
     @Override
-    public String toString() {
-        return "Transaction{" +
-                "entityOne='" + entityOne + '\'' +
-                ", entitiyTwo='" + entitiyTwo + '\'' +
-                ", date='" + date + '\'' +
-                ", entityOneList=" + entityOneList +
-                ", entityTwoList=" + entityTwoList +
-                '}';
+    public int compareTo(Transaction o) {
+        return this.date.compareTo(o.date);
     }
+
+    public abstract String transactionBody();
 }

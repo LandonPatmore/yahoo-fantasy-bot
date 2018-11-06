@@ -5,25 +5,33 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import enums.GroupMeEnum;
-import helpers.GroupMeUser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.Log;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class GroupMe {
     private static final Log log = new Log(GroupMe.class);
 
+    private static final String POST_URL = "https://api.groupme.com/v3/bots/post";
+    private static final String GROUP_URL = "https://api.groupme.com/v3/groups/";
+
     private static void createMessage(String message) {
         try {
-            final HttpResponse<JsonNode> response = Unirest.post(GroupMeEnum.POST_URL.getValue())
+            Thread.sleep(1000);
+            if (message.endsWith("\\")) {
+                message = message.substring(0, message.length() - 1);
+            } else if (message.startsWith("n")) {
+                message = message.substring(1);
+            }
+            System.out.println(message);
+            final HttpResponse<JsonNode> response = Unirest.post(POST_URL)
                     .header("Content-Type", "application/json")
                     .body("{\"text\" : \"" + message + "\", \"bot_id\" : \"" + GroupMeEnum.BOT_ID.getValue() + "\"}")
                     .asJson();
             log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus(), false);
-        } catch (UnirestException e) {
+        } catch (UnirestException | InterruptedException e) {
             log.error(e.getLocalizedMessage(), true);
         }
     }
@@ -32,7 +40,7 @@ public class GroupMe {
         final ArrayList<GroupMeUser> users = new ArrayList<>();
 
         try {
-            final HttpResponse<JsonNode> response = Unirest.get(GroupMeEnum.GROUP_URL.getValue() + GroupMeEnum.GROUP_ID.getValue())
+            final HttpResponse<JsonNode> response = Unirest.get(GROUP_URL + GroupMeEnum.GROUP_ID.getValue())
                     .queryString("token", GroupMeEnum.ACCESS_TOKEN.getValue())
                     .asJson();
             log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus(), false);
