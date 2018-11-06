@@ -32,7 +32,7 @@ public class Yahoo {
 
     private static boolean isTokenExpired(long current, Long retrieved, int expiresIn) {
         final long timeElapsed = ((current - retrieved) / 1000);
-        final boolean hasExpired = timeElapsed > expiresIn;
+        final boolean hasExpired = timeElapsed >= expiresIn;
         log.debug("Token expired: " + hasExpired + " | Seconds remaining until expiration: " + (expiresIn - timeElapsed), false);
         return hasExpired;
     }
@@ -155,7 +155,7 @@ public class Yahoo {
             for (Element trans : elements) {
                 final String type = trans.select("type").first().text();
                 final String time = trans.select("timestamp").first().text();
-                if (Long.parseLong(time) > lastCheckedTransactions) {
+                if (Long.parseLong(time) >= lastCheckedTransactions) {
                     final Elements players = trans.select("player");
                     switch (type) {
                         case "add": {

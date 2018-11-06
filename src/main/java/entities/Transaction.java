@@ -27,7 +27,7 @@ public abstract class Transaction implements Comparable<Transaction> {
     public Transaction(String entityOne, String entitiyTwo, String date) {
         this.entityOne = entityOne;
         this.entitiyTwo = entitiyTwo;
-        this.date = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(date)), ZoneId.systemDefault());
+        this.date = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(date)), ZoneId.of("America/New_York"));
         this.entityOneList = new ArrayList<>();
         this.entityTwoList = new ArrayList<>();
     }

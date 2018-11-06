@@ -1,35 +1,28 @@
+import jobs.CloseScoreJob;
+import jobs.ScoreJob;
 import jobs.TransactionsJob;
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
-import utils.Log;
-
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
+import jobs.WeeklyUpdateJob;
+import utils.JobRunner;
 
 public class Main {
-    private static final Log log = new Log(Main.class);
+    public static void main(String[] args) {
 
-    public static void main(String[] args) throws SchedulerException {
-        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+        // Every 15 Seconds
+        JobRunner.createJob(TransactionsJob.class, "0/15 * * ? 9-1 * 2018-2019");
 
-        scheduler.start();
+        // Thursdays at 7:30pm
+        JobRunner.createJob(WeeklyUpdateJob.class, "0 30 19 ? 9-1 THU 2018-2019");
 
-        JobDetail transactionJob = newJob(TransactionsJob.class).build();
+        // Multiple Times
+        JobRunner.createJob(ScoreJob.class, "0 30 23 ? 9-1 THU 2018-2019"); // Thursdays at 11:30pm
+        JobRunner.createJob(ScoreJob.class, "0 00 16 ? 9-1 SUN 2018-2019"); // Sundays at 4:00pm
+        JobRunner.createJob(ScoreJob.class, "0 00 20 ? 9-1 SUN 2018-2019"); // Sundays at 8:00pm
+        JobRunner.createJob(ScoreJob.class, "0 30 23 ? 9-1 SUN 2018-2019"); // Sundays at 11:30pm
+        JobRunner.createJob(ScoreJob.class, "0 30 23 ? 9-1 MON 2018-2019"); // Mondays at 11:30pm
 
-        Trigger transactionTrigger = newTrigger()
-                .startNow()
-                .withSchedule(CronScheduleBuilder.cronSchedule("0/15 * * ? 9-1 * 2018-2019"))
-                .build();
+        // Mondays at 7:30pm
+        JobRunner.createJob(CloseScoreJob.class, "0 30 19 ? 9-1 MON 2018-2019");
 
-        scheduler.scheduleJob(transactionJob, transactionTrigger);
-
-//        JobDetail weeklyJob = newJob(WeeklyUpdateJob.class).build();
-//
-//        Trigger weeklyTrigger = newTrigger()
-//                .startNow()
-//                .withSchedule(CronScheduleBuilder.cronSchedule("0 30 19 ? 9-1 THU 2018-2019"))
-//                .build();
-//
-//        scheduler.scheduleJob(weeklyJob, weeklyTrigger);
+        JobRunner.runJobs();
     }
 }
