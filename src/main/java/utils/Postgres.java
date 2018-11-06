@@ -52,7 +52,7 @@ public class Postgres {
 
                 return;
             } catch (SQLException e) {
-                log.error(e, false);
+                log.error(e.getLocalizedMessage(), false);
             }
         }
     }
@@ -78,7 +78,7 @@ public class Postgres {
             }
             return null;
         } catch (SQLException e) {
-            log.error(e, false);
+            log.error(e.getLocalizedMessage(), false);
             return null;
         }
     }
