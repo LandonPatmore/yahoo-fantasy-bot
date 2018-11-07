@@ -63,7 +63,7 @@ public class GroupMe {
         }
     }
 
-    public static void sendMessage(String data) {
+    public static void startupMessages() {
         if (!startupMessage) {
             createMessage("Hi there! It looks like this is the first time I am being started!  I can tell you about transactions that have happened, weekly matchup data, and score updates.  Thanks for using me!");
             startupMessage = true;
@@ -74,7 +74,9 @@ public class GroupMe {
                 restartMessage = true;
             }
         }
+    }
 
+    public static void sendMessage(String data) {
         if (data.length() < 1000) {
             createMessage(data);
         } else {

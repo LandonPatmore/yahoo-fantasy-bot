@@ -1,3 +1,4 @@
+import entities.GroupMe;
 import jobs.CloseScoreJob;
 import jobs.ScoreJob;
 import jobs.TransactionsJob;
@@ -6,6 +7,9 @@ import utils.JobRunner;
 
 public class Main {
     public static void main(String[] args) {
+
+        // Send startup messages if applicable
+        GroupMe.startupMessages();
 
         // Every 15 Seconds
         JobRunner.createJob(TransactionsJob.class, "0/15 * * ? 9-1 * 2018-2019");
