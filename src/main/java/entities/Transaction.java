@@ -18,16 +18,16 @@ public abstract class Transaction implements Comparable<Transaction> {
     }
 
     public String entityOne;
-    public String entitiyTwo;
+    public String entityTwo;
     public final LocalDateTime date;
     public final ArrayList<String> entityOneList;
     public final ArrayList<String> entityTwoList;
     public TransactionType type;
 
-    public Transaction(String entityOne, String entitiyTwo, String date) {
+    public Transaction(String entityOne, String entityTwo, String date) {
         this.entityOne = entityOne;
-        this.entitiyTwo = entitiyTwo;
-        this.date = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(date)), ZoneId.of("America/New_York"));
+        this.entityTwo = entityTwo;
+        this.date = date == null ? null : LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(date)), ZoneId.of("America/New_York"));
         this.entityOneList = new ArrayList<>();
         this.entityTwoList = new ArrayList<>();
     }
@@ -49,7 +49,7 @@ public abstract class Transaction implements Comparable<Transaction> {
             for (int i = 0; i < list.size() - 1; i++) {
                 builder.append(list.get(i)).append(", ");
             }
-            builder.append(" and ").append(list.get(list.size() - 1));
+            builder.append("and ").append(list.get(list.size() - 1));
 
             return builder.toString();
         }
@@ -72,34 +72,12 @@ public abstract class Transaction implements Comparable<Transaction> {
     }
 
     /**
-     * Used to create an AddDropTransaction string because the way the string is printed out is different from normal.
-     *
-     * @return string of transaction
-     */
-    public String specialAddDropTransactionString() {
-        final StringBuilder builder = new StringBuilder();
-
-        switch (type) {
-            case ADD:
-            case DROP:
-                builder.append(transactionBody()).append(" ");
-                break;
-            default:
-                break;
-        }
-
-        return builder.toString();
-    }
-
-    /**
      * Creates the transaction string with the proper format.
      *
      * @return transaction string
      */
     public String getTransactionString() {
-        return "Time: " + date.format(DateTimeFormatter.ofPattern("M/d/yyyy - h:mm a", Locale.US)) + "\\n\\n" +
-                transactionBody() +
-                "\\n\\n";
+        return transactionBody() + "Time: " + date.format(DateTimeFormatter.ofPattern("M/d/yyyy - h:mm a", Locale.US)) + "\\n\\n";
     }
 
     /**

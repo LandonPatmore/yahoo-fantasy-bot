@@ -9,7 +9,8 @@ public class TradeTransaction extends Transaction {
 
     @Override
     public String transactionBody() {
-        return entityOne + " acquired: " + listString(entityTwoList) + ".\\n\\n" +
-                entitiyTwo + " acquired: " + listString(entityOneList) + ".";
+        return "Type: Trade" + "\\n" +
+                entityOne + " Acquired: " + listString(entityTwoList) + "\\n" +
+                entityTwo + " Acquired: " + listString(entityOneList) + "\\n";
     }
 }
