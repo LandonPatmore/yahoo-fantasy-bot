@@ -20,6 +20,14 @@ public class Matchup {
         this.teamTwoStats = teamTwoStats;
     }
 
+    /**
+     * Adds matchup data to certain entity.
+     *
+     * @param winProbability  the probability of winning
+     * @param projectedPoints the projected points
+     * @param currentScore    the current score of the team
+     * @param teamName        the name of the team
+     */
     public void addMatchUpData(String winProbability, String projectedPoints, String currentScore, String teamName) {
         if (teamName.equals(teamOne)) {
             this.winProbabilityTeamOne = Double.parseDouble(winProbability);
@@ -33,13 +41,24 @@ public class Matchup {
 
     }
 
+    /**
+     * Checks to see if the score is close or not.
+     *
+     * @return is the score close
+     */
     public boolean isScoreClose() {
-        if(currentScoreTeamOne - currentScoreTeamTwo == 0.0){
+        if (currentScoreTeamOne - currentScoreTeamTwo == 0.0) {
             return false;
         }
         return Math.abs(currentScoreTeamOne - currentScoreTeamTwo) <= 15;
     }
 
+    /**
+     * Gets the match data.
+     *
+     * @param teamName the name of the team
+     * @return string of match data
+     */
     private String matchData(String teamName) {
         if (teamName.equals(teamOne)) {
             return "- Win Probability: " + winProbabilityTeamOne + "\\n- Projected Points: " + projectedPointsTeamOne;
@@ -48,10 +67,20 @@ public class Matchup {
         }
     }
 
+    /**
+     * Weekly matchup alert data.
+     *
+     * @return string of weekly matchup data
+     */
     public String weeklyMatchupAlert() {
         return teamOne + " vs. " + teamTwo + "\\n\\n" + teamOne + "\\n" + matchData(teamOne) + "\\n" + teamOneStats.getStandingsInformation() + "\\n\\n" + teamTwo + "\\n" + matchData(teamTwo) + "\\n" + teamTwoStats.getStandingsInformation();
     }
 
+    /**
+     * Scoreboard alert data.
+     *
+     * @return string of scoreboard alert data
+     */
     public String scoreboardAlert() {
         return teamOne + " vs. " + teamTwo + "\\n" + currentScoreTeamOne + " - " + currentScoreTeamTwo;
     }

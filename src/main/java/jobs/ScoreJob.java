@@ -8,6 +8,6 @@ import org.quartz.JobExecutionContext;
 public class ScoreJob implements Job {
     @Override
     public void execute(JobExecutionContext context) {
-        Yahoo.scoreAlert(YahooEnum.SCORE_UPDATE);
+        Yahoo.getScoreAlerts(YahooEnum.SCORE_UPDATE);
     }
 }

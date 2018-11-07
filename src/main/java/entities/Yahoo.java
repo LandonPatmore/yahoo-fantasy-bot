@@ -43,7 +43,9 @@ public class Yahoo {
         return hasExpired;
     }
 
-
+    /**
+     * Refreshes an expired token and then saves it to the DB.
+     */
     private static void refreshExpiredToken() {
         try {
             log.trace("Refreshing token...", false);
@@ -55,6 +57,9 @@ public class Yahoo {
         }
     }
 
+    /**
+     * Gets initial authentication data if needed.
+     */
     private static void initialAuthentication() {
         while (true) {
             try {
@@ -85,6 +90,15 @@ public class Yahoo {
         }
     }
 
+    /**
+     * Creates a TradeTransaction
+     *
+     * @param entityOne first entity
+     * @param entityTwo second entity
+     * @param time      the time the transaction happened
+     * @param players   list of players data
+     * @return TradeTransaction
+     */
     private static Transaction tradeTransaction(String entityOne, String entityTwo, String time, Elements players) {
         log.trace("Trade Transaction has occurred after last check...notifying.", false);
 
@@ -99,6 +113,15 @@ public class Yahoo {
         return t;
     }
 
+    /**
+     * Creates an AddTransaction
+     *
+     * @param entityOne first entity
+     * @param entityTwo second entity
+     * @param time      the time the transaction happened
+     * @param players   list of players data
+     * @return AddTransaction
+     */
     private static Transaction addTransaction(String entityOne, String entityTwo, String time, Elements players) {
         log.trace("Add Transaction has occurred after last check...notifying.", false);
 
@@ -113,6 +136,15 @@ public class Yahoo {
         return t;
     }
 
+    /**
+     * Creates a DropTransaction
+     *
+     * @param entityOne first entity
+     * @param entityTwo second entity
+     * @param time      the time the transaction happened
+     * @param players   list of players data
+     * @return DropTransaction
+     */
     private static Transaction dropTransaction(String entityOne, String entityTwo, String time, Elements players) {
         log.trace("Drop Transaction has occurred after last check...notifying.", false);
 
@@ -127,6 +159,13 @@ public class Yahoo {
         return t;
     }
 
+    /**
+     * Creates an AddDropTransaction
+     *
+     * @param time    the time the transaction happened
+     * @param players list of players data
+     * @return AddDropTransaction
+     */
     private static Transaction addDropTransaction(String time, Elements players) {
         log.trace("Add/Drop Transaction has occurred after last check...notifying.", false);
 
@@ -151,10 +190,19 @@ public class Yahoo {
         return t;
     }
 
+    /**
+     * Creates a CommishTransaction.
+     *
+     * @param time the time the transaction happened
+     * @return CommishTransaction
+     */
     private static Transaction commishTransaction(String time) {
         return new CommishTransaction(time);
     }
 
+    /**
+     * Parses transactions data.
+     */
     public static void parseTransactions() {
         final Document transactionsData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/transactions");
 
@@ -203,6 +251,11 @@ public class Yahoo {
         }
     }
 
+    /**
+     * Builds out a GroupMe message to be sent to the group.
+     *
+     * @param transactions transactions data list
+     */
     private static void buildGroupMeMessage(ArrayList<Transaction> transactions) {
         if (transactions.size() != 0) {
             log.debug("Building out GroupMe message.", false);
@@ -217,7 +270,7 @@ public class Yahoo {
                 builder.append(t.getTransactionString());
             }
 
-            GroupMe.sendMessage(builder.toString());
+            GroupMe.createMessage(builder.toString());
 
             log.debug("GroupMe message sent.", false);
         } else {
@@ -225,10 +278,19 @@ public class Yahoo {
         }
     }
 
+    /**
+     * Saves token data to DB.
+     */
     private static void saveAuthenticationData() {
         Postgres.saveTokenData(currentToken);
     }
 
+    /**
+     * Parses standings data.
+     *
+     * @param doc the data to be parsed
+     * @return list of standings data
+     */
     private static HashMap<String, YahooTeam> getStandings(Document doc) {
         if (doc != null) {
             final HashMap<String, YahooTeam> standings = new HashMap<>();
@@ -256,6 +318,13 @@ public class Yahoo {
         return null;
     }
 
+    /**
+     * Parses matchup data.
+     *
+     * @param doc       the data to parse
+     * @param standings the standings data of the league
+     * @return list of matchups
+     */
     private static ArrayList<Matchup> getMatchups(Document doc, HashMap<String, YahooTeam> standings) {
         if (doc != null) {
             final Elements matchups = doc.select("matchup");
@@ -289,7 +358,12 @@ public class Yahoo {
         return null;
     }
 
-    public static void scoreAlert(YahooEnum type) {
+    /**
+     * Gets score alert data.
+     *
+     * @param type the type of the score alert to get
+     */
+    public static void getScoreAlerts(YahooEnum type) {
         final Document standingsData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/standings");
         final HashMap<String, YahooTeam> standings = getStandings(standingsData);
         final Document scoreboardData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/scoreboard");
@@ -327,12 +401,15 @@ public class Yahoo {
                 }
             }
 
-            GroupMe.sendMessage(message.toString());
+            GroupMe.createMessage(message.toString());
         } else {
             log.debug("Matchups were null.  Not sending message.", false);
         }
     }
 
+    /**
+     * Authenticates with the Yahoo servers.
+     */
     private static void authenticate() {
         final PostgresToken token = Postgres.getLatestTokenData();
         if (token != null) {
@@ -348,11 +425,17 @@ public class Yahoo {
         }
     }
 
-    private static Document grabData(String URL) {
+    /**
+     * Grabs the data for the specified url.
+     *
+     * @param url the url to grab data from
+     * @return XML document
+     */
+    private static Document grabData(String url) {
         try {
             authenticate();
             log.debug("Grabbing Data...", false);
-            final OAuthRequest request = new OAuthRequest(Verb.GET, URL);
+            final OAuthRequest request = new OAuthRequest(Verb.GET, url);
             service.signRequest(currentToken, request);
             final Response response = service.execute(request);
             log.debug("Data grabbed.", false);

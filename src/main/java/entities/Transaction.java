@@ -32,6 +32,12 @@ public abstract class Transaction implements Comparable<Transaction> {
         this.entityTwoList = new ArrayList<>();
     }
 
+    /**
+     * Dynamically creates a list string.
+     *
+     * @param list the list
+     * @return string of transaction
+     */
     public String listString(ArrayList<String> list) {
         if (list.size() == 1) {
             return list.get(0);
@@ -51,6 +57,12 @@ public abstract class Transaction implements Comparable<Transaction> {
         return "";
     }
 
+    /**
+     * Adds a player to a certain entity.
+     *
+     * @param player     the player data
+     * @param entityName the entity to add to
+     */
     public void addPlayerToEntity(String player, String entityName) {
         if (entityName.equals(entityOne)) {
             entityOneList.add(player);
@@ -59,6 +71,11 @@ public abstract class Transaction implements Comparable<Transaction> {
         }
     }
 
+    /**
+     * Used to create an AddDropTransaction string because the way the string is printed out is different from normal.
+     *
+     * @return string of transaction
+     */
     public String specialAddDropTransactionString() {
         final StringBuilder builder = new StringBuilder();
 
@@ -74,17 +91,32 @@ public abstract class Transaction implements Comparable<Transaction> {
         return builder.toString();
     }
 
+    /**
+     * Creates the transaction string with the proper format.
+     *
+     * @return transaction string
+     */
     public String getTransactionString() {
-
         return "Time: " + date.format(DateTimeFormatter.ofPattern("M/d/yyyy - h:mm a", Locale.US)) + "\\n\\n" +
                 transactionBody() +
                 "\\n\\n";
     }
 
+    /**
+     * Compares based on dates
+     *
+     * @param o transaction object
+     * @return Compared data
+     */
     @Override
     public int compareTo(Transaction o) {
         return this.date.compareTo(o.date);
     }
 
+    /**
+     * Creates the transaction body.
+     *
+     * @return transaction body
+     */
     public abstract String transactionBody();
 }

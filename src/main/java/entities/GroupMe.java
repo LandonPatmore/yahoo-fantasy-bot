@@ -19,9 +19,12 @@ public class GroupMe {
     private static final String GROUP_URL = "https://api.groupme.com/v3/groups/";
 
     private static boolean startupMessage = Postgres.getStartupMessageSent();
-    private static boolean restartMessage = false;
 
-    private static void createMessage(String message) {
+    /**
+     * Sends a message to the group.
+     * @param message the message to send
+     */
+    private static void sendMessage(String message) {
         try {
             Thread.sleep(1000);
             if (message.endsWith("\\")) {
@@ -40,6 +43,10 @@ public class GroupMe {
         }
     }
 
+    /**
+     * Gets all the users in the group.
+     * @return list of users in group
+     */
     public static ArrayList<GroupMeUser> getAllUsersInGroup() {
         final ArrayList<GroupMeUser> users = new ArrayList<>();
 
@@ -63,29 +70,35 @@ public class GroupMe {
         }
     }
 
+    /**
+     * Startup messages that should be sent or not.
+     */
     public static void startupMessages() {
         if (!startupMessage) {
-            createMessage("Hi there! It looks like this is the first time I am being started!  I can tell you about transactions that have happened, weekly matchup data, and score updates.  Thanks for using me!");
+            sendMessage("Hi there! It looks like this is the first time I am being started!  I can tell you about transactions that have happened, weekly matchup data, and score updates.  Thanks for using me!");
             startupMessage = true;
             Postgres.markStartupMessageReceived();
 
             log.trace("Startup message has been sent.", false);
         } else {
             if (System.getenv("RESTART_MESSAGE").equals("TRUE")) {
-                createMessage("Hi there! It looks like I was just restarted.  You may get data that is from earlier dates.  I am sorry about that.  I want to make sure you get all the data about your league!");
-                restartMessage = true;
+                sendMessage("Hi there! It looks like I was just restarted.  You may get data that is from earlier dates.  I am sorry about that.  I want to make sure you get all the data about your league!");
 
                 log.trace("Restart message has been sent.", false);
             }
         }
     }
 
-    public static void sendMessage(String data) {
-        if (data.length() < 1000) {
-            createMessage(data);
+    /**
+     * Creates a message.  Recursively creates messages when they are too large.
+     * @param message the message to be sent
+     */
+    public static void createMessage(String message) {
+        if (message.length() < 1000) {
+            sendMessage(message);
         } else {
-            createMessage(data.substring(0, 1001));
-            sendMessage(data.substring(1001));
+            sendMessage(message.substring(0, 1001));
+            createMessage(message.substring(1001));
         }
     }
 

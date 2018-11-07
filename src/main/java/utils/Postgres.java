@@ -140,7 +140,7 @@ public class Postgres {
      * @return long of the time
      */
     public static long getLatestTimeChecked() {
-        checkShouldDropLatestTimeData();
+        dropTopRows("latest_time", "latest_time");
         try {
             getConnection();
 
@@ -164,7 +164,8 @@ public class Postgres {
      * @return token data
      */
     public static PostgresToken getLatestTokenData() {
-        checkShouldDropTokenData();
+        dropTopRows("tokens", "yahooTokenRetrievedTime");
+
         try {
             getConnection();
 
@@ -189,12 +190,17 @@ public class Postgres {
         }
     }
 
-
-    private static void checkShouldDropTokenData() {
+    /**
+     * Drops the top rows of a given table.
+     *
+     * @param tableName table name
+     * @param orderBy   the column to order by
+     */
+    private static void dropTopRows(String tableName, String orderBy) {
         try {
             getConnection();
             final Statement statement = connection.createStatement();
-            final ResultSet row = statement.executeQuery("SELECT COUNT(*) FROM tokens");
+            final ResultSet row = statement.executeQuery("SELECT COUNT(*) FROM " + tableName);
 
             if (row.next()) {
                 int count = row.getInt(1);
@@ -202,37 +208,11 @@ public class Postgres {
                 if (count > 20) {
                     log.trace("More than 20 entries in the token table.  Removing top 20.", false);
                     statement.execute("DELETE\n" +
-                            "FROM tokens\n" +
+                            "FROM " + tableName + "\n" +
                             "WHERE ctid IN (\n" +
                             "        SELECT ctid\n" +
-                            "        FROM tokens\n" +
-                            "        ORDER BY \"yahooTokenRetrievedTime\" limit 20\n" +
-                            "        )");
-                }
-            }
-
-        } catch (SQLException e) {
-            log.error(e.getLocalizedMessage(), true);
-        }
-    }
-
-    private static void checkShouldDropLatestTimeData() {
-        try {
-            getConnection();
-            final Statement statement = connection.createStatement();
-            final ResultSet row = statement.executeQuery("SELECT COUNT(*) FROM latest_time");
-
-            if (row.next()) {
-                int count = row.getInt(1);
-
-                if (count > 20) {
-                    log.trace("More than 20 entries in the latest_time table.  Removing top 20.", false);
-                    statement.execute("DELETE\n" +
-                            "FROM latest_time\n" +
-                            "WHERE ctid IN (\n" +
-                            "        SELECT ctid\n" +
-                            "        FROM latest_time\n" +
-                            "        ORDER BY \"latest_time\" limit 20\n" +
+                            "        FROM " + tableName + "\n" +
+                            "        ORDER BY \"" + orderBy + "\" limit 20\n" +
                             "        )");
                 }
             }
