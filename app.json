@@ -1,0 +1,43 @@
+{
+  "name": "Yahoo Trader Bot",
+  "description": "Bot that alerts GroupMe users about various things happening in their Yahoo Fantasy Sports league.",
+  "keywords": [
+    "fantasy football",
+    "yahoo",
+    "groupme",
+    "chat bot",
+    "ff"
+  ],
+  "website": "https://github.com/landonp1203/yahoo-trader-bot",
+  "repository": "https://github.com/landonp1203/yahoo-trader-bot",
+  "env": {
+    "GROUP_ME_ACCESS_TOKEN": {
+      "description": "GroupMe Access Token",
+      "value": "1"
+    },
+    "GROUP_ME_BOT_ID": {
+      "description": "GroupMe Bot ID",
+      "value": "1"
+    },
+    "GROUP_ME_GROUP_ID": {
+      "description": "GroupMe Group ID",
+      "value": "1"
+    },
+    "RESTART_MESSAGE": {
+      "description": "Should restart messages be sent to the group when the bot is restarted/updated.",
+      "value": "FALSE"
+    },
+    "YAHOO_CLIENT_ID": {
+      "description": "Yahoo Client ID",
+      "value": "1"
+    },
+    "YAHOO_CLIENT_SECRET": {
+      "description": "1",
+      "value": "America/New_York"
+    },
+    "YAHOO_LEAGUE_ID": {
+      "description": "Yahoo League ID",
+      "value": "1"
+    }
+  }
+}
