@@ -202,6 +202,9 @@ public class Yahoo {
             Collections.sort(transactions);
 
             final StringBuilder builder = new StringBuilder();
+
+            builder.append("===ALERT===\\n\\n");
+
             for (Transaction t : transactions) {
                 builder.append(t.getTransactionString());
             }

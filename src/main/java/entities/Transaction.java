@@ -75,33 +75,10 @@ public abstract class Transaction implements Comparable<Transaction> {
     }
 
     public String getTransactionString() {
-        final StringBuilder builder = new StringBuilder();
 
-        switch (type) {
-            case ADD:
-                builder.append("===ADD ALERT===\\n");
-                break;
-            case DROP:
-                builder.append("===DROP ALERT===\\n");
-                break;
-            case ADD_DROP:
-                builder.append("===ADD/DROP ALERT===\\n");
-                break;
-            case TRADE:
-                builder.append("===TRADE ALERT===\\n");
-                break;
-            case COMMISH:
-                builder.append("===COMMISH CHANGE ALERT===\\n");
-                break;
-            default:
-                break;
-        }
-
-        builder.append("Time: ").append(date.format(DateTimeFormatter.ofPattern("M/d/yyyy - h:mm a", Locale.US))).append("\\n\\n");
-        builder.append(transactionBody());
-        builder.append("\\n\\n");
-
-        return builder.toString();
+        return "Time: " + date.format(DateTimeFormatter.ofPattern("M/d/yyyy - h:mm a", Locale.US)) + "\\n\\n" +
+                transactionBody() +
+                "\\n\\n";
     }
 
     @Override
