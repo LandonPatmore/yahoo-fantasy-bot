@@ -1,4 +1,5 @@
 import entities.GroupMe;
+import entities.Yahoo;
 import jobs.CloseScoreJob;
 import jobs.ScoreJob;
 import jobs.TransactionsJob;
@@ -7,6 +8,9 @@ import utils.JobRunner;
 
 public class Main {
     public static void main(String[] args) {
+
+        // When the app starts, check if there actually is a Oauth token, else prompt user to get it
+        Yahoo.startupAuthentication();
 
         // Send startup messages if applicable
         GroupMe.startupMessages();

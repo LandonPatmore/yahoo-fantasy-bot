@@ -90,6 +90,10 @@ public class Yahoo {
         }
     }
 
+    public static void startupAuthentication() {
+        authenticate();
+    }
+
     /**
      * Creates a TradeTransaction
      *

@@ -32,7 +32,7 @@ public class GroupMe {
             } else if (message.startsWith("n")) {
                 message = message.substring(1);
             }
-            System.out.println(message);
+            log.debug(message, false);
             final HttpResponse<JsonNode> response = Unirest.post(POST_URL)
                     .header("Content-Type", "application/json")
                     .body("{\"text\" : \"" + message + "\", \"bot_id\" : \"" + GroupMeEnum.BOT_ID.getValue() + "\"}")
