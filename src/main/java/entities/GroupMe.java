@@ -68,10 +68,14 @@ public class GroupMe {
             createMessage("Hi there! It looks like this is the first time I am being started!  I can tell you about transactions that have happened, weekly matchup data, and score updates.  Thanks for using me!");
             startupMessage = true;
             Postgres.markStartupMessageReceived();
+
+            log.trace("Startup message has been sent.", false);
         } else {
             if (System.getenv("RESTART_MESSAGE").equals("TRUE")) {
                 createMessage("Hi there! It looks like I was just restarted.  You may get data that is from earlier dates.  I am sorry about that.  I want to make sure you get all the data about your league!");
                 restartMessage = true;
+
+                log.trace("Restart message has been sent.", false);
             }
         }
     }

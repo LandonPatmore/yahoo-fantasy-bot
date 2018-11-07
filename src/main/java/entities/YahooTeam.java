@@ -20,6 +20,10 @@ public class YahooTeam {
         this.pointsAgainst = pointsAgainst;
     }
 
+    /**
+     * Returns the standings information in a nice format
+     * @return standings data
+     */
     public String getStandingsInformation() {
         return "- Rank: " + rank + "\\n- Record: " + wins + "-" + losses + "-" + ties + "\\n- Streak: " + streak + "\\n- Points For: " + pointsFor + "\\n- Points Against: " + pointsAgainst;
     }

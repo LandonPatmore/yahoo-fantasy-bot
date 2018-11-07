@@ -15,6 +15,11 @@ public class JobRunner {
 
     private static final ArrayList<Job> jobs = new ArrayList<>();
 
+    /**
+     * Creates a job to be scheduled.
+     * @param jobClass job class
+     * @param cron cron string
+     */
     public static void createJob(Class<? extends org.quartz.Job> jobClass, String cron) {
         final JobDetail jobDetail = newJob(jobClass).build();
 
@@ -26,6 +31,9 @@ public class JobRunner {
         jobs.add(new Job(jobDetail, trigger));
     }
 
+    /**
+     * Runs the jobs that were created.
+     */
     public static void runJobs() {
         try {
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();

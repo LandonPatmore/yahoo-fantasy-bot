@@ -29,12 +29,20 @@ public class Yahoo {
             .build(YahooApi20.instance());
     private static OAuth2AccessToken currentToken;
 
-    private static boolean isTokenExpired(long current, Long retrieved, int expiresIn) {
-        final long timeElapsed = ((current - retrieved) / 1000);
+    /**
+     * Checks to see whether or not a token is expired
+     *
+     * @param retrieved when the token was initially retrieved
+     * @param expiresIn when the token expires
+     * @return if the token is expired
+     */
+    private static boolean isTokenExpired(Long retrieved, int expiresIn) {
+        final long timeElapsed = ((System.currentTimeMillis() - retrieved) / 1000);
         final boolean hasExpired = timeElapsed >= expiresIn;
         log.debug("Token expired: " + hasExpired + " | Seconds remaining until expiration: " + (expiresIn - timeElapsed), false);
         return hasExpired;
     }
+
 
     private static void refreshExpiredToken() {
         try {
@@ -330,10 +338,9 @@ public class Yahoo {
         if (token != null) {
             currentToken = token.getToken();
 
-            final long currentTime = System.currentTimeMillis();
             final Long dateRetrieved = token.getRetrievedTime();
 
-            if (isTokenExpired(currentTime, dateRetrieved, currentToken.getExpiresIn())) {
+            if (isTokenExpired(dateRetrieved, currentToken.getExpiresIn())) {
                 refreshExpiredToken();
             }
         } else {

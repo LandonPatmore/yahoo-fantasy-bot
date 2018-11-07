@@ -4,15 +4,26 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import entities.PostgresToken;
 
 import java.sql.*;
-import java.util.Date;
 
 public class Postgres {
     private static final Log log = new Log(Postgres.class);
 
     private static Connection connection = null;
 
+    /**
+     * Gets the connection to the DB.  If there are 100 attempts, and none are successful, the application will exit.
+     *
+     * @return connection to DB
+     */
     private static Connection getConnection() {
+        int attempts = 0;
+
         while (connection == null) {
+            if (attempts >= 100) {
+                log.fatal("There has been 100 attempts to connect to the DB.  None have been successful.  Exiting.", true);
+                System.exit(-1);
+            }
+
             try {
                 log.trace("Connection does not exist to database.  Creating...", false);
 
@@ -24,12 +35,18 @@ public class Postgres {
                 return connection;
             } catch (SQLException e) {
                 log.error(e.getLocalizedMessage(), true);
+                attempts++;
             }
         }
 
         return connection;
     }
 
+    /**
+     * Saves the Yahoo token data to the DB.
+     *
+     * @param token token to be saved
+     */
     public static void saveTokenData(OAuth2AccessToken token) {
         getConnection();
 
@@ -37,7 +54,7 @@ public class Postgres {
             log.trace("Attempting to save token data...", false);
 
             final String refreshToken = token.getRefreshToken();
-            final String retrievedTime = Long.toString(new Date().getTime());
+            final String retrievedTime = Long.toString(System.currentTimeMillis());
             final String rawResponse = token.getRawResponse();
             final String tokenType = token.getTokenType();
             final String accessToken = token.getAccessToken();
@@ -58,12 +75,15 @@ public class Postgres {
 
     }
 
+    /**
+     * Saves the last time data was checked.
+     */
     public static void saveLastTimeChecked() {
         try {
             log.trace("Attempting to save token data...", false);
 
             final Statement statement = connection.createStatement();
-            final String sql = "INSERT INTO latest_time (\"latest_time\")" + " VALUES (\'" + (new Date().getTime() / 1000) + "\')";
+            final String sql = "INSERT INTO latest_time (\"latest_time\")" + " VALUES (\'" + (System.currentTimeMillis() / 1000) + "\')";
 
             statement.executeUpdate(sql);
 
@@ -73,6 +93,9 @@ public class Postgres {
         }
     }
 
+    /**
+     * Marks that the start up message has been received by the users.  This is so that the message is not sent every-time the application is started.
+     */
     public static void markStartupMessageReceived() {
         try {
             log.trace("Marking startup message sent...", false);
@@ -88,13 +111,17 @@ public class Postgres {
         }
     }
 
+    /**
+     * Checks to see if the startup message was sent to the users.
+     *
+     * @return whether or not the startup message was sent
+     */
     public static boolean getStartupMessageSent() {
         try {
             getConnection();
 
             final Statement statement = connection.createStatement();
-
-            ResultSet row = statement.executeQuery("SELECT * FROM start_up_message_received ORDER BY \"was_received\" DESC LIMIT 1");
+            final ResultSet row = statement.executeQuery("SELECT * FROM start_up_message_received ORDER BY \"was_received\" DESC LIMIT 1");
 
             if (row.next()) {
                 return row.getBoolean("was_received");
@@ -107,32 +134,42 @@ public class Postgres {
         }
     }
 
+    /**
+     * Gets the latest time checked.
+     *
+     * @return long of the time
+     */
     public static long getLatestTimeChecked() {
+        checkShouldDropLatestTimeData();
         try {
             getConnection();
 
             final Statement statement = connection.createStatement();
-
-            ResultSet row = statement.executeQuery("SELECT * FROM latest_time ORDER BY \"latest_time\" DESC LIMIT 1");
+            final ResultSet row = statement.executeQuery("SELECT * FROM latest_time ORDER BY \"latest_time\" DESC LIMIT 1");
 
             if (row.next()) {
                 return row.getLong("latest_time");
             }
 
-            return new Date().getTime() / 1000;
+            return System.currentTimeMillis() / 1000;
         } catch (SQLException e) {
             log.error(e.getLocalizedMessage(), false);
-            return new Date().getTime() / 1000;
+            return System.currentTimeMillis() / 1000;
         }
     }
 
+    /**
+     * Gets the latest token data
+     *
+     * @return token data
+     */
     public static PostgresToken getLatestTokenData() {
+        checkShouldDropTokenData();
         try {
             getConnection();
 
             final Statement statement = connection.createStatement();
-
-            ResultSet row = statement.executeQuery("SELECT * FROM tokens ORDER BY \"yahooTokenRetrievedTime\" DESC LIMIT 1");
+            final ResultSet row = statement.executeQuery("SELECT * FROM tokens ORDER BY \"yahooTokenRetrievedTime\" DESC LIMIT 1");
 
             if (row.next()) {
                 final String refreshToken = row.getString("yahooRefreshToken");
@@ -147,8 +184,61 @@ public class Postgres {
             }
             return null;
         } catch (SQLException e) {
-            log.error(e.getLocalizedMessage(), false);
+            log.error(e.getLocalizedMessage(), true);
             return null;
+        }
+    }
+
+
+    private static void checkShouldDropTokenData() {
+        try {
+            getConnection();
+            final Statement statement = connection.createStatement();
+            final ResultSet row = statement.executeQuery("SELECT COUNT(*) FROM tokens");
+
+            if (row.next()) {
+                int count = row.getInt(1);
+
+                if (count > 20) {
+                    log.trace("More than 20 entries in the token table.  Removing top 20.", false);
+                    statement.execute("DELETE\n" +
+                            "FROM tokens\n" +
+                            "WHERE ctid IN (\n" +
+                            "        SELECT ctid\n" +
+                            "        FROM tokens\n" +
+                            "        ORDER BY \"yahooTokenRetrievedTime\" limit 20\n" +
+                            "        )");
+                }
+            }
+
+        } catch (SQLException e) {
+            log.error(e.getLocalizedMessage(), true);
+        }
+    }
+
+    private static void checkShouldDropLatestTimeData() {
+        try {
+            getConnection();
+            final Statement statement = connection.createStatement();
+            final ResultSet row = statement.executeQuery("SELECT COUNT(*) FROM latest_time");
+
+            if (row.next()) {
+                int count = row.getInt(1);
+
+                if (count > 20) {
+                    log.trace("More than 20 entries in the latest_time table.  Removing top 20.", false);
+                    statement.execute("DELETE\n" +
+                            "FROM latest_time\n" +
+                            "WHERE ctid IN (\n" +
+                            "        SELECT ctid\n" +
+                            "        FROM latest_time\n" +
+                            "        ORDER BY \"latest_time\" limit 20\n" +
+                            "        )");
+                }
+            }
+
+        } catch (SQLException e) {
+            log.error(e.getLocalizedMessage(), true);
         }
     }
 }
