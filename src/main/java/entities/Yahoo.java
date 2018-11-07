@@ -144,6 +144,10 @@ public class Yahoo {
         return t;
     }
 
+    private static Transaction commishTransaction(String time) {
+        return new CommishTransaction(time);
+    }
+
     public static void parseTransactions() {
         final Document transactionsData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/transactions");
 
@@ -173,6 +177,9 @@ public class Yahoo {
                         case "trade": {
                             transactions.add(tradeTransaction(trans.select("trader_team_name").text(), trans.select("tradee_team_name").text(), time, players));
                             break;
+                        }
+                        case "commish": {
+                            transactions.add(commishTransaction(time));
                         }
                     }
                 } else {
@@ -272,12 +279,12 @@ public class Yahoo {
     }
 
     public static void scoreAlert(YahooEnum type) {
-        try {
-            final Document standingsData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/standings");
-            final HashMap<String, YahooTeam> standings = getStandings(standingsData);
-            final Document scoreboardData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/scoreboard");
-            final ArrayList<Matchup> matchups = getMatchups(scoreboardData, standings);
+        final Document standingsData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/standings");
+        final HashMap<String, YahooTeam> standings = getStandings(standingsData);
+        final Document scoreboardData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/scoreboard");
+        final ArrayList<Matchup> matchups = getMatchups(scoreboardData, standings);
 
+        if (matchups != null) {
             final StringBuilder message = new StringBuilder();
             if (type.equals(YahooEnum.WEEKLY_UPDATE)) {
                 message.append("===WEEKLY MATCHUPS===\\n\\n");
@@ -310,8 +317,8 @@ public class Yahoo {
             }
 
             GroupMe.sendMessage(message.toString());
-        } catch (NullPointerException e) {
-            log.error(e.getLocalizedMessage(), true);
+        } else {
+            log.debug("Matchups were null.  Not sending message.", false);
         }
     }
 
