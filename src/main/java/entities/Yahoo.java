@@ -28,7 +28,6 @@ public class Yahoo {
             .callback(OAuthConstants.OOB)
             .build(YahooApi20.instance());
     private static OAuth2AccessToken currentToken;
-    private static Long lastCheckedTransactions = new Date().getTime() / 1000; // Get the current time once application starts
 
     private static boolean isTokenExpired(long current, Long retrieved, int expiresIn) {
         final long timeElapsed = ((current - retrieved) / 1000);
@@ -159,7 +158,7 @@ public class Yahoo {
             for (Element trans : elements) {
                 final String type = trans.select("type").first().text();
                 final String time = trans.select("timestamp").first().text();
-                if (Long.parseLong(time) >= lastCheckedTransactions) {
+                if (Long.parseLong(time) >= Postgres.getLatestTimeChecked()) {
                     final Elements players = trans.select("player");
                     switch (type) {
                         case "add": {
@@ -187,7 +186,8 @@ public class Yahoo {
                     break;
                 }
             }
-            lastCheckedTransactions = new Date().getTime() / 1000;
+
+            Postgres.saveLastTimeChecked();
 
             buildGroupMeMessage(transactions);
         } else {
