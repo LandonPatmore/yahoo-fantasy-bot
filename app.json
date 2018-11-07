@@ -32,8 +32,8 @@
       "value": "1"
     },
     "YAHOO_CLIENT_SECRET": {
-      "description": "1",
-      "value": "America/New_York"
+      "description": "Yahoo Client Secret",
+      "value": "1"
     },
     "YAHOO_LEAGUE_ID": {
       "description": "Yahoo League ID",
