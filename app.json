@@ -44,9 +44,6 @@
     }
   },
   "addons": [
-    {
-      "plan": "heroku-postgresql",
-      "as": "POSTGRES DATABASE"
-    }
+    "heroku-postgresql"
   ]
 }
