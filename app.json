@@ -10,6 +10,9 @@
   ],
   "website": "https://github.com/landonp1203/yahoo-trader-bot",
   "repository": "https://github.com/landonp1203/yahoo-trader-bot",
+  "scripts": {
+    "postdeploy": "psql $DATABASE_URL -f db_provision.sql"
+  },
   "env": {
     "GROUP_ME_ACCESS_TOKEN": {
       "description": "GroupMe Access Token",
@@ -39,5 +42,11 @@
       "description": "Yahoo League ID",
       "value": "1"
     }
-  }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql",
+      "as": "POSTGRES DATABASE"
+    }
+  ]
 }
