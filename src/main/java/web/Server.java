@@ -2,10 +2,8 @@ package web;
 
 import com.github.scribejava.apis.YahooApi20;
 import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.model.OAuthConstants;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import enums.YahooEnum;
-import services.Yahoo;
 import utils.Log;
 import utils.Postgres;
 
@@ -14,31 +12,40 @@ import static spark.Spark.port;
 
 public class Server {
     private static final Log log = new Log(Server.class);
+    private static OAuth20Service service;
 
     public static void main(String[] args) {
         port(getHerokuAssignedPort());
 
         get("/", (req, res) -> {
             if (Postgres.getLatestTokenData() == null) {
-                res.redirect(Yahoo.authenticationUrl(req.scheme() + "://" + req.host()));
+                log.debug("User is not authenticated.  Sending to Yahoo.", false);
+                res.redirect(authenticationUrl(req.scheme() + "://" + req.host()));
                 return null;
             } else {
+                log.debug("User is already authenticated.  Not sending to Yahoo.", false);
                 return "You are already authenticated with Yahoo's servers.";
             }
         });
 
         get("/auth", (req, res) -> {
-            final OAuth20Service service = new ServiceBuilder(YahooEnum.CLIENT_ID.getValue())
-                    .apiSecret(YahooEnum.CLIENT_SECRET.getValue())
-                    .callback(OAuthConstants.OOB)
-                    .build(YahooApi20.instance());
             // Trade the Request Token and Verfier for the Access Token
             log.trace("Trading request token for access token...", false);
-            Yahoo.setToken(Yahoo.getService().getAccessToken(req.queryParams("code")));
-            Yahoo.saveAuthenticationData();
+            Postgres.saveTokenData(service.getAccessToken(req.queryParams("code")));
             log.trace("Access token received.  Authorized successfully.", false);
             return "You are authorized";
         });
+    }
+
+    private static String authenticationUrl(String url) {
+        log.trace("Initial authorization...", false);
+
+        service = new ServiceBuilder(YahooEnum.CLIENT_ID.getValue())
+                .apiSecret(YahooEnum.CLIENT_SECRET.getValue())
+                .callback(url + "/auth")
+                .build(YahooApi20.instance());
+
+        return service.getAuthorizationUrl();
     }
 
     private static int getHerokuAssignedPort() {

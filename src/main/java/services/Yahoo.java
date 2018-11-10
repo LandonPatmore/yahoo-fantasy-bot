@@ -66,21 +66,6 @@ public class Yahoo {
         return service;
     }
 
-    public static String authenticationUrl(String url) {
-        log.trace("Initial authorization...", false);
-
-        // Obtain the Request Token
-        log.trace("Fetching request token...", false);
-        log.trace("Got request token.", false);
-
-        service = new ServiceBuilder(YahooEnum.CLIENT_ID.getValue())
-                .apiSecret(YahooEnum.CLIENT_SECRET.getValue())
-                .callback(url + "/auth")
-                .build(YahooApi20.instance());
-
-        return service.getAuthorizationUrl();
-    }
-
     /**
      * Creates a TradeTransaction
      *
@@ -405,15 +390,26 @@ public class Yahoo {
     /**
      * Authenticates with the Yahoo servers.
      */
-    private static void authenticate() {
-        final PostgresToken token = Postgres.getLatestTokenData();
-        if (token != null) {
-            currentToken = token.getToken();
+    public static void authenticate() {
+        while (true) {
+            try {
+                final PostgresToken token = Postgres.getLatestTokenData();
+                if (token != null) {
+                    currentToken = token.getToken();
 
-            final Long dateRetrieved = token.getRetrievedTime();
+                    final Long dateRetrieved = token.getRetrievedTime();
 
-            if (isTokenExpired(dateRetrieved, currentToken.getExpiresIn())) {
-                refreshExpiredToken();
+                    if (isTokenExpired(dateRetrieved, currentToken.getExpiresIn())) {
+                        refreshExpiredToken();
+                    }
+
+                    return;
+                } else {
+                    log.debug("Token does not exist in DB.  Will check again.", false);
+                }
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                log.error(e.getLocalizedMessage(), false);
             }
         }
     }

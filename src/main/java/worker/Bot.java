@@ -4,28 +4,18 @@ import jobs.CloseScoreJob;
 import jobs.ScoreJob;
 import jobs.TransactionsJob;
 import jobs.WeeklyUpdateJob;
+import services.Yahoo;
 import utils.JobRunner;
-import utils.Log;
-import utils.Postgres;
 import utils.ServicesHandler;
 
 public class Bot {
-    private static final Log log = new Log(Bot.class);
-
     public static void main(String[] args) {
         startServices();
     }
 
-
     private static void startServices() {
         // Keep trying to get the latest token
-        while (Postgres.getLatestTokenData() == null) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                log.error(e.getLocalizedMessage(), true);
-            }
-        }
+        Yahoo.authenticate();
 
         // Check services for validity
         ServicesHandler.startupCheck();
