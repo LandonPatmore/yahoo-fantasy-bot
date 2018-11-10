@@ -2,7 +2,11 @@ package utils;
 
 import services.Discord;
 import services.GroupMe;
+import services.Service;
 import services.Slack;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ServicesHandler {
     private static final Log log = new Log(ServicesHandler.class);
@@ -12,14 +16,19 @@ public class ServicesHandler {
     private static final Discord discord = new Discord();
     private static final Slack slack = new Slack();
 
+    private static final Service[] services = {groupMe, discord, slack};
+
     private static boolean checkedEnvVariables = false;
 
     // TODO: Need someway to validate the services (env variables set up correctly, fallback, etc.)
 
     public static void sendMessage(String message) {
-        groupMe.createMessage(message);
-        discord.createMessage(message);
-        slack.createMessage(message);
+        final ExecutorService executorService = Executors.newFixedThreadPool(services.length);
+        for (Service s : services) {
+            s.setCurrentMessage(message);
+            executorService.submit(s);
+        }
+        executorService.shutdown();
     }
 
     private static void checkEnvVariables() {

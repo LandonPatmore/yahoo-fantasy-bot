@@ -1,15 +1,14 @@
 package services;
 
 import utils.Log;
-import utils.Postgres;
 
-public abstract class Service {
+public abstract class Service implements Runnable {
     private static final Log log = new Log(Service.class);
 
     private boolean shouldUse = true;
 
     final String url;
-
+    private String currentMessage;
 
     public Service(String url) {
         this.url = url;
@@ -20,7 +19,7 @@ public abstract class Service {
      *
      * @param message the message to be sent
      */
-    public abstract void createMessage(String message);
+    abstract void createMessage(String message);
 
     /**
      * Sends a message to the group.
@@ -51,6 +50,18 @@ public abstract class Service {
             log.error(e.getLocalizedMessage(), true);
 
             return null;
+        }
+    }
+
+    public void setCurrentMessage(String currentMessage) {
+        this.currentMessage = currentMessage;
+    }
+
+    @Override
+    public void run() {
+        if(currentMessage != null) {
+            createMessage(currentMessage);
+            currentMessage = null;
         }
     }
 }
