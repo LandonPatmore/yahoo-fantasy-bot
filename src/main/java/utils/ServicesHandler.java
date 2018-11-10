@@ -23,7 +23,6 @@ public class ServicesHandler {
     }
 
     private static void checkEnvVariables() {
-        System.out.println(System.getenv());
         if (!checkedEnvVariables) {
             log.debug("Checking environment variables.", false);
 
