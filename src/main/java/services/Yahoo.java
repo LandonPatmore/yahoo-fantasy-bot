@@ -250,7 +250,7 @@ public class Yahoo {
 
             buildTransactionsString(transactions);
         } else {
-            log.debug("Transaction Data was null.", true);
+            log.debug("Transaction data was null.", false);
         }
     }
 

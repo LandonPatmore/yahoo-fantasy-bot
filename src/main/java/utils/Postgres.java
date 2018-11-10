@@ -80,7 +80,7 @@ public class Postgres {
      */
     public static void saveLastTimeChecked() {
         try {
-            log.trace("Attempting to save token data...", false);
+            log.trace("Attempting to save last time checked...", false);
 
             final Statement statement = connection.createStatement();
             final String sql = "INSERT INTO latest_time (\"latest_time\")" + " VALUES (\'" + (System.currentTimeMillis() / 1000) + "\')";
@@ -206,7 +206,7 @@ public class Postgres {
                 int count = row.getInt(1);
 
                 if (count > 20) {
-                    log.trace("More than 20 entries in the token table.  Removing top 20.", false);
+                    log.trace("More than 20 entries in the " + tableName + " table.  Removing top 20.", false);
                     statement.execute("DELETE\n" +
                             "FROM " + tableName + "\n" +
                             "WHERE ctid IN (\n" +
