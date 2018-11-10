@@ -56,7 +56,7 @@
       "value": ""
     },
     "TIMEZONE": {
-      "description": "Timezone for messages. (See a list of valid timezones: https://garygregory.wordpress.com/2013/06/18/what-are-the-java-timezone-ids/",
+      "description": "Timezone for messages. (See a list of valid timezones: https://garygregory.wordpress.com/2013/06/18/what-are-the-java-timezone-ids/)",
       "value": "EST"
     }
   },
