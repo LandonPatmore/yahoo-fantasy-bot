@@ -43,7 +43,7 @@ public class ServicesHandler {
             }
 
             if (System.getenv("SLACK_WEBHOOK_URL") == null) {
-                discord.shouldNotUse();
+                slack.shouldNotUse();
             }
 
             logServicesUsed();
