@@ -28,10 +28,11 @@ public class Yahoo {
     private static final String BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2/";
     private static final String LEAGUE_KEY = "nfl.l." + System.getenv("YAHOO_LEAGUE_ID");
 
-    private static final OAuth20Service service = new ServiceBuilder(YahooEnum.CLIENT_ID.getValue())
+    private static OAuth20Service service = new ServiceBuilder(YahooEnum.CLIENT_ID.getValue())
             .apiSecret(YahooEnum.CLIENT_SECRET.getValue())
             .callback(OAuthConstants.OOB)
             .build(YahooApi20.instance());
+    ;
     private static OAuth2AccessToken currentToken;
 
     /**
@@ -62,37 +63,23 @@ public class Yahoo {
         }
     }
 
-    /**
-     * Gets initial authentication data if needed.
-     */
-    private static void initialAuthentication() {
-        while (true) {
-            try {
-                final Scanner scanner = new Scanner(System.in);
+    public static OAuth20Service getService() {
+        return service;
+    }
 
-                log.trace("Initial authorization...", false);
+    public static String authenticationUrl(String url) {
+        log.trace("Initial authorization...", false);
 
-                // Obtain the Request Token
-                log.trace("Fetching request token...", false);
-                log.trace("Got request token.", false);
+        // Obtain the Request Token
+        log.trace("Fetching request token...", false);
+        log.trace("Got request token.", false);
 
-                log.trace("Authorize usage here:", false);
-                log.trace(service.getAuthorizationUrl(), false);
-                log.trace("Paste the verification string:", false);
-                final String oauthVerifier = scanner.nextLine();
+        service = new ServiceBuilder(YahooEnum.CLIENT_ID.getValue())
+                .apiSecret(YahooEnum.CLIENT_SECRET.getValue())
+                .callback(url + "/auth")
+                .build(YahooApi20.instance());
 
-                // Trade the Request Token and Verfier for the Access Token
-                log.trace("Trading request token for access token...", false);
-                currentToken = service.getAccessToken(oauthVerifier);
-                saveAuthenticationData();
-                log.trace("Access token received.  Authorized successfully.", false);
-                return;
-            } catch (InterruptedException | ExecutionException |
-                    IOException e) {
-                log.error("Could not authenticate with Yahoo's servers.", false);
-                log.error(e.getLocalizedMessage(), true);
-            }
-        }
+        return service.getAuthorizationUrl();
     }
 
     /**
@@ -285,8 +272,13 @@ public class Yahoo {
     /**
      * Saves token data to DB.
      */
-    private static void saveAuthenticationData() {
+    public static void saveAuthenticationData() {
         Postgres.saveTokenData(currentToken);
+    }
+
+
+    public static void setToken(OAuth2AccessToken token) {
+        currentToken = token;
     }
 
     /**
@@ -414,7 +406,7 @@ public class Yahoo {
     /**
      * Authenticates with the Yahoo servers.
      */
-    public static void authenticate() {
+    private static void authenticate() {
         final PostgresToken token = Postgres.getLatestTokenData();
         if (token != null) {
             currentToken = token.getToken();
@@ -424,8 +416,6 @@ public class Yahoo {
             if (isTokenExpired(dateRetrieved, currentToken.getExpiresIn())) {
                 refreshExpiredToken();
             }
-        } else {
-            initialAuthentication();
         }
     }
 
