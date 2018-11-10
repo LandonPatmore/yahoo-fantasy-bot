@@ -1,4 +1,4 @@
-package entities;
+package transactions;
 
 public class DropTransaction extends Transaction {
 

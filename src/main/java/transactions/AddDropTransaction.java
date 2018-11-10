@@ -1,4 +1,4 @@
-package entities;
+package transactions;
 
 import java.util.ArrayList;
 

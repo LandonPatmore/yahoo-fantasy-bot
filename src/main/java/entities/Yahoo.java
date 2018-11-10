@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
+import transactions.*;
 import utils.Log;
 import utils.Postgres;
 
@@ -103,10 +104,10 @@ public class Yahoo {
      * @param players   list of players data
      * @return TradeTransaction
      */
-    private static Transaction tradeTransaction(String entityOne, String entityTwo, String time, Elements players) {
+    private static Transaction tradeTransaction(String entityOne, String entityTwo, String time, Elements players, String status) {
         log.trace("Trade Transaction has occurred after last check...notifying.", false);
 
-        final Transaction t = new TradeTransaction(entityOne, entityTwo, time);
+        final Transaction t = new TradeTransaction(entityOne, entityTwo, time, status);
         for (Element player : players) {
             final String playerName = player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")";
             final String playerAssociatedWith = player.select("source_team_name").text();
@@ -221,25 +222,23 @@ public class Yahoo {
                 if (Long.parseLong(time) >= Postgres.getLatestTimeChecked()) {
                     final Elements players = trans.select("player");
                     switch (type) {
-                        case "add": {
+                        case "add":
                             transactions.add(addTransaction(trans.select("destination_team_name").text(), trans.select("source_type").text(), time, players));
                             break;
-                        }
-                        case "drop": {
+                        case "drop":
                             transactions.add(dropTransaction(trans.select("source_team_name").text(), trans.select("destination_type").text(), time, players));
                             break;
-                        }
-                        case "add/drop": {
+                        case "add/drop":
                             transactions.add(addDropTransaction(time, players));
                             break;
-                        }
-                        case "trade": {
-                            transactions.add(tradeTransaction(trans.select("trader_team_name").text(), trans.select("tradee_team_name").text(), time, players));
+                        case "trade":
+                            transactions.add(tradeTransaction(trans.select("trader_team_name").text(), trans.select("tradee_team_name").text(), time, players, trans.select("status").text()));
                             break;
-                        }
-                        case "commish": {
+                        case "commish":
                             transactions.add(commishTransaction(time));
-                        }
+                            break;
+                        default:
+                            break;
                     }
                 } else {
                     log.trace("Transactions past this date are older than last checked time.  Not checking anymore.", false);
