@@ -16,15 +16,28 @@
   "env": {
     "GROUP_ME_ACCESS_TOKEN": {
       "description": "GroupMe Access Token",
-      "value": "1"
+      "value": "",
+      "required": false
     },
     "GROUP_ME_BOT_ID": {
       "description": "GroupMe Bot ID",
-      "value": "1"
+      "value": "",
+      "required": false
     },
     "GROUP_ME_GROUP_ID": {
       "description": "GroupMe Group ID",
-      "value": "1"
+      "value": "",
+      "required": false
+    },
+    "DISCORD_WEBHOOK_URL": {
+      "description": "Discord Web Hook URL",
+      "value": "",
+      "required": false
+    },
+    "SLACK_WEBHOOK_URL": {
+      "description": "Discord Web Hook URL",
+      "value": "",
+      "required": false
     },
     "RESTART_MESSAGE": {
       "description": "Should restart messages be sent to the group when the bot is restarted/updated.",
@@ -32,15 +45,19 @@
     },
     "YAHOO_CLIENT_ID": {
       "description": "Yahoo Client ID",
-      "value": "1"
+      "value": ""
     },
     "YAHOO_CLIENT_SECRET": {
       "description": "Yahoo Client Secret",
-      "value": "1"
+      "value": ""
     },
     "YAHOO_LEAGUE_ID": {
       "description": "Yahoo League ID",
-      "value": "1"
+      "value": ""
+    },
+    "TIMEZONE": {
+      "description": "Timezone for messages. (See a list of valid timezones: https://garygregory.wordpress.com/2013/06/18/what-are-the-java-timezone-ids/",
+      "value": "EST"
     }
   },
   "addons": [
