@@ -32,7 +32,6 @@ public class Yahoo {
             .apiSecret(YahooEnum.CLIENT_SECRET.getValue())
             .callback(OAuthConstants.OOB)
             .build(YahooApi20.instance());
-    ;
     private static OAuth2AccessToken currentToken;
 
     /**
