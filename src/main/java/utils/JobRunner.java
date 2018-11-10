@@ -1,6 +1,6 @@
 package utils;
 
-import entities.Yahoo;
+import services.Yahoo;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 

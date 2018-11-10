@@ -1,6 +1,6 @@
 package jobs;
 
-import entities.Yahoo;
+import services.Yahoo;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 

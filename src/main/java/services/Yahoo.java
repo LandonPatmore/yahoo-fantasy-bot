@@ -1,9 +1,12 @@
-package entities;
+package services;
 
 import com.github.scribejava.apis.YahooApi20;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import entities.Matchup;
+import entities.PostgresToken;
+import entities.YahooTeam;
 import enums.YahooEnum;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,6 +16,7 @@ import org.jsoup.select.Elements;
 import transactions.*;
 import utils.Log;
 import utils.Postgres;
+import utils.ServicesHandler;
 
 import java.io.IOException;
 import java.util.*;
@@ -89,10 +93,6 @@ public class Yahoo {
                 log.error(e.getLocalizedMessage(), true);
             }
         }
-    }
-
-    public static void startupAuthentication() {
-        authenticate();
     }
 
     /**
@@ -219,7 +219,7 @@ public class Yahoo {
             for (Element trans : elements) {
                 final String type = trans.select("type").first().text();
                 final String time = trans.select("timestamp").first().text();
-                if (Long.parseLong(time) >= Postgres.getLatestTimeChecked()) {
+                if (Long.parseLong(time) >= 1541707736L) {
                     final Elements players = trans.select("player");
                     switch (type) {
                         case "add":
@@ -248,20 +248,20 @@ public class Yahoo {
 
             Postgres.saveLastTimeChecked();
 
-            buildGroupMeMessage(transactions);
+            buildTransactionsString(transactions);
         } else {
             log.debug("Transaction Data was null.", true);
         }
     }
 
     /**
-     * Builds out a GroupMe message to be sent to the group.
+     * Builds out a transactions message to be sent to the group.
      *
      * @param transactions transactions data list
      */
-    private static void buildGroupMeMessage(ArrayList<Transaction> transactions) {
+    private static void buildTransactionsString(ArrayList<Transaction> transactions) {
         if (transactions.size() != 0) {
-            log.debug("Building out GroupMe message.", false);
+            log.debug("Building out transactions message.", false);
 
             Collections.sort(transactions);
 
@@ -273,9 +273,10 @@ public class Yahoo {
                 builder.append(t.getTransactionString());
             }
 
-            GroupMe.createMessage(builder.toString());
+            log.trace(builder.toString(), false);
+            ServicesHandler.sendMessage(builder.toString());
 
-            log.debug("GroupMe message sent.", false);
+            log.debug("Transactions message sent.", false);
         } else {
             log.debug("There are no transactions.  No message has been sent.", false);
         }
@@ -404,7 +405,7 @@ public class Yahoo {
                 }
             }
 
-            GroupMe.createMessage(message.toString());
+            ServicesHandler.sendMessage(message.toString());
         } else {
             log.debug("Matchups were null.  Not sending message.", false);
         }
@@ -413,7 +414,7 @@ public class Yahoo {
     /**
      * Authenticates with the Yahoo servers.
      */
-    private static void authenticate() {
+    public static void authenticate() {
         final PostgresToken token = Postgres.getLatestTokenData();
         if (token != null) {
             currentToken = token.getToken();

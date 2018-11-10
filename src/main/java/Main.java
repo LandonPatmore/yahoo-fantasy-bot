@@ -1,19 +1,19 @@
-import entities.GroupMe;
-import entities.Yahoo;
+import services.Yahoo;
 import jobs.CloseScoreJob;
 import jobs.ScoreJob;
 import jobs.TransactionsJob;
 import jobs.WeeklyUpdateJob;
 import utils.JobRunner;
+import utils.ServicesHandler;
 
 public class Main {
     public static void main(String[] args) {
 
-        // When the app starts, check if there actually is a Oauth token, else prompt user to get it
-        Yahoo.startupAuthentication();
+        // Check services for validity
+        ServicesHandler.startupCheck();
 
-        // Send startup messages if applicable
-        GroupMe.startupMessages();
+        // When the app starts, check if there actually is a Oauth token, else prompt user to get it
+        Yahoo.authenticate();
 
         // Every 15 Seconds
         JobRunner.createJob(TransactionsJob.class, "0/15 * * ? 9-1 * 2018-2019");

@@ -2,8 +2,8 @@ package transactions;
 
 public class DropTransaction extends Transaction {
 
-    public DropTransaction(String entityOne, String entitiyTwo, String date) {
-        super(entityOne, entitiyTwo, date);
+    public DropTransaction(String entityOne, String entityTwo, String date) {
+        super(entityOne, entityTwo, date);
         this.type = TransactionType.DROP;
     }
 

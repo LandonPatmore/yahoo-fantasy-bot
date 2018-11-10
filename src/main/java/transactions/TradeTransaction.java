@@ -4,8 +4,8 @@ public class TradeTransaction extends Transaction {
 
     private final String status;
 
-    public TradeTransaction(String entityOne, String entitiyTwo, String date, String status) {
-        super(entityOne, entitiyTwo, date);
+    public TradeTransaction(String entityOne, String entityTwo, String date, String status) {
+        super(entityOne, entityTwo, date);
         this.type = TransactionType.TRADE;
         this.status = status;
     }
