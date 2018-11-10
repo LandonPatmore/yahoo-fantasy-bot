@@ -1,5 +1,7 @@
 package transactions;
 
+import utils.TimeZoneData;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -27,7 +29,7 @@ public abstract class Transaction implements Comparable<Transaction> {
     public Transaction(String entityOne, String entityTwo, String date) {
         this.entityOne = entityOne;
         this.entityTwo = entityTwo;
-        this.date = date == null ? null : LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(date)), ZoneId.of("America/New_York"));
+        this.date = date == null ? null : LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(date)), TimeZoneData.getZoneId());
         this.entityOneList = new ArrayList<>();
         this.entityTwoList = new ArrayList<>();
     }

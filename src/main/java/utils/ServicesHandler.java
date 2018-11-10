@@ -26,6 +26,8 @@ public class ServicesHandler {
         if (!checkedEnvVariables) {
             log.debug("Checking environment variables.", false);
 
+            TimeZoneData.checkTimezoneEnv();
+
             if (System.getenv("GROUP_ME_ACCESS_TOKEN") == null) {
                 groupMe.shouldNotUse();
             }

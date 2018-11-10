@@ -25,7 +25,7 @@ public class JobRunner {
 
         final Trigger trigger = newTrigger()
                 .startNow()
-                .withSchedule(CronScheduleBuilder.cronSchedule(cron).inTimeZone(TimeZone.getTimeZone("America/New_York")))
+                .withSchedule(CronScheduleBuilder.cronSchedule(cron).inTimeZone(TimeZoneData.getTimezone()))
                 .build();
 
         jobs.add(new Job(jobDetail, trigger));
