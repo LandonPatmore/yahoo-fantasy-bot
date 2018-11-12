@@ -47,15 +47,18 @@
     },
     "YAHOO_CLIENT_ID": {
       "description": "Yahoo Client ID",
-      "value": ""
+      "value": "",
+      "required": false
     },
     "YAHOO_CLIENT_SECRET": {
       "description": "Yahoo Client Secret",
-      "value": ""
+      "value": "",
+      "required": false
     },
     "YAHOO_LEAGUE_ID": {
       "description": "Yahoo League ID",
-      "value": ""
+      "value": "",
+      "required": false
     },
     "TIMEZONE": {
       "description": "Timezone for messages. (See a list of valid timezones: https://garygregory.wordpress.com/2013/06/18/what-are-the-java-timezone-ids/)",
