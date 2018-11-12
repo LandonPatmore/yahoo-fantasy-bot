@@ -38,6 +38,19 @@ You will need a Yahoo Access Token, Client ID, and Client Secret for this bot to
 
 ![](https://imgur.com/NbUwOmD.png)
 
+5. To get your league ID: (2 Ways)
+
+  **On the website**
+  * Go to Yahoo Fantasy Football and click your league
+  * Go to settings page
+  * At the top, you will see "League ID", save for later
+  
+  **In the app**
+  * Open the app
+  * Click "League" tab
+  * Click "Settings" at the top
+  * At the top, you will see "League ID#", save for later
+
 ---
 
 5. **The following sections are all optional, but at least one of them is needed.  All of them can be used as well!**
