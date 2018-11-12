@@ -26,7 +26,7 @@ You will need a Yahoo Access Token, Client ID, and Client Secret for this bot to
 3. Fill out required information.
   * Name the application whatever you would like
   * Click "Installed Application"
-  * The callback domain name will be <HEROKU APP NAME>.herokuapp.com (Do not put http:// or https://)
+  * The callback domain name will be HEROKU-APP-NAME.herokuapp.com (Do not put http:// or https://)
   * Click "Fantasy Sports" and then "Read"
   * Click "Create App"
   
