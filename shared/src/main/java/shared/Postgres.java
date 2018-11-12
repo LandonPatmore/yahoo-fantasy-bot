@@ -19,7 +19,7 @@ public class Postgres {
 
         while (connection == null) {
             if (attempts >= 100) {
-                log.fatal("There has been 100 attempts to connect to the DB.  None have been successful.  Exiting.", true);
+                log.fatal("There have been 100 attempts to connect to the DB.  None have been successful.  Exiting.", true);
                 System.exit(-1);
             }
 

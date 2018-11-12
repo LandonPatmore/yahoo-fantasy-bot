@@ -1,21 +1,35 @@
-apply plugin:'java'
+plugins {
+    id 'com.github.johnrengelman.shadow' version '4.0.2'
+    id 'java'
+}
 
-version '1.0-SNAPSHOT'
+shadowJar {
+    baseName = 'shadow'
+    classifier = null
+    version = null
+}
 
-sourceCompatibility = 1.8
-
-subprojects {
-    apply plugin: 'java'
-
-    version '1.0-SNAPSHOT'
+allprojects {
+    apply plugin:'java'
 
     sourceCompatibility = 1.8
-    
+
     repositories {
+        mavenLocal()
         mavenCentral()
     }
+}
 
-    dependencies {
-        compile group: 'com.github.scribejava', name: 'scribejava-apis', version: '6.0.0'
-    }
+apply from: file('gradle/heroku/clean.gradle')
+
+project(":bot") {
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle")
+}
+
+project(":web-server") {
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle")
 }
