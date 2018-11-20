@@ -13,7 +13,8 @@ public enum EnvHandler implements EnumInterface {
     TIMEZONE(System.getenv("TIMEZONE")),
     RESTART_MESSAGE(System.getenv("RESTART_MESSAGE")),
     PORT(System.getenv("PORT")),
-    JDBC_DATABASE_URL(System.getenv("JDBC_DATABASE_URL"));
+    JDBC_DATABASE_URL(System.getenv("JDBC_DATABASE_URL")),
+    SHOW_DROP_ALERT(System.getenv("SHOW_DROP_ALERT"));
 
     private final String value;
 
@@ -25,5 +26,11 @@ public enum EnvHandler implements EnumInterface {
     public String getValue() {
         return value;
     }
+
+    @Override
+    public boolean getBooleanValue() {
+        return Boolean.getBoolean(value);
+    }
+
 
 }

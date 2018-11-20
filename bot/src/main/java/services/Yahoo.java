@@ -142,23 +142,33 @@ public class Yahoo {
      * @return AddDropTransaction
      */
     private static Transaction addDropTransaction(String time, Elements players) {
-        log.trace("Add/Drop Transaction has occurred after last check...notifying.", false);
+        if (EnvHandler.SHOW_DROP_ALERT.getBooleanValue()) {
+            log.trace("Add/Drop Transaction has occurred after last check...notifying.", false);
+        } else {
+            log.trace("Add/Drop Transaction has occurred after last check, only showing Add alert because of settings...notifying.", false);
+        }
 
         final AddDropTransaction t = new AddDropTransaction(time);
         for (Element player : players) {
             final String playerName = player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")";
             final String playerAssociatedWith = player.select("source_team_name").text();
 
-            if (player.select("type").text().equals("add")) {
-                final AddTransaction addTransaction = new AddTransaction(player.select("destination_team_name").text(), player.select("source_type").text(), time);
+            if (EnvHandler.SHOW_DROP_ALERT.getBooleanValue()) {
+                if (player.select("type").text().equals("add")) {
+                    final AddTransaction addTransaction = new AddTransaction(player.select("destination_team_name").text(), player.select("source_type").text(), time);
 
-                addTransaction.addPlayerToEntity(playerName, playerAssociatedWith);
-                t.addTransaction(addTransaction);
+                    addTransaction.addPlayerToEntity(playerName, playerAssociatedWith);
+                    t.addTransaction(addTransaction);
+                } else {
+                    final DropTransaction dropTransaction = new DropTransaction(player.select("source_team_name").text(), player.select("destination_type").text(), time);
+
+                    dropTransaction.addPlayerToEntity(playerName, playerAssociatedWith);
+                    t.addTransaction(dropTransaction);
+                }
             } else {
-                final DropTransaction dropTransaction = new DropTransaction(player.select("source_team_name").text(), player.select("destination_type").text(), time);
-
-                dropTransaction.addPlayerToEntity(playerName, playerAssociatedWith);
-                t.addTransaction(dropTransaction);
+                if (player.select("type").text().equals("add")) {
+                    return new AddTransaction(player.select("destination_team_name").text(), player.select("source_type").text(), time);
+                }
             }
         }
 
@@ -189,6 +199,7 @@ public class Yahoo {
             for (Element trans : elements) {
                 final String type = trans.select("type").first().text();
                 final String time = trans.select("timestamp").first().text();
+
                 if (Long.parseLong(time) >= Postgres.getLatestTimeChecked()) {
                     final Elements players = trans.select("player");
                     switch (type) {
@@ -196,7 +207,9 @@ public class Yahoo {
                             transactions.add(addTransaction(trans.select("destination_team_name").text(), trans.select("source_type").text(), time, players));
                             break;
                         case "drop":
-                            transactions.add(dropTransaction(trans.select("source_team_name").text(), trans.select("destination_type").text(), time, players));
+                            if (EnvHandler.SHOW_DROP_ALERT.getBooleanValue()) {
+                                transactions.add(dropTransaction(trans.select("source_team_name").text(), trans.select("destination_type").text(), time, players));
+                            }
                             break;
                         case "add/drop":
                             transactions.add(addDropTransaction(time, players));

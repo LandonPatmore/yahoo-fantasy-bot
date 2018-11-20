@@ -45,6 +45,10 @@
       "description": "Should restart messages be sent to the group when the bot is restarted/updated.",
       "value": "FALSE"
     },
+    "SHOW_DROP_ALERT": {
+      "description": "Should drop alerts be sent.",
+      "value": "TRUE"
+    },
     "YAHOO_CLIENT_ID": {
       "description": "Yahoo Client ID",
       "value": "",
