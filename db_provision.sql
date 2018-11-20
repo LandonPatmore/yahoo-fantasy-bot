@@ -26,3 +26,15 @@ CREATE TABLE tokens (
 
 CREATE UNIQUE INDEX t_pkey ON tokens("yahooTokenRetrievedTime" int8_ops);
 
+-----------------------------------------------------------------------------------------------------------
+
+CREATE TABLE messages (
+    name text,
+    message_id integer PRIMARY KEY,
+    user_id integer,
+    message text,
+    time bigint
+);
+
+CREATE UNIQUE INDEX m_pkey ON messages(message_id int4_ops);
+

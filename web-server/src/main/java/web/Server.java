@@ -3,12 +3,12 @@ package web;
 import com.github.scribejava.apis.YahooApi20;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import org.json.JSONObject;
 import shared.EnvHandler;
 import shared.Log;
 import shared.Postgres;
 
-import static spark.Spark.get;
-import static spark.Spark.port;
+import static spark.Spark.*;
 
 public class Server {
     private static final Log log = new Log(Server.class);
@@ -34,6 +34,11 @@ public class Server {
             Postgres.saveTokenData(service.getAccessToken(req.queryParams("code")));
             log.trace("Access token received.  Authorized successfully.", false);
             return "You are authorized";
+        });
+
+        post("/message", (req, res) -> {
+            Postgres.saveMessage(new JSONObject(req.body()));
+            return null;
         });
     }
 

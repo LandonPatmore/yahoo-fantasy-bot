@@ -1,6 +1,7 @@
 package shared;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.json.JSONObject;
 
 import java.sql.*;
 
@@ -46,9 +47,9 @@ public class Postgres {
      * @param token token to be saved
      */
     public static void saveTokenData(OAuth2AccessToken token) {
-        getConnection();
-
         try {
+            getConnection();
+
             log.trace("Attempting to save token data...", false);
 
             final String refreshToken = token.getRefreshToken();
@@ -78,6 +79,8 @@ public class Postgres {
      */
     public static void saveLastTimeChecked() {
         try {
+            getConnection();
+
             log.trace("Attempting to save last time checked...", false);
 
             final Statement statement = connection.createStatement();
@@ -96,6 +99,8 @@ public class Postgres {
      */
     public static void markStartupMessageReceived() {
         try {
+            getConnection();
+
             log.trace("Marking startup message sent...", false);
 
             final Statement statement = connection.createStatement();
@@ -218,5 +223,34 @@ public class Postgres {
         } catch (SQLException e) {
             log.error(e.getLocalizedMessage(), true);
         }
+    }
+
+    public static void saveMessage(JSONObject message) {
+        try {
+            getConnection();
+
+            log.trace("Attempting to save message...", false);
+
+            final Statement statement = connection.createStatement();
+
+            final String name = message.getString("name");
+            final long message_id = message.getLong("id");
+            final long user_id = message.getLong("user_id");
+            final String mess = message.getString("text");
+            final long time = message.getLong("created_at");
+
+            final String sql = "INSERT INTO messages (\"name\", \"message_id\", \"user_id\", \"message\", \"time\")" + " VALUES (\'" + name + "\', \'"
+                    + message_id + "\', \'" + user_id + "\', \'" + mess + "\', \'" + time + "\')";
+
+            statement.executeUpdate(sql);
+
+            log.trace("Message has been saved.", false);
+        } catch (SQLException e) {
+            log.error(e.getLocalizedMessage(), true);
+        }
+    }
+
+    public static void grabMessages() {
+
     }
 }
