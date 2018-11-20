@@ -4,13 +4,14 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import shared.EnvHandler;
 import shared.Log;
 
 public class Discord extends Service {
     private static final Log log = new Log(Discord.class);
 
     public Discord() {
-        super(System.getenv("DISCORD_WEBHOOK_URL"));
+        super(EnvHandler.DISCORD_WEBHOOK_URL.getValue());
     }
 
     @Override

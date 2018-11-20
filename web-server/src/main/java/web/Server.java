@@ -3,9 +3,9 @@ package web;
 import com.github.scribejava.apis.YahooApi20;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import shared.EnvHandler;
 import shared.Log;
 import shared.Postgres;
-import shared.YahooEnum;
 
 import static spark.Spark.get;
 import static spark.Spark.port;
@@ -39,14 +39,15 @@ public class Server {
 
     /**
      * Gets the authentication url from Yahoo
+     *
      * @param url the callback url
      * @return String url
      */
     private static String authenticationUrl(String url) {
         log.trace("Initial authorization...", false);
 
-        service = new ServiceBuilder(YahooEnum.CLIENT_ID.getValue())
-                .apiSecret(YahooEnum.CLIENT_SECRET.getValue())
+        service = new ServiceBuilder(EnvHandler.YAHOO_CLIENT_ID.getValue())
+                .apiSecret(EnvHandler.YAHOO_CLIENT_SECRET.getValue())
                 .callback(url + "/auth")
                 .build(YahooApi20.instance());
 
@@ -55,12 +56,14 @@ public class Server {
 
     /**
      * Get the assigned port on Heroku
+     *
      * @return int port
      */
     private static int getHerokuAssignedPort() {
-        if (System.getenv("PORT") != null) {
-            return Integer.parseInt(System.getenv("PORT"));
+        final String port = EnvHandler.PORT.getValue();
+        if (port != null) {
+            return Integer.parseInt(port);
         }
-        return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
+        return 4567;
     }
 }

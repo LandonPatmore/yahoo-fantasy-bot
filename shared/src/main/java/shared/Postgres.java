@@ -26,8 +26,7 @@ public class Postgres {
             try {
                 log.trace("Connection does not exist to database.  Creating...", false);
 
-                final String url = System.getenv("JDBC_DATABASE_URL");
-                connection = DriverManager.getConnection(url);
+                connection = DriverManager.getConnection(EnvHandler.JDBC_DATABASE_URL.getValue());
 
                 log.debug("Connection established to database.", false);
 

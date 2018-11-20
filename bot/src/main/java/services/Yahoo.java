@@ -25,10 +25,10 @@ public class Yahoo {
     private static final Log log = new Log(Yahoo.class);
 
     private static final String BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2/";
-    private static final String LEAGUE_KEY = "nfl.l." + System.getenv("YAHOO_LEAGUE_ID");
+    private static final String LEAGUE_KEY = "nfl.l." + EnvHandler.YAHOO_LEAGUE_ID.getValue();
 
-    private static OAuth20Service service = new ServiceBuilder(YahooEnum.CLIENT_ID.getValue())
-            .apiSecret(YahooEnum.CLIENT_SECRET.getValue())
+    private static OAuth20Service service = new ServiceBuilder(EnvHandler.YAHOO_CLIENT_ID.getValue())
+            .apiSecret(EnvHandler.YAHOO_CLIENT_SECRET.getValue())
             .callback(OAuthConstants.OOB)
             .build(YahooApi20.instance());
     private static OAuth2AccessToken currentToken;

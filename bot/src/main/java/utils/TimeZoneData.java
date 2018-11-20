@@ -1,5 +1,6 @@
 package utils;
 
+import shared.EnvHandler;
 import shared.Log;
 
 import java.time.ZoneId;
@@ -15,12 +16,12 @@ public class TimeZoneData {
 
     static void checkTimezoneEnv() {
         if (!checkedTimezone) {
-            final String env = System.getenv("TIMEZONE");
+            final String env = EnvHandler.TIMEZONE.getValue();
             if (env != null) {
-                final boolean isRealTimezone = Arrays.asList(TimeZone.getAvailableIDs()).contains(System.getenv("TIMEZONE"));
+                final boolean isRealTimezone = Arrays.asList(TimeZone.getAvailableIDs()).contains(env.toUpperCase());
                 if (isRealTimezone) {
                     log.debug("Valid timezone set.", false);
-                    timezone = TimeZone.getTimeZone(env);
+                    timezone = TimeZone.getTimeZone(env.toUpperCase());
                 } else {
                     log.debug("Invalid timezone set.  Falling back to default - EST.", false);
                 }

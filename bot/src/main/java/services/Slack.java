@@ -3,13 +3,14 @@ package services;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import shared.EnvHandler;
 import shared.Log;
 
 public class Slack extends Service {
     private static final Log log = new Log(Slack.class);
 
     public Slack() {
-        super(System.getenv("SLACK_WEBHOOK_URL"));
+        super(EnvHandler.SLACK_WEBHOOK_URL.getValue());
     }
 
     @Override

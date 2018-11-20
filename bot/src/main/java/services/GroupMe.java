@@ -4,7 +4,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import enums.GroupMeEnum;
+import shared.EnvHandler;
 import shared.Log;
 
 public class GroupMe extends Service {
@@ -33,7 +33,7 @@ public class GroupMe extends Service {
         try {
             final HttpResponse<JsonNode> response = Unirest.post(url)
                     .header("Content-Type", "application/json")
-                    .body("{\"text\" : \"" + message + "\", \"bot_id\" : \"" + GroupMeEnum.BOT_ID.getValue() + "\"}")
+                    .body("{\"text\" : \"" + message + "\", \"bot_id\" : \"" + EnvHandler.GROUP_ME_BOT_ID.getValue() + "\"}")
                     .asJson();
             log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus(), false);
         } catch (UnirestException e) {

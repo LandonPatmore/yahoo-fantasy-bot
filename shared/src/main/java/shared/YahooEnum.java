@@ -1,9 +1,6 @@
 package shared;
 
-public enum YahooEnum implements EnumInterface {
-    // Authentication
-    CLIENT_ID(System.getenv("YAHOO_CLIENT_ID")),
-    CLIENT_SECRET(System.getenv("YAHOO_CLIENT_SECRET")),
+public enum YahooEnum {
     WEEKLY_UPDATE("weekly"),
     SCORE_UPDATE("score"),
     CLOSE_SCORE_UPDATE("close_score");
@@ -14,7 +11,6 @@ public enum YahooEnum implements EnumInterface {
         this.value = value;
     }
 
-    @Override
     public String getValue() {
         return value;
     }

@@ -4,6 +4,7 @@ import services.Discord;
 import services.GroupMe;
 import services.Service;
 import services.Slack;
+import shared.EnvHandler;
 import shared.Log;
 import shared.Postgres;
 
@@ -39,23 +40,23 @@ public class ServicesHandler {
 
             TimeZoneData.checkTimezoneEnv();
 
-            if (System.getenv("GROUP_ME_ACCESS_TOKEN") == null) {
+            if (EnvHandler.GROUP_ME_ACCESS_TOKEN.getValue() == null) {
                 groupMe.shouldNotUse();
             }
 
-            if (System.getenv("GROUP_ME_BOT_ID") == null) {
+            if (EnvHandler.GROUP_ME_BOT_ID.getValue() == null) {
                 groupMe.shouldNotUse();
             }
 
-            if (System.getenv("GROUP_ME_GROUP_ID") == null) {
+            if (EnvHandler.GROUP_ME_GROUP_ID.getValue() == null) {
                 groupMe.shouldNotUse();
             }
 
-            if (System.getenv("DISCORD_WEBHOOK_URL") == null) {
+            if (EnvHandler.DISCORD_WEBHOOK_URL.getValue() == null) {
                 discord.shouldNotUse();
             }
 
-            if (System.getenv("SLACK_WEBHOOK_URL") == null) {
+            if (EnvHandler.SLACK_WEBHOOK_URL.getValue() == null) {
                 slack.shouldNotUse();
             }
 
@@ -76,12 +77,13 @@ public class ServicesHandler {
     private static void startupMessages() {
         if (!startupMessage) {
             sendMessage("Hi there! It looks like this is the first time I am being started!  I can tell you about transactions that have happened, weekly matchup data, and score updates.  Thanks for using me!");
+            // TODO: Show the current settings that the bot is using
             startupMessage = true;
             Postgres.markStartupMessageReceived();
 
             log.trace("Startup message has been sent.", false);
         } else {
-            if (System.getenv("RESTART_MESSAGE").equals("TRUE")) {
+            if (("TRUE").equalsIgnoreCase(EnvHandler.RESTART_MESSAGE.getValue())) {
                 sendMessage("Hi there! It looks like I was just restarted.  You may get data that is from earlier dates.  I am sorry about that.  I want to make sure you get all the data about your league!");
 
                 log.trace("Restart message has been sent.", false);
