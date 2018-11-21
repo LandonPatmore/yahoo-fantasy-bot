@@ -1,6 +1,6 @@
-package utils;
+package web;
 
-import services.Yahoo;
+import utils.Yahoo;
 
 public class CommandInterpreter {
 

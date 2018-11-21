@@ -6,8 +6,6 @@ import services.Discord;
 import services.GroupMe;
 import services.Service;
 import services.Slack;
-import shared.EnvHandler;
-import shared.Postgres;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

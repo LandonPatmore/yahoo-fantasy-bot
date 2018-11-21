@@ -1,4 +1,4 @@
-package shared;
+package utils;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 

@@ -4,7 +4,7 @@ import jobs.CloseScoreJob;
 import jobs.ScoreJob;
 import jobs.TransactionsJob;
 import jobs.WeeklyUpdateJob;
-import services.Yahoo;
+import utils.Yahoo;
 import utils.JobRunner;
 import utils.ServicesHandler;
 

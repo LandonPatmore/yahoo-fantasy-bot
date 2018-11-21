@@ -3,7 +3,6 @@ apply plugin: 'application'
 mainClassName = 'worker.Bot'
 
 dependencies {
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
     compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
     compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
     compile project(':shared')

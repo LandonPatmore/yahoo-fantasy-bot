@@ -6,8 +6,8 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
-import shared.EnvHandler;
-import shared.Postgres;
+import utils.EnvHandler;
+import utils.Postgres;
 
 import static spark.Spark.*;
 
@@ -39,8 +39,10 @@ public class Server {
 
         post("/message", (req, res) -> {
 //            Postgres.saveMessage(new JSONObject(req.body()));
-            final JSONObject j = new JSONObject(req.body());
-//            CommandInterpreter.interpretCommand(j.getString("text"));
+            if(req.body() != null && !req.body().isEmpty()) {
+                final JSONObject j = new JSONObject(req.body());
+                CommandInterpreter.interpretCommand(j.getString("text"));
+            }
             return null;
         });
     }

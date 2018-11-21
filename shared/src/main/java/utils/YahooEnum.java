@@ -1,4 +1,4 @@
-package shared;
+package utils;
 
 public enum YahooEnum {
     WEEKLY_UPDATE("weekly"),

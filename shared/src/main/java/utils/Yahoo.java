@@ -1,4 +1,4 @@
-package services;
+package utils;
 
 import com.github.scribejava.apis.YahooApi20;
 import com.github.scribejava.core.builder.ServiceBuilder;
@@ -13,12 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
-import shared.EnvHandler;
-import shared.Postgres;
-import shared.PostgresToken;
-import shared.YahooEnum;
 import transactions.*;
-import utils.ServicesHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -195,7 +190,7 @@ public class Yahoo {
     /**
      * Parses transactions data.
      */
-    public static void parseTransactions() {
+    public static String parseTransactions() {
         final Document transactionsData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/transactions");
 
         if (transactionsData != null) {
@@ -238,9 +233,10 @@ public class Yahoo {
 
             Postgres.saveLastTimeChecked();
 
-            buildTransactionsString(transactions);
+            return buildTransactionsString(transactions);
         } else {
             log.debug("Transaction data was null.");
+            return null;
         }
     }
 
@@ -249,7 +245,7 @@ public class Yahoo {
      *
      * @param transactions transactions data list
      */
-    private static void buildTransactionsString(ArrayList<Transaction> transactions) {
+    private static String buildTransactionsString(ArrayList<Transaction> transactions) {
         if (transactions.size() != 0) {
             log.debug("Building out transactions message.");
 
@@ -263,13 +259,13 @@ public class Yahoo {
                 builder.append(t.getTransactionString());
             }
 
-            log.trace(builder.toString());
-            ServicesHandler.sendMessage(builder.toString());
-
-            log.debug("Transactions message sent.");
+            return builder.toString();
+//            ServicesHandler.sendMessage(builder.toString());
         } else {
             log.debug("There are no transactions.  No message has been sent.");
         }
+
+        return null;
     }
 
     /**
@@ -357,7 +353,7 @@ public class Yahoo {
      *
      * @param type the type of the score alert to get
      */
-    public static void getScoreAlerts(YahooEnum type) {
+    public static String getScoreAlerts(YahooEnum type) {
         final Document standingsData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/standings");
         final HashMap<String, YahooTeam> standings = getStandings(standingsData);
         final Document scoreboardData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/scoreboard");
@@ -391,13 +387,15 @@ public class Yahoo {
                     }
                 } else {
                     log.debug("There were no close scores.  Not sending messages.");
-                    return;
+                    return null; // TODO: !!!!!!!!!!!!!!!!
                 }
             }
 
-            ServicesHandler.sendMessage(message.toString());
+            return message.toString();
+//            ServicesHandler.sendMessage(message.toString());
         } else {
             log.debug("Matchups were null.  Not sending message.");
+            return null;
         }
     }
 

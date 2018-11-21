@@ -6,7 +6,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import shared.EnvHandler;
+import utils.EnvHandler;
 
 public class GroupMe extends Service {
     private static final Logger log = LogManager.getLogger(GroupMe.class);

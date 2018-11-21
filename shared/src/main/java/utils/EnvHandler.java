@@ -1,4 +1,4 @@
-package shared;
+package utils;
 
 public enum EnvHandler implements EnumInterface {
 
