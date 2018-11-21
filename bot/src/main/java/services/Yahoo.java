@@ -167,7 +167,9 @@ public class Yahoo {
                 }
             } else {
                 if (player.select("type").text().equals("add")) {
-                    return new AddTransaction(player.select("destination_team_name").text(), player.select("source_type").text(), time);
+                    final AddTransaction addTransaction = new AddTransaction(player.select("destination_team_name").text(), player.select("source_type").text(), time);
+                    addTransaction.addPlayerToEntity(playerName, playerAssociatedWith);
+                    return addTransaction;
                 }
             }
         }
