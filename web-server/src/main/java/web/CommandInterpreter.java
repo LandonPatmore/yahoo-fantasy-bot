@@ -43,6 +43,27 @@ public class CommandInterpreter {
     }
 
     private static String helpCommandsList() {
+//        return "< Fantasy Bot Commands >\\n\\n" +
+//
+//                "./fantasy <command> <args>\\n\\n" +
+//
+//                "# Get a list of all available commands\\n" +
+//                "./fantasy help\\n" +
+//                "# Get the list of teams in the league\\n" +
+//                "./fantasy teams\\n" +
+//                "# Get the list of team records in the league\\n" +
+//                "./fantasy records\\n" +
+//                "# Get the record of a specified team\\n" +
+//                "./fantasy record <team number>\\n" +
+//                "# Get the info on a specified team\\n" +
+//                "./fantasy team <team number>\\n" +
+//                "# Get the players on a specified team\\n" +
+//                "./fantasy players <team number>\\n" +
+//                "# Get the latest transactions (5 is the default)\\n" +
+//                "./fantasy transactions <number or none to show default>\\n" +
+//                "# Get the latest transactions for a specified team (5 is the default)\\n" +
+//                "./fantasy teamtrans <team number> <number or none to show default>";
+
         return "< Fantasy Bot Commands >\\n\\n" +
 
                 "./fantasy <command> <args>\\n\\n" +
@@ -51,18 +72,8 @@ public class CommandInterpreter {
                 "./fantasy help\\n" +
                 "# Get the list of teams in the league\\n" +
                 "./fantasy teams\\n" +
-                "# Get the list of team records in the league\\n" +
-                "./fantasy records\\n" +
                 "# Get the record of a specified team\\n" +
-                "./fantasy record <team number>\\n" +
-                "# Get the info on a specified team\\n" +
-                "./fantasy team <team number>\\n" +
-                "# Get the players on a specified team\\n" +
-                "./fantasy players <team number>\\n" +
-                "# Get the latest transactions (5 is the default)\\n" +
-                "./fantasy transactions <number or none to show default>\\n" +
-                "# Get the latest transactions for a specified team (5 is the default)\\n" +
-                "./fantasy teamtrans <team number> <number or none to show default>";
+                "./fantasy record <team number>";
     }
 
     private static String unknownCommand(String message) {

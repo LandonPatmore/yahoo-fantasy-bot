@@ -452,7 +452,7 @@ public class Yahoo {
         final Document doc = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/teams");
 
         if (doc != null) {
-            final StringBuilder builder = new StringBuilder("Here is a list a teams in league:\\n\\n");
+            final StringBuilder builder = new StringBuilder("Here is a list of teams in the league:\\n\\n");
             final Elements teams = doc.select("team");
 
             for (Element e : teams) {

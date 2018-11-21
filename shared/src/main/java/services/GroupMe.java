@@ -37,7 +37,6 @@ public class GroupMe extends Service {
                     .body("{\"text\" : \"" + message + "\", \"bot_id\" : \"" + EnvHandler.GROUP_ME_BOT_ID.getValue() + "\"}")
                     .asJson();
             log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus());
-            log.debug(response.getBody());
         } catch (UnirestException e) {
             log.error(e.getLocalizedMessage(), new Throwable());
         }
