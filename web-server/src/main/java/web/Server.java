@@ -38,12 +38,11 @@ public class Server {
         });
 
         post("/message", (req, res) -> {
-//            Postgres.saveMessage(new JSONObject(req.body()));
             if(req.body() != null && !req.body().isEmpty()) {
                 final JSONObject j = new JSONObject(req.body());
                 CommandInterpreter.interpretCommand(j.getString("text"));
             }
-            return null;
+            return "";
         });
     }
 

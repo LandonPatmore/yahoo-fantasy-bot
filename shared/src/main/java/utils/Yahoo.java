@@ -448,8 +448,59 @@ public class Yahoo {
         }
     }
 
-    public static void getListOfTeams() {
-        parseTransactions();
+    public static String getListOfTeams() {
+        final Document doc = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/teams");
+
+        if (doc != null) {
+            final StringBuilder builder = new StringBuilder("Here is a list a teams in league:\\n\\n");
+            final Elements teams = doc.select("team");
+
+            for (Element e : teams) {
+                final String number = e.select("team_id").text();
+                final String name = e.select("name").text();
+
+                builder.append(number).append(". ").append(name).append("\\n");
+            }
+
+            return builder.toString();
+        } else {
+            return "ERROR: I could not connect to Yahoo's servers.  Please try again later.";
+        }
+    }
+
+    public static String getTeamRecord(String teamNumber) {
+        final Document doc = grabData(BASE_URL + "team/" + LEAGUE_KEY + ".t." + teamNumber + "/standings");
+
+        if (doc != null) {
+            final String error = doc.select("error").first().text();
+            if(error.isEmpty()) {
+                final String name = doc.select("name").text();
+
+                final Element standings = doc.select("team_standings").first();
+
+                final String rank = standings.select("rank").text();
+                final String clinchedPlayoffs = standings.select("clinched_playoffs").text();
+
+                final Element overallRecord = standings.select("outcome_totals").first();
+                final String oWins = overallRecord.select("wins").text();
+                final String oLosses = overallRecord.select("losses").text();
+                final String oTies = overallRecord.select("ties").text();
+
+                final Element divisionRecord = standings.select("divisional_outcome_totals").first();
+                final String dWins = divisionRecord.select("wins").text();
+                final String dLosses = divisionRecord.select("losses").text();
+                final String dTies = divisionRecord.select("ties").text();
+
+                final Element streak = standings.select("streak").first();
+                final String streakData = streak.select("value").text() + streak.select("type").text().substring(0, 1).toUpperCase();
+
+                return name + "\\n\\n- Rank: " + rank + "\\n- Clinched Playoffs: " + (clinchedPlayoffs.equals("1") ? "Yes" : "No") + "\\n- Overall Record: " + oWins + "-" + oLosses + "-" + oTies + "\\n- Divisional Record: " + dWins + "-" + dLosses + "-" + dTies + "\\n- Streak: " + streakData;
+            } else {
+                return "ERROR: " + error;
+            }
+        } else {
+            return "ERROR: I could not connect to Yahoo's servers.  Please try again later.";
+        }
     }
 
 }
