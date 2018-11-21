@@ -3,15 +3,16 @@ package web;
 import com.github.scribejava.apis.YahooApi20;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import shared.EnvHandler;
-import shared.Log;
 import shared.Postgres;
 
 import static spark.Spark.*;
 
 public class Server {
-    private static final Log log = new Log(Server.class);
+    private static final Logger log = LogManager.getLogger(Server.class);
     private static OAuth20Service service;
 
     public static void main(String[] args) {
@@ -19,25 +20,27 @@ public class Server {
 
         get("/", (req, res) -> {
             if (Postgres.getLatestTokenData() == null) {
-                log.debug("User is not authenticated.  Sending to Yahoo.", false);
+                log.debug("User is not authenticated.  Sending to Yahoo.");
                 res.redirect(authenticationUrl(req.scheme() + "://" + req.host()));
                 return null;
             } else {
-                log.debug("User is already authenticated.  Not sending to Yahoo.", false);
+                log.debug("User is already authenticated.  Not sending to Yahoo.");
                 return "You are already authenticated with Yahoo's servers.";
             }
         });
 
         get("/auth", (req, res) -> {
             // Trade the Request Token and Verfier for the Access Token
-            log.trace("Trading request token for access token...", false);
+            log.trace("Trading request token for access token...");
             Postgres.saveTokenData(service.getAccessToken(req.queryParams("code")));
-            log.trace("Access token received.  Authorized successfully.", false);
+            log.trace("Access token received.  Authorized successfully.");
             return "You are authorized";
         });
 
         post("/message", (req, res) -> {
-            Postgres.saveMessage(new JSONObject(req.body()));
+//            Postgres.saveMessage(new JSONObject(req.body()));
+            final JSONObject j = new JSONObject(req.body());
+//            CommandInterpreter.interpretCommand(j.getString("text"));
             return null;
         });
     }
@@ -49,7 +52,7 @@ public class Server {
      * @return String url
      */
     private static String authenticationUrl(String url) {
-        log.trace("Initial authorization...", false);
+        log.trace("Initial authorization...");
 
         service = new ServiceBuilder(EnvHandler.YAHOO_CLIENT_ID.getValue())
                 .apiSecret(EnvHandler.YAHOO_CLIENT_SECRET.getValue())

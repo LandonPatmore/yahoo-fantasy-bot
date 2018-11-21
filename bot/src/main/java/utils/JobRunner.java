@@ -1,9 +1,10 @@
 package utils;
 
-import services.Yahoo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-import shared.Log;
+import services.Yahoo;
 
 import java.util.ArrayList;
 
@@ -11,7 +12,7 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 public class JobRunner {
-    private static final Log log = new Log(Yahoo.class);
+    private static final Logger log = LogManager.getLogger(Yahoo.class);
 
     private static final ArrayList<Job> jobs = new ArrayList<>();
 
@@ -45,7 +46,7 @@ public class JobRunner {
             }
 
         } catch (SchedulerException e) {
-            log.error(e.getLocalizedMessage(), true);
+            log.error(e.getLocalizedMessage(), new Throwable());
         }
     }
 

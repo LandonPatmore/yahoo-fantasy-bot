@@ -1,18 +1,19 @@
 package utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import services.Discord;
 import services.GroupMe;
 import services.Service;
 import services.Slack;
 import shared.EnvHandler;
-import shared.Log;
 import shared.Postgres;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ServicesHandler {
-    private static final Log log = new Log(ServicesHandler.class);
+    private static final Logger log = LogManager.getLogger(ServicesHandler.class);
     private static boolean startupMessage = Postgres.getStartupMessageSent();
 
     private static final GroupMe groupMe = new GroupMe();
@@ -36,7 +37,7 @@ public class ServicesHandler {
 
     private static void checkEnvVariables() {
         if (!checkedEnvVariables) {
-            log.debug("Checking environment variables.", false);
+            log.debug("Checking environment variables.");
 
             TimeZoneData.checkTimezoneEnv();
 
@@ -81,27 +82,27 @@ public class ServicesHandler {
             startupMessage = true;
             Postgres.markStartupMessageReceived();
 
-            log.trace("Startup message has been sent.", false);
+            log.trace("Startup message has been sent.");
         } else {
             if (("TRUE").equalsIgnoreCase(EnvHandler.RESTART_MESSAGE.getValue())) {
                 sendMessage("Hi there! It looks like I was just restarted.  You may get data that is from earlier dates.  I am sorry about that.  I want to make sure you get all the data about your league!");
 
-                log.trace("Restart message has been sent.", false);
+                log.trace("Restart message has been sent.");
             }
         }
     }
 
     private static void logServicesUsed() {
         if (groupMe.shouldUse()) {
-            log.debug("Using GroupMe.", false);
+            log.debug("Using GroupMe.");
         }
 
         if (discord.shouldUse()) {
-            log.debug("Using Discord.", false);
+            log.debug("Using Discord.");
         }
 
         if (slack.shouldUse()) {
-            log.debug("Using Slack.", false);
+            log.debug("Using Slack.");
         }
     }
 }

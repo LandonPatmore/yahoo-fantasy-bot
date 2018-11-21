@@ -6,12 +6,17 @@ import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import entities.Matchup;
 import entities.YahooTeam;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
-import shared.*;
+import shared.EnvHandler;
+import shared.Postgres;
+import shared.PostgresToken;
+import shared.YahooEnum;
 import transactions.*;
 import utils.ServicesHandler;
 
@@ -22,7 +27,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 public class Yahoo {
-    private static final Log log = new Log(Yahoo.class);
+    private static final Logger log = LogManager.getLogger(Yahoo.class);
 
     private static final String BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2/";
     private static final String LEAGUE_KEY = "nfl.l." + EnvHandler.YAHOO_LEAGUE_ID.getValue();
@@ -43,7 +48,7 @@ public class Yahoo {
     private static boolean isTokenExpired(Long retrieved, int expiresIn) {
         final long timeElapsed = ((System.currentTimeMillis() - retrieved) / 1000);
         final boolean hasExpired = timeElapsed >= expiresIn;
-        log.debug("Token expired: " + hasExpired + " | Seconds remaining until expiration: " + (expiresIn - timeElapsed), false);
+        log.debug("Token expired: " + hasExpired + " | Seconds remaining until expiration: " + (expiresIn - timeElapsed));
         return hasExpired;
     }
 
@@ -52,12 +57,12 @@ public class Yahoo {
      */
     private static void refreshExpiredToken() {
         try {
-            log.trace("Refreshing token...", false);
+            log.trace("Refreshing token...");
             currentToken = service.refreshAccessToken(currentToken.getRefreshToken());
-            log.trace("Token refreshed.", false);
+            log.trace("Token refreshed.");
             saveAuthenticationData();
         } catch (IOException | InterruptedException | ExecutionException e) {
-            log.error(e.getLocalizedMessage(), true);
+            log.error(e.getLocalizedMessage(), new Throwable());
         }
     }
 
@@ -75,7 +80,7 @@ public class Yahoo {
      * @return TradeTransaction
      */
     private static Transaction tradeTransaction(String entityOne, String entityTwo, String time, Elements players, String status) {
-        log.trace("Trade Transaction has occurred after last check...notifying.", false);
+        log.trace("Trade Transaction has occurred after last check...notifying.");
 
         final Transaction t = new TradeTransaction(entityOne, entityTwo, time, status);
         for (Element player : players) {
@@ -98,7 +103,7 @@ public class Yahoo {
      * @return AddTransaction
      */
     private static Transaction addTransaction(String entityOne, String entityTwo, String time, Elements players) {
-        log.trace("Add Transaction has occurred after last check...notifying.", false);
+        log.trace("Add Transaction has occurred after last check...notifying.");
 
         final Transaction t = new AddTransaction(entityOne, entityTwo, time);
         for (Element player : players) {
@@ -121,7 +126,7 @@ public class Yahoo {
      * @return DropTransaction
      */
     private static Transaction dropTransaction(String entityOne, String entityTwo, String time, Elements players) {
-        log.trace("Drop Transaction has occurred after last check...notifying.", false);
+        log.trace("Drop Transaction has occurred after last check...notifying.");
 
         final Transaction t = new DropTransaction(entityOne, entityTwo, time);
         for (Element player : players) {
@@ -143,9 +148,9 @@ public class Yahoo {
      */
     private static Transaction addDropTransaction(String time, Elements players) {
         if (EnvHandler.SHOW_DROP_ALERT.getBooleanValue()) {
-            log.trace("Add/Drop Transaction has occurred after last check...notifying.", false);
+            log.trace("Add/Drop Transaction has occurred after last check...notifying.");
         } else {
-            log.trace("Add/Drop Transaction has occurred after last check, only showing Add alert because of settings...notifying.", false);
+            log.trace("Add/Drop Transaction has occurred after last check, only showing Add alert because of settings...notifying.");
         }
 
         final AddDropTransaction t = new AddDropTransaction(time);
@@ -226,7 +231,7 @@ public class Yahoo {
                             break;
                     }
                 } else {
-                    log.trace("Transactions past this date are older than last checked time.  Not checking anymore.", false);
+                    log.trace("Transactions past this date are older than last checked time.  Not checking anymore.");
                     break;
                 }
             }
@@ -235,7 +240,7 @@ public class Yahoo {
 
             buildTransactionsString(transactions);
         } else {
-            log.debug("Transaction data was null.", false);
+            log.debug("Transaction data was null.");
         }
     }
 
@@ -246,7 +251,7 @@ public class Yahoo {
      */
     private static void buildTransactionsString(ArrayList<Transaction> transactions) {
         if (transactions.size() != 0) {
-            log.debug("Building out transactions message.", false);
+            log.debug("Building out transactions message.");
 
             Collections.sort(transactions);
 
@@ -258,12 +263,12 @@ public class Yahoo {
                 builder.append(t.getTransactionString());
             }
 
-            log.trace(builder.toString(), false);
+            log.trace(builder.toString());
             ServicesHandler.sendMessage(builder.toString());
 
-            log.debug("Transactions message sent.", false);
+            log.debug("Transactions message sent.");
         } else {
-            log.debug("There are no transactions.  No message has been sent.", false);
+            log.debug("There are no transactions.  No message has been sent.");
         }
     }
 
@@ -301,7 +306,7 @@ public class Yahoo {
 
             return standings;
         } else {
-            log.error("Doc was null.", false);
+            log.error("Doc was null.");
         }
 
         return null;
@@ -341,7 +346,7 @@ public class Yahoo {
 
             return matches;
         } else {
-            log.error("Doc was null", true);
+            log.error("Doc was null", new Throwable());
         }
 
         return null;
@@ -385,14 +390,14 @@ public class Yahoo {
                         message.append(s).append("\\n\\n");
                     }
                 } else {
-                    log.debug("There were no close scores.  Not sending messages.", false);
+                    log.debug("There were no close scores.  Not sending messages.");
                     return;
                 }
             }
 
             ServicesHandler.sendMessage(message.toString());
         } else {
-            log.debug("Matchups were null.  Not sending message.", false);
+            log.debug("Matchups were null.  Not sending message.");
         }
     }
 
@@ -414,11 +419,11 @@ public class Yahoo {
 
                     return;
                 } else {
-                    log.debug("Token does not exist in DB.  Will check again.", false);
+                    log.debug("Token does not exist in DB.  Will check again.");
                 }
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                log.error(e.getLocalizedMessage(), false);
+                log.error(e.getLocalizedMessage());
             }
         }
     }
@@ -432,17 +437,21 @@ public class Yahoo {
     private static Document grabData(String url) {
         try {
             authenticate();
-            log.debug("Grabbing Data...", false);
+            log.debug("Grabbing Data...");
             final OAuthRequest request = new OAuthRequest(Verb.GET, url);
             service.signRequest(currentToken, request);
             final Response response = service.execute(request);
-            log.debug("Data grabbed.", false);
+            log.debug("Data grabbed.");
 
             return Jsoup.parse(response.getBody(), "", Parser.xmlParser());
         } catch (IOException | InterruptedException | ExecutionException e) {
-            log.error(e.getLocalizedMessage(), false);
+            log.error(e.getLocalizedMessage());
             return null;
         }
+    }
+
+    public static void getListOfTeams() {
+        parseTransactions();
     }
 
 }

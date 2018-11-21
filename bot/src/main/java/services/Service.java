@@ -1,9 +1,10 @@
 package services;
 
-import shared.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class Service implements Runnable {
-    private static final Log log = new Log(Service.class);
+    private static final Logger log = LogManager.getLogger(Service.class);
 
     private boolean shouldUse = true;
 
@@ -47,7 +48,7 @@ public abstract class Service implements Runnable {
 
             return message;
         } catch (InterruptedException e) {
-            log.error(e.getLocalizedMessage(), true);
+            log.error(e.getLocalizedMessage(), new Throwable());
 
             return null;
         }

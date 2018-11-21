@@ -4,11 +4,12 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import shared.EnvHandler;
-import shared.Log;
 
 public class Discord extends Service {
-    private static final Log log = new Log(Discord.class);
+    private static final Logger log = LogManager.getLogger(Discord.class);
 
     public Discord() {
         super(EnvHandler.DISCORD_WEBHOOK_URL.getValue());
@@ -35,9 +36,9 @@ public class Discord extends Service {
                     .header("Content-Type", "application/json")
                     .body("{\"content\" : \"" + message + "\"}")
                     .asJson();
-            log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus(), false);
+            log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus());
         } catch (UnirestException e) {
-            log.error(e.getLocalizedMessage(), true);
+            log.error(e.getLocalizedMessage(), new Throwable());
         }
     }
 }

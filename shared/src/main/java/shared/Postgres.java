@@ -1,12 +1,14 @@
 package shared;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.sql.*;
 
 public class Postgres {
-    private static final Log log = new Log(Postgres.class);
+    private static final Logger log = LogManager.getLogger(Postgres.class);
 
     private static Connection connection = null;
 
@@ -20,20 +22,20 @@ public class Postgres {
 
         while (connection == null) {
             if (attempts >= 100) {
-                log.fatal("There have been 100 attempts to connect to the DB.  None have been successful.  Exiting.", true);
+                log.fatal("There have been 100 attempts to connect to the DB.  None have been successful.  Exiting.", new Throwable());
                 System.exit(-1);
             }
 
             try {
-                log.trace("Connection does not exist to database.  Creating...", false);
+                log.trace("Connection does not exist to database.  Creating...");
 
                 connection = DriverManager.getConnection(EnvHandler.JDBC_DATABASE_URL.getValue());
 
-                log.debug("Connection established to database.", false);
+                log.debug("Connection established to database.");
 
                 return connection;
             } catch (SQLException e) {
-                log.error(e.getLocalizedMessage(), true);
+                log.error(e.getLocalizedMessage(), new Throwable());
                 attempts++;
             }
         }
@@ -50,7 +52,7 @@ public class Postgres {
         try {
             getConnection();
 
-            log.trace("Attempting to save token data...", false);
+            log.trace("Attempting to save token data...");
 
             final String refreshToken = token.getRefreshToken();
             final String retrievedTime = Long.toString(System.currentTimeMillis());
@@ -65,11 +67,11 @@ public class Postgres {
 
             statement.executeUpdate(sql);
 
-            log.trace("Token data has been saved.", false);
+            log.trace("Token data has been saved.");
 
             return;
         } catch (SQLException e) {
-            log.error(e.getLocalizedMessage(), false);
+            log.error(e.getLocalizedMessage());
         }
 
     }
@@ -81,16 +83,16 @@ public class Postgres {
         try {
             getConnection();
 
-            log.trace("Attempting to save last time checked...", false);
+            log.trace("Attempting to save last time checked...");
 
             final Statement statement = connection.createStatement();
             final String sql = "INSERT INTO latest_time (\"latest_time\")" + " VALUES (\'" + (System.currentTimeMillis() / 1000) + "\')";
 
             statement.executeUpdate(sql);
 
-            log.trace("Latest time has been saved.", false);
+            log.trace("Latest time has been saved.");
         } catch (SQLException e) {
-            log.error(e.getLocalizedMessage(), false);
+            log.error(e.getLocalizedMessage());
         }
     }
 
@@ -101,16 +103,16 @@ public class Postgres {
         try {
             getConnection();
 
-            log.trace("Marking startup message sent...", false);
+            log.trace("Marking startup message sent...");
 
             final Statement statement = connection.createStatement();
             final String sql = "INSERT INTO start_up_message_received (\"was_received\")" + " VALUES (\'" + true + "\')";
 
             statement.executeUpdate(sql);
 
-            log.trace("Startup message marked sent.", false);
+            log.trace("Startup message marked sent.");
         } catch (SQLException e) {
-            log.error(e.getLocalizedMessage(), false);
+            log.error(e.getLocalizedMessage());
         }
     }
 
@@ -132,7 +134,7 @@ public class Postgres {
 
             return false;
         } catch (SQLException e) {
-            log.error(e.getLocalizedMessage(), false);
+            log.error(e.getLocalizedMessage());
             return false;
         }
     }
@@ -156,7 +158,7 @@ public class Postgres {
 
             return System.currentTimeMillis() / 1000;
         } catch (SQLException e) {
-            log.error(e.getLocalizedMessage(), false);
+            log.error(e.getLocalizedMessage());
             return System.currentTimeMillis() / 1000;
         }
     }
@@ -188,7 +190,7 @@ public class Postgres {
             }
             return null;
         } catch (SQLException e) {
-            log.error(e.getLocalizedMessage(), true);
+            log.error(e.getLocalizedMessage(), new Throwable());
             return null;
         }
     }
@@ -209,7 +211,7 @@ public class Postgres {
                 int count = row.getInt(1);
 
                 if (count > 20) {
-                    log.trace("More than 20 entries in the " + tableName + " table.  Removing top 20.", false);
+                    log.trace("More than 20 entries in the " + tableName + " table.  Removing top 20.");
                     statement.execute("DELETE\n" +
                             "FROM " + tableName + "\n" +
                             "WHERE ctid IN (\n" +
@@ -221,7 +223,7 @@ public class Postgres {
             }
 
         } catch (SQLException e) {
-            log.error(e.getLocalizedMessage(), true);
+            log.error(e.getLocalizedMessage(), new Throwable());
         }
     }
 
@@ -229,7 +231,7 @@ public class Postgres {
         try {
             getConnection();
 
-            log.trace("Attempting to save message...", false);
+            log.trace("Attempting to save message...");
 
             final Statement statement = connection.createStatement();
 
@@ -244,9 +246,9 @@ public class Postgres {
 
             statement.executeUpdate(sql);
 
-            log.trace("Message has been saved.", false);
+            log.trace("Message has been saved.");
         } catch (SQLException e) {
-            log.error(e.getLocalizedMessage(), true);
+            log.error(e.getLocalizedMessage(), new Throwable());
         }
     }
 

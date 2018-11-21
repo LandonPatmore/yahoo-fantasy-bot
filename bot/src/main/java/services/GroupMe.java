@@ -4,11 +4,12 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import shared.EnvHandler;
-import shared.Log;
 
 public class GroupMe extends Service {
-    private static final Log log = new Log(GroupMe.class);
+    private static final Logger log = LogManager.getLogger(GroupMe.class);
 
     public GroupMe() {
         super("https://api.groupme.com/v3/bots/post");
@@ -35,9 +36,9 @@ public class GroupMe extends Service {
                     .header("Content-Type", "application/json")
                     .body("{\"text\" : \"" + message + "\", \"bot_id\" : \"" + EnvHandler.GROUP_ME_BOT_ID.getValue() + "\"}")
                     .asJson();
-            log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus(), false);
+            log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus());
         } catch (UnirestException e) {
-            log.error(e.getLocalizedMessage(), true);
+            log.error(e.getLocalizedMessage(), new Throwable());
         }
     }
 

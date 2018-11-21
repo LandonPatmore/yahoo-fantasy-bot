@@ -1,14 +1,15 @@
 package utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import shared.EnvHandler;
-import shared.Log;
 
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.TimeZone;
 
 public class TimeZoneData {
-    private static final Log log = new Log(TimeZoneData.class);
+    private static final Logger log = LogManager.getLogger(TimeZoneData.class);
 
     private static TimeZone timezone = TimeZone.getTimeZone("EST");
 
@@ -20,13 +21,13 @@ public class TimeZoneData {
             if (env != null) {
                 final boolean isRealTimezone = Arrays.asList(TimeZone.getAvailableIDs()).contains(env.toUpperCase());
                 if (isRealTimezone) {
-                    log.debug("Valid timezone set.", false);
+                    log.debug("Valid timezone set.");
                     timezone = TimeZone.getTimeZone(env.toUpperCase());
                 } else {
-                    log.debug("Invalid timezone set.  Falling back to default - EST.", false);
+                    log.debug("Invalid timezone set.  Falling back to default - EST.");
                 }
             } else {
-                log.debug("No timezone set.  Falling back to default - EST.", false);
+                log.debug("No timezone set.  Falling back to default - EST.");
             }
 
             checkedTimezone = true;
