@@ -202,7 +202,7 @@ public class Yahoo {
                 final String type = trans.select("type").first().text();
                 final String time = trans.select("timestamp").first().text();
 
-                if (Long.parseLong(time) >= 1L) {
+                if (Long.parseLong(time) >= Postgres.getLatestTimeChecked()) {
                     final Elements players = trans.select("player");
                     switch (type) {
                         case "add":
