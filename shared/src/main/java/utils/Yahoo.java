@@ -142,7 +142,7 @@ public class Yahoo {
      * @return AddDropTransaction
      */
     private static Transaction addDropTransaction(String time, Elements players) {
-        if (EnvHandler.SHOW_DROP_ALERT.getBooleanValue()) {
+        if ("TRUE".equalsIgnoreCase(EnvHandler.SHOW_DROP_ALERT.getValue())) {
             log.trace("Add/Drop Transaction has occurred after last check...notifying.");
         } else {
             log.trace("Add/Drop Transaction has occurred after last check, only showing Add alert because of settings...notifying.");
@@ -153,7 +153,7 @@ public class Yahoo {
             final String playerName = player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ", " + player.select("display_position").first().text() + ")";
             final String playerAssociatedWith = player.select("source_team_name").text();
 
-            if (EnvHandler.SHOW_DROP_ALERT.getBooleanValue()) {
+            if ("TRUE".equalsIgnoreCase(EnvHandler.SHOW_DROP_ALERT.getValue())) {
                 if (player.select("type").text().equals("add")) {
                     final AddTransaction addTransaction = new AddTransaction(player.select("destination_team_name").text(), player.select("source_type").text(), time);
 
@@ -202,14 +202,14 @@ public class Yahoo {
                 final String type = trans.select("type").first().text();
                 final String time = trans.select("timestamp").first().text();
 
-                if (Long.parseLong(time) >= Postgres.getLatestTimeChecked()) {
+                if (Long.parseLong(time) >= 1L) {
                     final Elements players = trans.select("player");
                     switch (type) {
                         case "add":
                             transactions.add(addTransaction(trans.select("destination_team_name").text(), trans.select("source_type").text(), time, players));
                             break;
                         case "drop":
-                            if (EnvHandler.SHOW_DROP_ALERT.getBooleanValue()) {
+                            if ("TRUE".equalsIgnoreCase(EnvHandler.SHOW_DROP_ALERT.getValue())) {
                                 transactions.add(dropTransaction(trans.select("source_team_name").text(), trans.select("destination_type").text(), time, players));
                             }
                             break;

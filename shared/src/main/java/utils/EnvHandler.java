@@ -14,7 +14,10 @@ public enum EnvHandler implements EnumInterface {
     RESTART_MESSAGE(System.getenv("RESTART_MESSAGE")),
     PORT(System.getenv("PORT")),
     JDBC_DATABASE_URL(System.getenv("JDBC_DATABASE_URL")),
-    SHOW_DROP_ALERT(System.getenv("SHOW_DROP_ALERT"));
+    SHOW_DROP_ALERT(System.getenv("SHOW_DROP_ALERT")),
+    WEEKLY_UPDATE_CRON(System.getenv("WEEKLY_UPDATE_CRON")),
+    SCORE_UPDATE_CRON(System.getenv("SCORE_UPDATE_CRON")),
+    CLOSE_SCORE_UPDATE_CRON(System.getenv("CLOSE_SCORE_UPDATE_CRON"));
 
     private final String value;
 
@@ -25,11 +28,6 @@ public enum EnvHandler implements EnumInterface {
     @Override
     public String getValue() {
         return value;
-    }
-
-    @Override
-    public boolean getBooleanValue() {
-        return Boolean.getBoolean(value);
     }
 
 

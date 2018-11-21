@@ -11,7 +11,7 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 public class JobRunner {
-    private static final Logger log = LogManager.getLogger(Yahoo.class);
+    private static final Logger log = LogManager.getLogger(JobRunner.class);
 
     private static final ArrayList<Job> jobs = new ArrayList<>();
 
