@@ -32,22 +32,50 @@ public class CommandInterpreter {
                     return Yahoo.getAllRecords();
                 case "record":
                     try {
-                        return Yahoo.getTeamRecord(m[2]);
+                        return Yahoo.getTeamRecord(Integer.parseInt(m[2]));
                     } catch (ArrayIndexOutOfBoundsException e) {
                         return "ERROR: Please enter a valid team number.";
+                    } catch (NumberFormatException e) {
+                        return "ERROR: Please enter a valid number.";
                     }
                 case "roster":
                     try {
-                        return Yahoo.getTeamRoster(m[2]);
+                        return Yahoo.getTeamRoster(Integer.parseInt(m[2]));
                     } catch (ArrayIndexOutOfBoundsException e) {
                         return "ERROR: Please enter a valid team number.";
+                    } catch (NumberFormatException e) {
+                        return "ERROR: Please enter a valid number.";
                     }
                 case "team":
                     try {
-                        return Yahoo.getTeamInfo(m[2]);
+                        return Yahoo.getTeamInfo(Integer.parseInt(m[2]));
                     } catch (ArrayIndexOutOfBoundsException e) {
                         return "ERROR: Please enter a valid team number.";
+                    } catch (NumberFormatException e) {
+                        return "ERROR: Please enter a valid number.";
                     }
+                case "transactions":
+                    try {
+                        return Yahoo.getTransactions(null, Integer.parseInt(m[2]));
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        return Yahoo.getTransactions(null, 5);
+                    } catch (NumberFormatException e) {
+                        return "ERROR: Please enter a valid number.";
+                    }
+                case "teamtrans":
+                    try {
+                        Integer.parseInt(m[2]);
+                    } catch (NumberFormatException e) {
+                        return "ERROR: Please enter a valid team number.";
+                    }
+
+                    try {
+                        Integer.parseInt(m[3]);
+                    } catch (NumberFormatException e) {
+                        return Yahoo.getTransactions(Integer.parseInt(m[2]), 5);
+                    }
+                    return Yahoo.getTransactions(Integer.parseInt(m[2]), Integer.parseInt(m[3]));
+
                 default:
                     return null;
             }
@@ -57,13 +85,6 @@ public class CommandInterpreter {
     }
 
     private static String helpCommandsList() {
-//                "# Get the info on a specified team\\n" +
-//                "./fantasy team <team number>\\n" +
-//                "# Get the latest transactions (5 is the default)\\n" +
-//                "./fantasy transactions <number or none to show default>\\n" +
-//                "# Get the latest transactions for a specified team (5 is the default)\\n" +
-//                "./fantasy teamtrans <team number> <number or none to show default>";
-
         return "< Fantasy Bot Commands >\\n\\n" +
 
                 "./fantasy <command> <args>\\n\\n" +
@@ -79,7 +100,8 @@ public class CommandInterpreter {
                 "# Get the players on a specified team\\n" +
                 "./fantasy roster <team number>\\n" +
                 "# Get the info on a specified team\\n" +
-                "./fantasy team <team number>\\n";
+                "./fantasy team <team number>\\n" +
+                "./fantasy teamtrans <team number> <number or none to show default>";
     }
 
     private static String unknownCommand(String message) {

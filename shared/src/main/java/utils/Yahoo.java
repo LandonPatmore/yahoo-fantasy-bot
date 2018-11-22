@@ -186,7 +186,7 @@ public class Yahoo {
     /**
      * Parses transactions data.
      */
-    public static String parseTransactions() {
+    public static String getTransactions() {
         final Document transactionsData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/transactions");
 
         if (transactionsData != null) {
@@ -200,27 +200,8 @@ public class Yahoo {
 
                 if (Long.parseLong(time) >= Postgres.getLatestTimeChecked()) {
                     final Elements players = trans.select("player");
-                    switch (type) {
-                        case "add":
-                            transactions.add(addTransaction(trans.select("destination_team_name").text(), trans.select("source_type").text(), time, players));
-                            break;
-                        case "drop":
-                            if ("TRUE".equalsIgnoreCase(EnvHandler.SHOW_DROP_ALERT.getValue())) {
-                                transactions.add(dropTransaction(trans.select("source_team_name").text(), trans.select("destination_type").text(), time, players));
-                            }
-                            break;
-                        case "add/drop":
-                            transactions.add(addDropTransaction(time, players));
-                            break;
-                        case "trade":
-                            transactions.add(tradeTransaction(trans.select("trader_team_name").text(), trans.select("tradee_team_name").text(), time, players, trans.select("status").text()));
-                            break;
-                        case "commish":
-                            transactions.add(commishTransaction(time));
-                            break;
-                        default:
-                            break;
-                    }
+
+                    transactions.add(parseTransaction(players, trans, type, time));
                 } else {
                     log.trace("Transactions past this date are older than last checked time.  Not checking anymore.");
                     break;
@@ -229,11 +210,66 @@ public class Yahoo {
 
             Postgres.saveLastTimeChecked();
 
-            return buildTransactionsString(transactions);
+            return buildTransactionsString(transactions, true);
         } else {
             log.debug("Transaction data was null.");
-            return null;
+            return "ERROR: I could not connect to Yahoo's servers.  Please try again later.";
         }
+    }
+
+    public static String getTransactions(Integer teamNumber, int numberOfTransactions) {
+        if (numberOfTransactions > 20) {
+            numberOfTransactions = 20; // So a user cannot super duper spam the chat
+        }
+
+        Document transactionsData = null;
+
+        if (teamNumber == null) {
+            transactionsData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/transactions");
+        } else {
+            transactionsData = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/transactions;team_key=" + LEAGUE_KEY + ".t." + teamNumber);
+        }
+
+        if (transactionsData != null) {
+            final ArrayList<Transaction> transactions = new ArrayList<>();
+
+            final Elements elements = transactionsData.select("transaction");
+
+            int properAmountOfTransactions = elements.size() < numberOfTransactions ? elements.size() : numberOfTransactions;
+
+            for (int i = 0; i < properAmountOfTransactions; i++) {
+                final String type = elements.get(i).select("type").first().text();
+                final String time = elements.get(i).select("timestamp").first().text();
+                final Elements players = elements.get(i).select("player");
+
+                transactions.add(parseTransaction(players, elements.get(i), type, time));
+
+            }
+
+            return buildTransactionsString(transactions, false);
+        } else {
+            log.debug("Transaction data was null.");
+            return "ERROR: I could not connect to Yahoo's servers.  Please try again later.";
+        }
+    }
+
+    private static Transaction parseTransaction(Elements players, Element trans, String type, String time) {
+        switch (type) {
+            case "add":
+                return addTransaction(trans.select("destination_team_name").text(), trans.select("source_type").text(), time, players);
+            case "drop":
+                if ("TRUE".equalsIgnoreCase(EnvHandler.SHOW_DROP_ALERT.getValue())) {
+                    return dropTransaction(trans.select("source_team_name").text(), trans.select("destination_type").text(), time, players);
+                }
+            case "add/drop":
+                return addDropTransaction(time, players);
+            case "trade":
+                return tradeTransaction(trans.select("trader_team_name").text(), trans.select("tradee_team_name").text(), time, players, trans.select("status").text());
+            case "commish":
+                return commishTransaction(time);
+        }
+
+        return null;
     }
 
     /**
@@ -241,7 +277,7 @@ public class Yahoo {
      *
      * @param transactions transactions data list
      */
-    private static String buildTransactionsString(ArrayList<Transaction> transactions) {
+    private static String buildTransactionsString(ArrayList<Transaction> transactions, boolean showAlertHeader) {
         if (transactions.size() != 0) {
             log.debug("Building out transactions message.");
 
@@ -249,16 +285,21 @@ public class Yahoo {
 
             final StringBuilder builder = new StringBuilder();
 
-            builder.append("===ALERT===\\n\\n");
+            if (showAlertHeader) {
+                builder.append("===ALERT===\\n\\n");
+            }
 
             for (Transaction t : transactions) {
                 builder.append(t.getTransactionString());
             }
 
             return builder.toString();
-//            ServicesHandler.sendMessage(builder.toString());
         } else {
-            log.debug("There are no transactions.  No message has been sent.");
+            if (showAlertHeader) {
+                log.debug("There are no transactions.  No message has been sent.");
+            } else {
+                return "ERROR: Number of transactions requested must be larger than 0.";
+            }
         }
 
         return null;
@@ -512,7 +553,7 @@ public class Yahoo {
         }
     }
 
-    public static String getTeamRecord(String teamNumber) {
+    public static String getTeamRecord(int teamNumber) {
         final Document doc = grabData(BASE_URL + "team/" + LEAGUE_KEY + ".t." + teamNumber + "/standings");
 
         if (doc != null) {
@@ -547,7 +588,7 @@ public class Yahoo {
         }
     }
 
-    public static String getTeamRoster(String teamNumber) {
+    public static String getTeamRoster(int teamNumber) {
         final Document doc = grabData(BASE_URL + "team/" + LEAGUE_KEY + ".t." + teamNumber + "/roster");
 
         if (doc != null) {
@@ -590,7 +631,7 @@ public class Yahoo {
         }
     }
 
-    public static String getTeamInfo(String teamNumber) {
+    public static String getTeamInfo(int teamNumber) {
         final Document doc = grabData(BASE_URL + "team/" + LEAGUE_KEY + ".t." + teamNumber + "/standings");
 
         if (doc != null) {
