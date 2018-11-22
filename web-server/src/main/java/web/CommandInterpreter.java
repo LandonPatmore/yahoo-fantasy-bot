@@ -32,6 +32,12 @@ public class CommandInterpreter {
                     } catch (ArrayIndexOutOfBoundsException e) {
                         return "ERROR: Please enter a valid team number.";
                     }
+                case "players":
+                    try {
+                        return Yahoo.getTeamPlayers(m[2]);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        return "ERROR: Please enter a valid team number.";
+                    }
                 case "teams":
                     return Yahoo.getListOfTeams();
                 default:

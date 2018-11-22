@@ -473,7 +473,7 @@ public class Yahoo {
 
         if (doc != null) {
             final String error = doc.select("error").first().text();
-            if(error.isEmpty()) {
+            if (error.isEmpty()) {
                 final String name = doc.select("name").text();
 
                 final Element standings = doc.select("team_standings").first();
@@ -502,5 +502,143 @@ public class Yahoo {
             return "ERROR: I could not connect to Yahoo's servers.  Please try again later.";
         }
     }
+
+    public static String getTeamPlayers(String teamNumber) {
+        final Document doc = grabData(BASE_URL + "team/" + LEAGUE_KEY + ".t." + teamNumber + "/roster");
+
+        if (doc != null) {
+            final String error = doc.select("error").first().text();
+            if (error.isEmpty()) {
+                final Elements players = doc.select("player");
+
+
+
+                for(Element player : players) {
+
+                }
+
+            } else {
+                return "ERROR: " + error;
+            }
+        } else {
+            return "ERROR: I could not connect to Yahoo's servers.  Please try again later.";
+        }
+    }
+
+    private static class Matchup {
+        private final String teamOne;
+        private final String teamTwo;
+        private final YahooTeam teamOneStats;
+        private final YahooTeam teamTwoStats;
+
+        private double winProbabilityTeamOne;
+        private double projectedPointsTeamOne;
+        private double currentScoreTeamOne;
+        private double winProbabilityTeamTwo;
+        private double projectedPointsTeamTwo;
+        private double currentScoreTeamTwo;
+
+        public Matchup(String teamOne, String teamTwo, YahooTeam teamOneStats, YahooTeam teamTwoStats) {
+            this.teamOne = teamOne;
+            this.teamTwo = teamTwo;
+            this.teamOneStats = teamOneStats;
+            this.teamTwoStats = teamTwoStats;
+        }
+
+        /**
+         * Adds matchup data to certain entity.
+         *
+         * @param winProbability  the probability of winning
+         * @param projectedPoints the projected points
+         * @param currentScore    the current score of the team
+         * @param teamName        the name of the team
+         */
+        public void addMatchUpData(String winProbability, String projectedPoints, String currentScore, String teamName) {
+            if (teamName.equals(teamOne)) {
+                this.winProbabilityTeamOne = Double.parseDouble(winProbability);
+                this.projectedPointsTeamOne = Double.parseDouble(projectedPoints);
+                this.currentScoreTeamOne = Double.parseDouble(currentScore);
+            } else {
+                this.winProbabilityTeamTwo = Double.parseDouble(winProbability);
+                this.projectedPointsTeamTwo = Double.parseDouble(projectedPoints);
+                this.currentScoreTeamTwo = Double.parseDouble(currentScore);
+            }
+
+        }
+
+        /**
+         * Checks to see if the score is close or not.
+         *
+         * @return is the score close
+         */
+        public boolean isScoreClose() {
+            if (currentScoreTeamOne - currentScoreTeamTwo == 0.0) {
+                return false;
+            }
+            return Math.abs(currentScoreTeamOne - currentScoreTeamTwo) <= 15;
+        }
+
+        /**
+         * Gets the match data.
+         *
+         * @param teamName the name of the team
+         * @return string of match data
+         */
+        private String matchData(String teamName) {
+            if (teamName.equals(teamOne)) {
+                return "- Win Probability: " + winProbabilityTeamOne + "\\n- Projected Points: " + projectedPointsTeamOne;
+            } else {
+                return "- Win Probability: " + winProbabilityTeamTwo + "\\n- Projected Points: " + projectedPointsTeamTwo;
+            }
+        }
+
+        /**
+         * Weekly matchup alert data.
+         *
+         * @return string of weekly matchup data
+         */
+        public String weeklyMatchupAlert() {
+            return teamOne + " vs. " + teamTwo + "\\n\\n" + teamOne + "\\n" + matchData(teamOne) + "\\n" + teamOneStats.getStandingsInformation() + "\\n\\n" + teamTwo + "\\n" + matchData(teamTwo) + "\\n" + teamTwoStats.getStandingsInformation();
+        }
+
+        /**
+         * Scoreboard alert data.
+         *
+         * @return string of scoreboard alert data
+         */
+        public String scoreboardAlert() {
+            return teamOne + " vs. " + teamTwo + "\\n" + currentScoreTeamOne + " - " + currentScoreTeamTwo;
+        }
+    }
+
+    public static class YahooTeam {
+        private final String rank;
+        private final String wins;
+        private final String losses;
+        private final String ties;
+        private final String streak;
+        private final String pointsFor;
+        private final String pointsAgainst;
+
+
+        public YahooTeam(String rank, String wins, String losses, String ties, String streak, String pointsFor, String pointsAgainst) {
+            this.rank = rank;
+            this.wins = wins;
+            this.losses = losses;
+            this.ties = ties;
+            this.streak = streak;
+            this.pointsFor = pointsFor;
+            this.pointsAgainst = pointsAgainst;
+        }
+
+        /**
+         * Returns the standings information in a nice format
+         * @return standings data
+         */
+        public String getStandingsInformation() {
+            return "- Rank: " + rank + "\\n- Record: " + wins + "-" + losses + "-" + ties + "\\n- Streak: " + streak + "\\n- Points For: " + pointsFor + "\\n- Points Against: " + pointsAgainst;
+        }
+    }
+
 
 }
