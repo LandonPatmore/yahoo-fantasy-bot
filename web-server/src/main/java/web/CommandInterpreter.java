@@ -26,6 +26,10 @@ public class CommandInterpreter {
             switch (m[1]) {
                 case "help":
                     return helpCommandsList();
+                case "teams":
+                    return Yahoo.getListOfTeams();
+                case "records":
+                    return Yahoo.getAllRecords();
                 case "record":
                     try {
                         return Yahoo.getTeamRecord(m[2]);
@@ -38,8 +42,6 @@ public class CommandInterpreter {
                     } catch (ArrayIndexOutOfBoundsException e) {
                         return "ERROR: Please enter a valid team number.";
                     }
-                case "teams":
-                    return Yahoo.getListOfTeams();
                 default:
                     return null;
             }
@@ -78,10 +80,12 @@ public class CommandInterpreter {
                 "./fantasy help\\n" +
                 "# Get the list of teams in the league\\n" +
                 "./fantasy teams\\n" +
+                "# Get the list of team records in the league\\n" +
+                "./fantasy records\\n" +
                 "# Get the record of a specified team\\n" +
                 "./fantasy record <team number>\\n" +
                 "# Get the players on a specified team\\n" +
-                "./fantasy roster <team number>";
+                "./fantasy roster <team number>\\n";
     }
 
     private static String unknownCommand(String message) {

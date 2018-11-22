@@ -34,7 +34,7 @@ public class Discord extends Service {
         try {
             final HttpResponse<JsonNode> response = Unirest.post(url)
                     .header("Content-Type", "application/json")
-                    .body("{\"content\" : \"```" + message + "```\"}")
+                    .body("{\"content\" : \"```\\n" + message + "```\"}")
                     .asJson();
             log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus());
         } catch (UnirestException e) {

@@ -33,7 +33,7 @@ public class Slack extends Service {
         try {
             final HttpResponse<String> response = Unirest.post(url)
                     .header("Content-Type", "application/json")
-                    .body("{\"text\" : \"```" + message + "```\"}")
+                    .body("{\"text\" : \"```\\n" + message + "```\"}")
                     .asString();
             log.debug("Status Text: " + response.getStatusText() + " | Status: " + response.getStatus());
         } catch (UnirestException e) {

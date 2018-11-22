@@ -464,6 +464,54 @@ public class Yahoo {
         }
     }
 
+    public static String getAllRecords() {
+        final Document doc = grabData(BASE_URL + "league/" + LEAGUE_KEY + "/standings");
+
+        if (doc != null) {
+            final Element error = doc.select("error").first();
+            if (error == null) {
+                final StringBuilder builder = new StringBuilder();
+
+                final Elements teams = doc.select("team");
+                final ArrayList<String> records = new ArrayList<>();
+
+                for (Element team : teams) {
+                    final String name = team.select("name").text();
+
+                    final Element standings = team.select("team_standings").first();
+
+                    final String rank = standings.select("rank").text();
+                    final String clinchedPlayoffs = team.select("clinched_playoffs").text();
+
+                    final Element overallRecord = standings.select("outcome_totals").first();
+                    final String oWins = overallRecord.select("wins").text();
+                    final String oLosses = overallRecord.select("losses").text();
+                    final String oTies = overallRecord.select("ties").text();
+
+                    final Element divisionRecord = standings.select("divisional_outcome_totals").first();
+                    final String dWins = divisionRecord.select("wins").text();
+                    final String dLosses = divisionRecord.select("losses").text();
+                    final String dTies = divisionRecord.select("ties").text();
+
+                    final Element streak = standings.select("streak").first();
+                    final String streakData = streak.select("value").text() + streak.select("type").text().substring(0, 1).toUpperCase();
+
+                    records.add(name + "\\n\\n- Rank: " + rank + "\\n- Clinched Playoffs: " + (clinchedPlayoffs.equals("1") ? "Yes" : "No") + "\\n- Overall Record: " + oWins + "-" + oLosses + "-" + oTies + "\\n- Divisional Record: " + dWins + "-" + dLosses + "-" + dTies + "\\n- Streak: " + streakData + "\\n\\n");
+                }
+
+                for (String record : records) {
+                    builder.append(record);
+                }
+
+                return builder.toString();
+            } else {
+                return "ERROR: " + error.text();
+            }
+        } else {
+            return "ERROR: I could not connect to Yahoo's servers.  Please try again later.";
+        }
+    }
+
     public static String getTeamRecord(String teamNumber) {
         final Document doc = grabData(BASE_URL + "team/" + LEAGUE_KEY + ".t." + teamNumber + "/standings");
 
@@ -475,7 +523,7 @@ public class Yahoo {
                 final Element standings = doc.select("team_standings").first();
 
                 final String rank = standings.select("rank").text();
-                final String clinchedPlayoffs = standings.select("clinched_playoffs").text();
+                final String clinchedPlayoffs = doc.select("clinched_playoffs").text();
 
                 final Element overallRecord = standings.select("outcome_totals").first();
                 final String oWins = overallRecord.select("wins").text();
@@ -506,9 +554,9 @@ public class Yahoo {
             final Element error = doc.select("error").first();
             if (error == null) {
                 final Elements players = doc.select("player");
-                final LinkedHashMap<String,ArrayList<String>> roster = new LinkedHashMap<>();
+                final LinkedHashMap<String, ArrayList<String>> roster = new LinkedHashMap<>();
 
-                for(Element player : players) {
+                for (Element player : players) {
                     final String playerName = player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ")";
                     final String position = player.select("display_position").first().text();
 
@@ -517,7 +565,7 @@ public class Yahoo {
                 }
 
                 final StringBuilder builder = new StringBuilder();
-                for(Map.Entry<String,ArrayList<String>> position : roster.entrySet()) {
+                for (Map.Entry<String, ArrayList<String>> position : roster.entrySet()) {
                     builder.append(position.getKey()).append(": ");
 
                     final ArrayList<String> values = position.getValue();
@@ -650,6 +698,7 @@ public class Yahoo {
 
         /**
          * Returns the standings information in a nice format
+         *
          * @return standings data
          */
         public String getStandingsInformation() {
