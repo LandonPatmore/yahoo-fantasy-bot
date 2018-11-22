@@ -42,6 +42,12 @@ public class CommandInterpreter {
                     } catch (ArrayIndexOutOfBoundsException e) {
                         return "ERROR: Please enter a valid team number.";
                     }
+                case "team":
+                    try {
+                        return Yahoo.getTeamInfo(m[2]);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        return "ERROR: Please enter a valid team number.";
+                    }
                 default:
                     return null;
             }
@@ -51,22 +57,8 @@ public class CommandInterpreter {
     }
 
     private static String helpCommandsList() {
-//        return "< Fantasy Bot Commands >\\n\\n" +
-//
-//                "./fantasy <command> <args>\\n\\n" +
-//
-//                "# Get a list of all available commands\\n" +
-//                "./fantasy help\\n" +
-//                "# Get the list of teams in the league\\n" +
-//                "./fantasy teams\\n" +
-//                "# Get the list of team records in the league\\n" +
-//                "./fantasy records\\n" +
-//                "# Get the record of a specified team\\n" +
-//                "./fantasy record <team number>\\n" +
 //                "# Get the info on a specified team\\n" +
 //                "./fantasy team <team number>\\n" +
-//                "# Get the players on a specified team\\n" +
-//                "./fantasy players <team number>\\n" +
 //                "# Get the latest transactions (5 is the default)\\n" +
 //                "./fantasy transactions <number or none to show default>\\n" +
 //                "# Get the latest transactions for a specified team (5 is the default)\\n" +
@@ -85,7 +77,9 @@ public class CommandInterpreter {
                 "# Get the record of a specified team\\n" +
                 "./fantasy record <team number>\\n" +
                 "# Get the players on a specified team\\n" +
-                "./fantasy roster <team number>\\n";
+                "./fantasy roster <team number>\\n" +
+                "# Get the info on a specified team\\n" +
+                "./fantasy team <team number>\\n";
     }
 
     private static String unknownCommand(String message) {

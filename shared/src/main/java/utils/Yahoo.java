@@ -590,6 +590,35 @@ public class Yahoo {
         }
     }
 
+    public static String getTeamInfo(String teamNumber) {
+        final Document doc = grabData(BASE_URL + "team/" + LEAGUE_KEY + ".t." + teamNumber + "/standings");
+
+        if (doc != null) {
+            final Element error = doc.select("error").first();
+            if (error == null) {
+                final String name = doc.select("name").text();
+
+                final String waiverPriority = doc.select("waiver_priority").text();
+                final String faabBalance = doc.select("faab_balance").text();
+                final String totalMoves = doc.select("number_of_moves").text();
+                final String totalTrades = doc.select("number_of_trades").text();
+
+                final Element standings = doc.select("team_standings").first();
+
+                final String rank = standings.select("rank").text();
+                final String clinchedPlayoffs = doc.select("clinched_playoffs").text();
+                final String pointsFor = standings.select("points_for").text();
+                final String pointsAgainst = standings.select("points_against").text();
+
+                return name + "\\n\\n- Rank: " + rank + "\\n- Clinched Playoffs: " + (clinchedPlayoffs.equals("1") ? "Yes" : "No") + "\\n- Waiver Priority: " + waiverPriority + "\\n- FAAB Balance: $" + faabBalance + "\\n- Total Moves: " + totalMoves + "\\n- Total Trades: " + totalTrades + "\\n- Points For: " + pointsFor + "\\n- Points Against: " + pointsAgainst;
+            } else {
+                return "ERROR: " + error.text();
+            }
+        } else {
+            return "ERROR: I could not connect to Yahoo's servers.  Please try again later.";
+        }
+    }
+
     private static class Matchup {
         private final String teamOne;
         private final String teamTwo;
