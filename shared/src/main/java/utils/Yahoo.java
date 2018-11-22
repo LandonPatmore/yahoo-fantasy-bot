@@ -4,8 +4,6 @@ import com.github.scribejava.apis.YahooApi20;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import entities.Matchup;
-import entities.YahooTeam;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -16,9 +14,7 @@ import org.jsoup.select.Elements;
 import transactions.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class Yahoo {
@@ -472,8 +468,8 @@ public class Yahoo {
         final Document doc = grabData(BASE_URL + "team/" + LEAGUE_KEY + ".t." + teamNumber + "/standings");
 
         if (doc != null) {
-            final String error = doc.select("error").first().text();
-            if (error.isEmpty()) {
+            final Element error = doc.select("error").first();
+            if (error == null) {
                 final String name = doc.select("name").text();
 
                 final Element standings = doc.select("team_standings").first();
@@ -496,29 +492,50 @@ public class Yahoo {
 
                 return name + "\\n\\n- Rank: " + rank + "\\n- Clinched Playoffs: " + (clinchedPlayoffs.equals("1") ? "Yes" : "No") + "\\n- Overall Record: " + oWins + "-" + oLosses + "-" + oTies + "\\n- Divisional Record: " + dWins + "-" + dLosses + "-" + dTies + "\\n- Streak: " + streakData;
             } else {
-                return "ERROR: " + error;
+                return "ERROR: " + error.text();
             }
         } else {
             return "ERROR: I could not connect to Yahoo's servers.  Please try again later.";
         }
     }
 
-    public static String getTeamPlayers(String teamNumber) {
+    public static String getTeamRoster(String teamNumber) {
         final Document doc = grabData(BASE_URL + "team/" + LEAGUE_KEY + ".t." + teamNumber + "/roster");
 
         if (doc != null) {
-            final String error = doc.select("error").first().text();
-            if (error.isEmpty()) {
+            final Element error = doc.select("error").first();
+            if (error == null) {
                 final Elements players = doc.select("player");
-
-
+                final LinkedHashMap<String,ArrayList<String>> roster = new LinkedHashMap<>();
 
                 for(Element player : players) {
+                    final String playerName = player.select("full").first().text() + " (" + player.select("editorial_team_abbr").first().text() + ")";
+                    final String position = player.select("display_position").first().text();
+
+                    roster.computeIfAbsent(position, k -> new ArrayList<>()).add(playerName);
 
                 }
 
+                final StringBuilder builder = new StringBuilder();
+                for(Map.Entry<String,ArrayList<String>> position : roster.entrySet()) {
+                    builder.append(position.getKey()).append(": ");
+
+                    final ArrayList<String> values = position.getValue();
+                    if (values.size() == 1) {
+                        builder.append(values.get(0));
+                    } else if (values.size() >= 2) {
+                        for (int i = 0; i < values.size() - 1; i++) {
+                            builder.append(values.get(i)).append(", ");
+                        }
+                        builder.append(" ").append(values.get(values.size() - 1));
+                    }
+
+                    builder.append("\\n");
+                }
+
+                return builder.toString();
             } else {
-                return "ERROR: " + error;
+                return "ERROR: " + error.text();
             }
         } else {
             return "ERROR: I could not connect to Yahoo's servers.  Please try again later.";

@@ -32,9 +32,9 @@ public class CommandInterpreter {
                     } catch (ArrayIndexOutOfBoundsException e) {
                         return "ERROR: Please enter a valid team number.";
                     }
-                case "players":
+                case "roster":
                     try {
-                        return Yahoo.getTeamPlayers(m[2]);
+                        return Yahoo.getTeamRoster(m[2]);
                     } catch (ArrayIndexOutOfBoundsException e) {
                         return "ERROR: Please enter a valid team number.";
                     }
@@ -79,7 +79,9 @@ public class CommandInterpreter {
                 "# Get the list of teams in the league\\n" +
                 "./fantasy teams\\n" +
                 "# Get the record of a specified team\\n" +
-                "./fantasy record <team number>";
+                "./fantasy record <team number>\\n" +
+                "# Get the players on a specified team\\n" +
+                "./fantasy roster <team number>";
     }
 
     private static String unknownCommand(String message) {
