@@ -156,10 +156,8 @@ Save the "Webhook URL" on this page
 
 2. Fill out all of the variables from: Yahoo, (whichever you chose) GroupMe, Slack, and Discord
 3. Click 'Overview"
-4. Click "Configure Dynos"
-5. Turn on the "bot" dyno
-6. Click "Open App" at the top right
-7. Follow the setup and then close the window once it says "You are authorized".
-8. Click "Configure Dynos" and turn off the "web" dyno as it is not needed anymore
+4. Click "Configure Dynos" and turn on the "web" dyno
+5. Click "Open App" at the top right
+6. Follow the setup and then close the window once it says "You are authorized".
 
 ### You are all set!  Enjoy the bot!
