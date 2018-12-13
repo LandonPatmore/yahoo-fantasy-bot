@@ -36,6 +36,11 @@ public class Postgres {
                 return connection;
             } catch (SQLException e) {
                 log.error(e.getLocalizedMessage(), new Throwable());
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e1) {
+                    log.error(e.getLocalizedMessage(), new Throwable());
+                }
                 attempts++;
             }
         }

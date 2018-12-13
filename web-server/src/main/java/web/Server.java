@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import utils.EnvHandler;
 import utils.Postgres;
+import worker.Bot;
 
 import static spark.Spark.*;
 
@@ -18,6 +19,12 @@ public class Server {
     public static void main(String[] args) {
         port(getHerokuAssignedPort());
 
+        registerRoutes();
+
+        Bot.start();
+    }
+
+    private static void registerRoutes() {
         get("/", (req, res) -> {
             if (Postgres.getLatestTokenData() == null) {
                 log.debug("User is not authenticated.  Sending to Yahoo.");
@@ -30,8 +37,6 @@ public class Server {
         });
 
         get("/auth", (req, res) -> {
-            // Trade the Request Token and Verfier for the Access Token
-            log.trace("Trading request token for access token...");
             Postgres.saveTokenData(service.getAccessToken(req.queryParams("code")));
             log.trace("Access token received.  Authorized successfully.");
             return "You are authorized";
@@ -44,6 +49,8 @@ public class Server {
             }
             return "";
         });
+
+        get("/keepalive", (req, res) -> null);
     }
 
     /**

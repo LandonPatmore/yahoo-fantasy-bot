@@ -1,9 +1,6 @@
 package utils;
 
-import jobs.CloseScoreJob;
-import jobs.ScoreJob;
-import jobs.TransactionsJob;
-import jobs.WeeklyUpdateJob;
+import jobs.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.CronScheduleBuilder;
@@ -71,6 +68,8 @@ public class CronInterpreter {
                 defaultCloseScoreJob();
             }
         }
+
+        defaultKeepAliveJob();
     }
 
     private static void defaultWeeklyJob() {
@@ -87,5 +86,9 @@ public class CronInterpreter {
 
     private static void defaultCloseScoreJob() {
         JobRunner.createJob(CloseScoreJob.class, "0 30 19 ? 9-1 MON *");
+    }
+
+    private static void defaultKeepAliveJob() {
+        JobRunner.createJob(KeepAliveJob.class, "0 0/25 * 1/1 * ? *");
     }
 }

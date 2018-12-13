@@ -6,11 +6,7 @@ import utils.ServicesHandler;
 import utils.Yahoo;
 
 public class Bot {
-    public static void main(String[] args) {
-        startServices();
-    }
-
-    private static void startServices() {
+    public static void start() {
         // Keep trying to get the latest token
         Yahoo.authenticate();
 
@@ -22,6 +18,5 @@ public class Bot {
 
         // Run jobs
         JobRunner.runJobs();
-
     }
 }

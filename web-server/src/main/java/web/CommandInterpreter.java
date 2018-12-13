@@ -71,8 +71,10 @@ public class CommandInterpreter {
 
                     try {
                         Integer.parseInt(m[3]);
-                    } catch (NumberFormatException e) {
+                    } catch (ArrayIndexOutOfBoundsException e) {
                         return Yahoo.getTransactions(Integer.parseInt(m[2]), 5);
+                    } catch (Exception e) {
+                        return "ERROR: Please enter a valid number for transactions amount.";
                     }
                     return Yahoo.getTransactions(Integer.parseInt(m[2]), Integer.parseInt(m[3]));
 

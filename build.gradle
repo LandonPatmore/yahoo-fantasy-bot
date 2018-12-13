@@ -22,12 +22,6 @@ allprojects {
 
 apply from: file('gradle/heroku/clean.gradle')
 
-project(":bot") {
-    apply plugin: 'com.github.johnrengelman.shadow'
-
-    apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle")
-}
-
 project(":web-server") {
     apply plugin: 'com.github.johnrengelman.shadow'
 
