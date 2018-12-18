@@ -47,10 +47,10 @@ public class Server {
                 final JSONObject j = new JSONObject(req.body());
                 CommandInterpreter.interpretCommand(j.getString("text"));
             }
-            return "";
+            return null;
         });
 
-        get("/keepalive", (req, res) -> null);
+        get("/keepalive", (req, res) -> true);
     }
 
     /**

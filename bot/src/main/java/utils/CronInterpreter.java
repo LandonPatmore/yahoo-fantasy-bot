@@ -69,7 +69,7 @@ public class CronInterpreter {
             }
         }
 
-        defaultKeepAliveJob();
+        defaultHeartbeatJob();
     }
 
     private static void defaultWeeklyJob() {
@@ -88,7 +88,8 @@ public class CronInterpreter {
         JobRunner.createJob(CloseScoreJob.class, "0 30 19 ? 9-1 MON *");
     }
 
-    private static void defaultKeepAliveJob() {
-        JobRunner.createJob(KeepAliveJob.class, "0 0/25 * 1/1 * ? *");
+    private static void defaultHeartbeatJob() {
+        log.debug("Heartbeat cron set to: 0 */5 * ? * *");
+        JobRunner.createJob(HeartbeatJob.class, "0 */5 * ? * *");
     }
 }
