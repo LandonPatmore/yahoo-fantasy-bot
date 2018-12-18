@@ -103,6 +103,7 @@ public class CommandInterpreter {
                 "./fantasy roster <team number>\\n" +
                 "# Get the info on a specified team\\n" +
                 "./fantasy team <team number>\\n" +
+                "# Get the transactions on a specified team\\n" +
                 "./fantasy teamtrans <team number> <number or none to show default>";
     }
 
