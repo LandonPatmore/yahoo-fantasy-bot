@@ -2,6 +2,7 @@ package utils;
 
 public enum EnvHandler implements EnumInterface {
 
+    APP_NAME(System.getenv("APP_NAME")),
     YAHOO_CLIENT_ID(System.getenv("YAHOO_CLIENT_ID")),
     YAHOO_CLIENT_SECRET(System.getenv("YAHOO_CLIENT_SECRET")),
     YAHOO_LEAGUE_ID(System.getenv("YAHOO_LEAGUE_ID")),

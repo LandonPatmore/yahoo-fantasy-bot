@@ -16,6 +16,11 @@
     "postdeploy": "psql $DATABASE_URL -f db_provision.sql"
   },
   "env": {
+    "APP_NAME": {
+      "description": "THIS MUST BE THE EXACT NAME OF YOUR APPLICATION YOU ENTERED ABOVE. (filling this in wrong will not keep your server alive.)",
+      "value": "",
+      "required": true
+    },
     "GROUP_ME_ACCESS_TOKEN": {
       "description": "GroupMe Access Token",
       "value": "",
