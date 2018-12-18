@@ -10,7 +10,7 @@ Bot that alerts GroupMe, Slack, and Discord users about various things happening
 ## Follow these steps EXACTLY!
 1. Click the above button.  It will auto-deploy the application to Heroku.
 2. Name the application whatever you would like.
-3. THIS MUST BE THE EXACT NAME OF YOUR APPLICATION YOU ENTERED ABOVE. (filling this in wrong will not keep your server alive.)
+3. APP_NAME ENV VARIABLE MUST BE THE EXACT NAME OF YOUR APPLICATION YOU ENTERED ABOVE. (filling this in wrong will not keep your server alive.)
 4. When it asks for environment variables at first, you do not need to put any in that are not already filled in.  These will be added later.
 5. Click "Deploy App".  This will automatically configure the dynos and run all required scripts to get the app created.
 
