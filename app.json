@@ -10,8 +10,8 @@
     "chat bot",
     "ff"
   ],
-  "website": "https://github.com/jrholt-arch/yahoo-fantasy-bot",
-  "repository": "https://github.com/jrholt-arch/yahoo-fantasy-bot",
+  "website": "https://github.com/landonp1203/yahoo-fantasy-bot",
+  "repository": "https://github.com/landonp1203/yahoo-fantasy-bot",
   "scripts": {
     "postdeploy": "psql $DATABASE_URL -f db_provision.sql"
   },
