@@ -17,7 +17,7 @@
   },
   "env": {
     "APP_NAME": {
-      "description": "THIS MUST BE THE EXACT NAME OF YOUR APPLICATION YOU ENTERED ABOVE. (filling this in wrong will not keep your server alive.)",
+      "description": " Yahoo Fantasy Bot",
       "value": "",
       "required": true
     },
