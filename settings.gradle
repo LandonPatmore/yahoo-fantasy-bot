@@ -1,4 +1,4 @@
 rootProject.name = 'yahoo-trader-bot'
 
-include "bot", "shared", "web-server"
+include "bot"
 

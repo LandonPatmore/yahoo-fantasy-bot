@@ -1,1 +1,0 @@
-web: java -jar build/libs/web-server-all.jar

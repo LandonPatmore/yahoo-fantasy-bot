@@ -1,9 +1,0 @@
-apply plugin: 'application'
-
-mainClassName = 'web.Server'
-
-dependencies {
-    compile "com.sparkjava:spark-core:2.7.2"
-    compile project(':shared')
-    compile project(':bot')
-}

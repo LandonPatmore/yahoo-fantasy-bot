@@ -1,5 +1,0 @@
-apply plugin: 'base'
-
-clean.doLast {
-    delete rootProject.buildDir
-}

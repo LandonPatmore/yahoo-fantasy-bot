@@ -1,12 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '4.0.2'
     id 'java'
-}
-
-shadowJar {
-    baseName = 'shadow'
-    classifier = null
-    version = null
 }
 
 allprojects {
@@ -18,12 +11,4 @@ allprojects {
         mavenLocal()
         mavenCentral()
     }
-}
-
-apply from: file('gradle/heroku/clean.gradle')
-
-project(":web-server") {
-    apply plugin: 'com.github.johnrengelman.shadow'
-
-    apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle")
 }

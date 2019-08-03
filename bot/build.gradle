@@ -1,8 +1,3 @@
 apply plugin: 'application'
 
 mainClassName = 'worker.Bot'
-
-dependencies {
-    compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
-    compile project(':shared')
-}
