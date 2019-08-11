@@ -9,26 +9,15 @@ fun Observable<Document>.toTransaction(): Observable<Element> =
         it.select("transaction")
     }
 
-fun Observable<Element>.toMessageEvent(): Observable<MessageEvent?> =
+fun Observable<Element>.toMessage(): Observable<String> =
     map {
         when (it.select("type").first().text()) {
-            "add" -> MessageEvent.Add(it)
-            "drop" -> MessageEvent.Drop(it)
-            "add/drop" -> MessageEvent.AddDrop(it)
-            "trade" -> MessageEvent.Trade(it)
-            "commish" -> MessageEvent.Commish(it)
+            "add" -> addMessage(it)
+            "drop" -> dropMessage(it)
+            "add/drop" -> addDropMessage(it)
+            "trade" -> tradeMessage(it)
+            "commish" -> commissionerMessage(it)
             else -> null
-        }
-    }
-
-fun Observable<MessageEvent?>.toMessage(): Observable<String> =
-    map {
-        when (it) {
-            is MessageEvent.Add -> addMessage(it.event)
-            is MessageEvent.Drop -> dropMessage(it.event)
-            is MessageEvent.AddDrop -> addDropMessage(it.event)
-            is MessageEvent.Trade -> tradeMessage(it.event)
-            is MessageEvent.Commish -> commissionerMessage(it.event)
         }
     }
 
