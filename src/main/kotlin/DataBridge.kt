@@ -1,10 +1,10 @@
 import io.reactivex.Observable
 import io.reactivex.Observer
-import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.jsoup.nodes.Document
 
 object DataBridge {
-    private val dataBridge = BehaviorSubject.create<Document>()
+    private val dataBridge = PublishSubject.create<Document>()
 
     val dataObserver: Observer<Document> = dataBridge
 

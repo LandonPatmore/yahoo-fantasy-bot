@@ -14,7 +14,7 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
     implementation group: 'com.github.scribejava', name: 'scribejava-apis', version: '6.0.0'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
-
+    implementation 'com.github.kittinunf.fuel:fuel:2.2.0'
 }
 
 compileKotlin {

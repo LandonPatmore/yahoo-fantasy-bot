@@ -39,7 +39,7 @@ object DataRetriever {
         }
     }
 
-    private fun authenticate() {
+    fun authenticate() {
         currentToken?.let {
             if (isTokenExpired(it.first, it.second.expiresIn)) {
                 refreshExpiredToken()
@@ -56,14 +56,13 @@ object DataRetriever {
         }
     }
 
-    fun grabData(url: String) {
+    fun grabData(url: String): Document {
         authenticate()
         println("Grabbing Data...")
         val request = OAuthRequest(Verb.GET, url)
         oauthService.signRequest(currentToken?.second, request)
         val response = oauthService.execute(request)
         println("Data grabbed.")
-        val xml = Jsoup.parse(response.body, "", Parser.xmlParser())
-        DataBridge.dataObserver.onNext(xml)
+        return Jsoup.parse(response.body, "", Parser.xmlParser())
     }
 }

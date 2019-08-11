@@ -4,12 +4,12 @@ import org.jsoup.nodes.Element
 import java.lang.StringBuilder
 
 
-fun Observable<Document>.toTransaction(): Observable<Element> =
+fun Observable<Document>.convertToSingleTransaction(): Observable<Element> =
     flatMapIterable {
         it.select("transaction")
     }
 
-fun Observable<Element>.toMessage(): Observable<String> =
+fun Observable<Element>.convertToSendableMessage(): Observable<String> =
     map {
         when (it.select("type").first().text()) {
             "add" -> addMessage(it)
