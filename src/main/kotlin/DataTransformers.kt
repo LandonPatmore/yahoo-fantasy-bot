@@ -2,8 +2,6 @@ import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import java.lang.StringBuilder
-import java.time.Instant
-import java.time.LocalDateTime
 
 
 fun Observable<Document>.toTransaction(): Observable<Element> =
@@ -30,12 +28,12 @@ fun Observable<MessageEvent?>.toMessage(): Observable<String> =
             is MessageEvent.Drop -> dropMessage(it.event)
             is MessageEvent.AddDrop -> addDropMessage(it.event)
             is MessageEvent.Trade -> tradeMessage(it.event)
-            is MessageEvent.Commish -> commishMessage()
+            is MessageEvent.Commish -> commissionerMessage(it.event)
         }
     }
 
 private fun addMessage(event: Element): String {
-    val timestamp = event.select("timestamp").text().toLong()
+    val timestamp = event.select("timestamp").text()
     val fantasyTeam = event.select("destination_team_name").text()
     val players = event.select("player")
 
@@ -148,11 +146,15 @@ private fun tradeMessage(event: Element): String {
     val finalMessageFromTradee = fromTradeeTeam.trimEnd().removeSuffix(",")
 
     return "TRADE ALERT\n\n" +
-            "Time: $timestamp\n" +
             "$trader received: $finalMessageFromTradee\n" +
-            "$tradee received: $finalMessageFromTrader"
+            "$tradee received: $finalMessageFromTrader\n" +
+            "Time: $timestamp"
 }
 
-private fun commishMessage(): String {
-    return "The commissioner has changed a setting within the league.  You may want to check or ask them what they changed!"
+private fun commissionerMessage(event: Element): String {
+    val timestamp = event.select("timestamp").text()
+
+    return "COMMISSIONER ALERT\n\n" +
+            "A league setting has been modified.  You may want to check or ask them what they changed!\n" +
+            "Time: $timestamp\n"
 }
