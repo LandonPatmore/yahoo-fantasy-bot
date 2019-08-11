@@ -1,7 +1,6 @@
 import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import java.lang.StringBuilder
 
 
 fun Observable<Document>.convertToSingleTransaction(): Observable<Element> =
@@ -10,19 +9,19 @@ fun Observable<Document>.convertToSingleTransaction(): Observable<Element> =
     }
 
 fun Observable<Element>.convertToSendableMessage(): Observable<String> =
+    // TODO: Need to filter out messages that are older then the last time we checked
     map {
         when (it.select("type").first().text()) {
             "add" -> addMessage(it)
             "drop" -> dropMessage(it)
             "add/drop" -> addDropMessage(it)
             "trade" -> tradeMessage(it)
-            "commish" -> commissionerMessage(it)
+            "commish" -> commissionerMessage()
             else -> null
         }
     }
 
 private fun addMessage(event: Element): String {
-    val timestamp = event.select("timestamp").text()
     val fantasyTeam = event.select("destination_team_name").text()
     val players = event.select("player")
 
@@ -40,12 +39,10 @@ private fun addMessage(event: Element): String {
 
     return "ADD ALERT\n\n" +
             "Team: $fantasyTeam\n" +
-            "${if (players.size > 1) "Players" else "Player"}: $finalMessage\n" +
-            "Time: $timestamp"
+            "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
 }
 
 private fun dropMessage(event: Element): String {
-    val timestamp = event.select("timestamp").text()
     val fantasyTeam = event.select("source_team_name").text()
     val players = event.select("player")
 
@@ -64,12 +61,10 @@ private fun dropMessage(event: Element): String {
 
     return "DROP ALERT\n\n" +
             "Team: $fantasyTeam\n" +
-            "${if (players.size > 1) "Players" else "Player"}: $finalMessage\n" +
-            "Time: $timestamp"
+            "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
 }
 
 private fun addDropMessage(event: Element): String {
-    val timestamp = event.select("timestamp").text()
     val fantasyTeam = event.select("source_team_name").text()
     val players = event.select("player")
 
@@ -101,13 +96,10 @@ private fun addDropMessage(event: Element): String {
     return "ADD/DROP ALERT\n\n" +
             "Team: $fantasyTeam\n" +
             "Added ${if (playersAddedCount > 1) "Players" else "Player"}: $finalMessageAdded\n" +
-            "Dropped ${if (playersDroppedCount > 1) "Players" else "Player"}: $finalMessageDropped\n" +
-            "Time: $timestamp"
+            "Dropped ${if (playersDroppedCount > 1) "Players" else "Player"}: $finalMessageDropped"
 }
 
 private fun tradeMessage(event: Element): String {
-    val timestamp = event.select("timestamp").text()
-
     val trader = event.select("trader_team_name").text()
     val tradee = event.select("tradee_team_name").text()
 
@@ -136,14 +128,10 @@ private fun tradeMessage(event: Element): String {
 
     return "TRADE ALERT\n\n" +
             "$trader received: $finalMessageFromTradee\n" +
-            "$tradee received: $finalMessageFromTrader\n" +
-            "Time: $timestamp"
+            "$tradee received: $finalMessageFromTrader"
 }
 
-private fun commissionerMessage(event: Element): String {
-    val timestamp = event.select("timestamp").text()
-
+private fun commissionerMessage(): String {
     return "COMMISSIONER ALERT\n\n" +
-            "A league setting has been modified.  You may want to check or ask them what they changed!\n" +
-            "Time: $timestamp\n"
+            "A league setting has been modified.  You may want to check or ask them what they changed!"
 }

@@ -18,5 +18,5 @@ fun setUp() {
     DataBridge.dataObservable
         .convertToSingleTransaction()
         .convertToSendableMessage()
-        .subscribe(MessageBridge.dataObserver)
+        .subscribe{println(it)}
 }
