@@ -8,7 +8,7 @@ fun Observable<Document>.convertToSingleTransaction(): Observable<Element> =
         it.select("transaction")
     }
 
-fun Observable<Element>.convertToSendableMessage(): Observable<String> =
+fun Observable<Element>.convertToTransactionMessage(): Observable<String> =
     // TODO: Need to filter out messages that are older then the last time we checked
     map {
         when (it.select("type").first().text()) {
