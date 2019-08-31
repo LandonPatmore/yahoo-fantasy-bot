@@ -1,8 +1,16 @@
-
+import bridges.DataBridge
 import io.reactivex.Observable
+import messaging_services.Discord
+import messaging_services.GroupMe
+import messaging_services.Slack
+import transformers.convertToMatchUpMessage
+import transformers.convertToMatchUpObject
+import transformers.convertToSingleMatchUp
+import utils.DataRetriever
+import utils.UpdateCreator
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-
 
 
 fun main() {
@@ -16,22 +24,21 @@ fun main() {
         }
     latch.await()
 
-//    val today = Calendar.getInstance()
-//    today.set(Calendar.HOUR_OF_DAY, 2)
-//    today.set(Calendar.MINUTE, 0)
-//    today.set(Calendar.SECOND, 0)
-//
-//// every night at 2am you run your task
-//    val timer = Timer()
-//    timer.schedule(YourTask(), today.time, TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)) // period: 1 day
+    val timer = Timer()
+    timer.schedule(
+        UpdateCreator.createUpdate("Weekly Match Up Update") { println("NICE") },
+        UpdateCreator.createTime(19, 30, Calendar.THURSDAY, TimeZone.getTimeZone("EST")),
+        TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS)
+    )
 }
 
 fun setUp() {
-    DataBridge.dataObservable
+    val t = DataBridge.dataObservable
         .convertToSingleMatchUp()
         .convertToMatchUpObject()
         .convertToMatchUpMessage()
-        .subscribe{
-            println(it)
-        }
+
+    t.subscribe(Discord)
+    t.subscribe(Slack)
+    t.subscribe(GroupMe)
 }

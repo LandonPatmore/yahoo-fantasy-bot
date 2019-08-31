@@ -3,7 +3,10 @@ package messaging_services
 import com.mashape.unirest.http.Unirest
 import utils.EnvVariables
 
-class GroupMe : MessagingService(MAX_MESSAGE_LENGTH) {
+private const val URL = "https://api.groupme.com/v3/bots/post"
+private const val MAX_MESSAGE_LENGTH = 1000
+
+object GroupMe : MessagingService(MAX_MESSAGE_LENGTH) {
     override fun sendMessage(message: String) {
         EnvVariables.GroupMeBotId.variable?.let {
             val response = Unirest.post(URL)
@@ -12,10 +15,5 @@ class GroupMe : MessagingService(MAX_MESSAGE_LENGTH) {
                 .asJson()
             println("Status Text: " + response.statusText + " | Status: " + response.status)
         }
-    }
-
-    companion object {
-        private const val URL = "https://api.groupme.com/v3/bots/post"
-        private const val MAX_MESSAGE_LENGTH = 1000
     }
 }

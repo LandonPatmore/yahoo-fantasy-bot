@@ -3,8 +3,9 @@ package messaging_services
 import com.mashape.unirest.http.Unirest
 import utils.EnvVariables
 
+private const val MAX_MESSAGE_LENGTH = 2000
 
-class Discord : MessagingService(MAX_MESSAGE_LENGTH) {
+object Discord : MessagingService(MAX_MESSAGE_LENGTH) {
     override fun sendMessage(message: String) {
         EnvVariables.DiscordWebhookUrl.variable?.let {
             val response = Unirest.post(it)
@@ -13,9 +14,5 @@ class Discord : MessagingService(MAX_MESSAGE_LENGTH) {
                 .asJson()
             println("Status Text: " + response.statusText + " | Status: " + response.status)
         }
-    }
-
-    companion object {
-        private const val MAX_MESSAGE_LENGTH = 2000
     }
 }

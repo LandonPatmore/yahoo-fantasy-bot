@@ -1,3 +1,5 @@
+package transformers
+
 import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -38,7 +40,7 @@ private fun addMessage(event: Element): String {
     val finalMessage = playersAdded.trimEnd().removeSuffix(",")
 
     return "ADD ALERT\n\n" +
-            "Team: $fantasyTeam\n" +
+            "transformers.Team: $fantasyTeam\n" +
             "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
 }
 
@@ -60,7 +62,7 @@ private fun dropMessage(event: Element): String {
     val finalMessage = playersDropped.trimEnd().removeSuffix(",")
 
     return "DROP ALERT\n\n" +
-            "Team: $fantasyTeam\n" +
+            "transformers.Team: $fantasyTeam\n" +
             "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
 }
 
@@ -94,7 +96,7 @@ private fun addDropMessage(event: Element): String {
     val finalMessageDropped = playersDropped.trimEnd().removeSuffix(",")
 
     return "ADD/DROP ALERT\n\n" +
-            "Team: $fantasyTeam\n" +
+            "transformers.Team: $fantasyTeam\n" +
             "Added ${if (playersAddedCount > 1) "Players" else "Player"}: $finalMessageAdded\n" +
             "Dropped ${if (playersDroppedCount > 1) "Players" else "Player"}: $finalMessageDropped"
 }

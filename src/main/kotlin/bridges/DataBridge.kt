@@ -1,3 +1,5 @@
+package bridges
+
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.subjects.PublishSubject

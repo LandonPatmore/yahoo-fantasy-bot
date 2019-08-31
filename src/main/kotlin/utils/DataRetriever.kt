@@ -1,18 +1,19 @@
+package utils
 import com.github.scribejava.apis.YahooApi20
 import com.github.scribejava.core.builder.ServiceBuilder
 import com.github.scribejava.core.model.OAuth2AccessToken
 import com.github.scribejava.core.model.OAuthConstants
-import com.github.scribejava.core.model.Verb
 import com.github.scribejava.core.model.OAuthRequest
+import com.github.scribejava.core.model.Verb
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.parser.Parser
 
 object DataRetriever {
     const val BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2"
-    const val LEAGUE_KEY = "nfl.l." + "test_league_id"
-    private val oauthService = ServiceBuilder("test_apiKey")
-        .apiSecret("test_apiSecret")
+    const val LEAGUE_KEY = "/league/380.l." + "test_league_id"
+    private val oauthService = ServiceBuilder("test_api_key")
+        .apiSecret("test_api_secret")
         .callback(OAuthConstants.OOB)
         .build(YahooApi20.instance())
     private var currentToken: Pair<Long, OAuth2AccessToken>? = null
