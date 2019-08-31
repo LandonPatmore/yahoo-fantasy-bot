@@ -1,0 +1,20 @@
+package utils
+
+sealed class EnvVariables(val variable: String?) {
+    object AppName : EnvVariables(System.getenv("APP_NAME"))
+    object YahooClientId : EnvVariables(System.getenv("YAHOO_CLIENT_ID"))
+    object YahooClientSecret : EnvVariables(System.getenv("YAHOO_CLIENT_SECRET"))
+    object YahooLeagueId : EnvVariables(System.getenv("YAHOO_LEAGUE_ID"))
+    object GroupMeBotId : EnvVariables(System.getenv("GROUP_ME_BOT_ID"))
+    object GroupMeGroupId : EnvVariables(System.getenv("GROUP_ME_GROUP_ID"))
+    object GroupMeAccessToken : EnvVariables(System.getenv("GROUP_ME_ACCESS_TOKEN"))
+    object DiscordWebhookUrl : EnvVariables(System.getenv("DISCORD_WEBHOOK_URL"))
+    object SlackWebhookUrl : EnvVariables(System.getenv("SLACK_WEBHOOK_URL"))
+    object Timezone : EnvVariables(System.getenv("TIMEZONE"))
+    object RestartMessage : EnvVariables(System.getenv("RESTART_MESSAGE"))
+    object Port : EnvVariables(System.getenv("PORT"))
+    object JdbcDatabaseUrl : EnvVariables(System.getenv("JDBC_DATABASE_URL"))
+    object ShowDropAlert : EnvVariables(System.getenv("SHOW_DROP_ALERT"))
+    object WeeklyUpdateCron : EnvVariables(System.getenv("WEEKLY_UPDATE_CRON"))
+    object ScoreUpdateCron : EnvVariables(System.getenv("SCORE_UPDATE_CRON"))
+}

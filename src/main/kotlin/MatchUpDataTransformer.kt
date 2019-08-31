@@ -46,7 +46,7 @@ private fun generateTeamData(team: Element): Team {
     val numberOfMoves = team.select("number_of_moves").text().toInt()
     val numberOfTrades = team.select("number_of_trades").text().toInt()
     val clinchedPlayoffs = team.select("clinched_playoffs").text() == "1"
-    val winProbability = team.select("win_probability").text().toDouble()
+    val winProbability = team.select("win_probability").text().toDouble() * 100
     val points = team.select("team_points").select("total").text().toDouble()
     val projectedPoints = team.select("team_projected_points").select("total").text().toDouble()
 

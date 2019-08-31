@@ -1,14 +1,14 @@
 package messaging_services
 
-abstract class MessagingService {
+abstract class MessagingService(private val maxMessageLength: Int) {
 
-    fun correctMessage(message: String): String {
-        var correctedMessage = ""
-        if (message.endsWith("\\")) {
-            correctedMessage = message.substring(0, message.length - 1)
-        } else if (message.startsWith("n")) {
-            correctedMessage = message.substring(1)
+    protected abstract fun sendMessage(message: String)
+
+    fun processMessage(message: String): String {
+        if (message.length > maxMessageLength) {
+            
         }
-        return correctedMessage
+
+        return message
     }
 }
