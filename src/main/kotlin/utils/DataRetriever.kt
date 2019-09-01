@@ -1,4 +1,5 @@
 package utils
+
 import com.github.scribejava.apis.YahooApi20
 import com.github.scribejava.core.builder.ServiceBuilder
 import com.github.scribejava.core.model.OAuth2AccessToken
@@ -9,9 +10,12 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.parser.Parser
 
+private const val BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2/league/380.l." + "test_league_id"
+private const val SCOREBOARD = "/scoreboard"
+private const val STANDINGS = "/standings"
+private const val TRANSACTIONS = "/transactions"
+
 object DataRetriever {
-    const val BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2"
-    const val LEAGUE_KEY = "/league/380.l." + "test_league_id"
     private val oauthService = ServiceBuilder("test_api_key")
         .apiSecret("test_api_secret")
         .callback(OAuthConstants.OOB)
@@ -57,7 +61,7 @@ object DataRetriever {
         }
     }
 
-    fun grabData(url: String): Document {
+    private fun grabData(url: String): Document {
         authenticate()
         println("Grabbing Data...")
         val request = OAuthRequest(Verb.GET, url)
@@ -65,5 +69,17 @@ object DataRetriever {
         val response = oauthService.execute(request)
         println("Data grabbed.")
         return Jsoup.parse(response.body, "", Parser.xmlParser())
+    }
+
+    fun getTransactions(): Document {
+        return grabData(BASE_URL + TRANSACTIONS)
+    }
+
+    fun getStandings(): Document {
+        return grabData(BASE_URL + STANDINGS)
+    }
+
+    fun getTeamsData(): Document {
+        return grabData(BASE_URL + SCOREBOARD)
     }
 }
