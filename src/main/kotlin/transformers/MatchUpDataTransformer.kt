@@ -4,13 +4,10 @@ import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-fun Observable<Document>.convertToSingleMatchUp(): Observable<Element> =
+fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> =
     flatMapIterable {
         it.select("matchup")
-    }
-
-fun Observable<Element>.convertToMatchUpObject(): Observable<Pair<Team, Team>> =
-    map {
+    }.map {
         val teams = it.select("team")
         val teamOne = generateTeamData(teams[0])
         val teamTwo = generateTeamData(teams[1])

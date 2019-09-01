@@ -1,16 +1,14 @@
+
 import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.PublishSubject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import transformers.Team
 import transformers.convertToMatchUpObject
-import transformers.convertToSingleMatchUp
-import java.util.concurrent.TimeUnit
 
 internal class MatchUpDataTransformerKtTest {
 
@@ -154,24 +152,10 @@ internal class MatchUpDataTransformerKtTest {
     }
 
     @Test
-    fun convertToSingleMatchUp() {
-        val testObserver = TestObserver.create<Element>()
-
-        testPublishSubject
-            .convertToSingleMatchUp()
-            .subscribe(testObserver)
-        testPublishSubject.onNext(document)
-        testScheduler.advanceTimeBy(50, TimeUnit.MILLISECONDS)
-
-        testObserver.assertValueCount(1)
-    }
-
-    @Test
     fun convertToMatchUpObject() {
         val testObserver = TestObserver.create<Pair<Team, Team>>()
 
         testPublishSubject
-            .convertToSingleMatchUp()
             .convertToMatchUpObject()
             .subscribe(testObserver)
         testPublishSubject.onNext(document)
@@ -215,7 +199,7 @@ internal class MatchUpDataTransformerKtTest {
         assertEquals(teamOne.faabBalance, teamTwo.faabBalance)
         assertEquals(teamOne.numberOfMoves, teamTwo.numberOfMoves)
         assertEquals(teamOne.numberOfTrades, teamTwo.numberOfTrades)
-        assertEquals(teamOne.winProbability, teamTwo.winProbability)
+        assertEquals(teamOne.winProbability * 100, teamTwo.winProbability)
         assertEquals(teamOne.points, teamTwo.points)
         assertEquals(teamOne.projectedPoints, teamTwo.projectedPoints)
         assertEquals(teamOne.clinchedPlayoffs, teamTwo.clinchedPlayoffs)
