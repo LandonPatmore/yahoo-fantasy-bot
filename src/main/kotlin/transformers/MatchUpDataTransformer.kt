@@ -3,6 +3,7 @@ package transformers
 import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import kotlin.math.abs
 
 fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> =
     flatMapIterable {
@@ -31,8 +32,17 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<String> =
         finalMessage
     }
 
-fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(): Observable<String> =
-    map {
+fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: Boolean = false): Observable<String> =
+    filter {
+        if (closeScoreUpdate) {
+            if (abs(it.first.points - it.second.points) != 0.0) {
+                abs(it.first.points - it.second.points) <= 15
+            }
+            false
+        } else {
+            true
+        }
+    }.map {
         "${it.first.name} vs. ${it.second.name}\n" +
                 "${it.first.points} - ${it.second.points}"
     }

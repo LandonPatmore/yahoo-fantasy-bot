@@ -19,6 +19,7 @@ object MessageSender {
     init {
         setupTransactionsBridge()
         setupScoreUpdateBridge()
+        setupCloseScoreUpdateBridge()
         setupMatchUpBridge()
         setupScheduledUpdates()
     }
@@ -46,6 +47,16 @@ object MessageSender {
         val transactions = ScoreUpdateBridge.dataObservable
             .convertToMatchUpObject()
             .convertToScoreUpdateMessage()
+
+        transactions.subscribe(Discord)
+        transactions.subscribe(Slack)
+        transactions.subscribe(GroupMe)
+    }
+
+    private fun setupCloseScoreUpdateBridge() {
+        val transactions = MatchUpBridge.dataObservable
+            .convertToMatchUpObject()
+            .convertToScoreUpdateMessage(true)
 
         transactions.subscribe(Discord)
         transactions.subscribe(Slack)
@@ -82,6 +93,12 @@ object MessageSender {
         UpdateCreator.createUpdate("Sunday score update", 20, 0, Calendar.SUNDAY, UpdateCreator.TaskType.ScoreUpdate)
         UpdateCreator.createUpdate("Sunday score update", 23, 55, Calendar.SUNDAY, UpdateCreator.TaskType.ScoreUpdate)
         UpdateCreator.createUpdate("Monday score update", 23, 55, Calendar.MONDAY, UpdateCreator.TaskType.ScoreUpdate)
-        // TODO: Add close score update
+        UpdateCreator.createUpdate(
+            "Close score update",
+            18,
+            30,
+            Calendar.MONDAY,
+            UpdateCreator.TaskType.CloseScoreUpdate
+        )
     }
 }

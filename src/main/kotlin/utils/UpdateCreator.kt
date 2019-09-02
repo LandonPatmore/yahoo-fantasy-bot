@@ -1,5 +1,6 @@
 package utils
 
+import bridges.CloseScoreUpdateBridge
 import bridges.MatchUpBridge
 import bridges.ScoreUpdateBridge
 import java.util.*
@@ -44,6 +45,9 @@ object UpdateCreator {
                     is TaskType.ScoreUpdate -> {
                         ScoreUpdateBridge.dataObserver.onNext(data)
                     }
+                    is TaskType.CloseScoreUpdate -> {
+                        CloseScoreUpdateBridge.dataObserver.onNext(data)
+                    }
                 }
             }
         }
@@ -52,5 +56,6 @@ object UpdateCreator {
     sealed class TaskType {
         object MatchUpUpdate : TaskType()
         object ScoreUpdate : TaskType()
+        object CloseScoreUpdate : TaskType()
     }
 }
