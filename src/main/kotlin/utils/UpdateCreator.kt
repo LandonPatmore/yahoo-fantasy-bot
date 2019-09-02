@@ -1,20 +1,24 @@
 package utils
 
+import bridges.MatchUpBridge
+import bridges.ScoreUpdateBridge
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+private const val EVERY_AMOUNT_OF_DAYS = 7L
+
 object UpdateCreator {
-    fun createUpdate(updateName: String, hour: Int, minute: Int, day: Int, updateFunction: () -> Unit) {
+    fun createUpdate(updateName: String, hour: Int, minute: Int, day: Int, type: TaskType) {
         val timer = Timer()
-        timer.schedule(
-            createTask(updateName, updateFunction),
+        timer.scheduleAtFixedRate(
+            createTask(updateName, type),
             createTime(
-                19,
-                30,
-                Calendar.THURSDAY,
+                hour,
+                minute,
+                day,
                 TimeZone.getTimeZone("EST") // EST because all games are based on EST
             ),
-            TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS)
+            TimeUnit.MILLISECONDS.convert(EVERY_AMOUNT_OF_DAYS, TimeUnit.DAYS)
         )
     }
 
@@ -28,12 +32,25 @@ object UpdateCreator {
         return today.time
     }
 
-    private fun createTask(updateName: String, updateFunction: () -> Unit): TimerTask {
+    private fun createTask(updateName: String, type: TaskType): TimerTask {
         return object : TimerTask() {
             override fun run() {
                 println("$updateName running...")
-                updateFunction()
+                val data = DataRetriever.getTeamsData()
+                when (type) {
+                    is TaskType.MatchUpUpdate -> {
+                        MatchUpBridge.dataObserver.onNext(data)
+                    }
+                    is TaskType.ScoreUpdate -> {
+                        ScoreUpdateBridge.dataObserver.onNext(data)
+                    }
+                }
             }
         }
+    }
+
+    sealed class TaskType {
+        object MatchUpUpdate : TaskType()
+        object ScoreUpdate : TaskType()
     }
 }

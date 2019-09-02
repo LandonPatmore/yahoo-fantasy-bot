@@ -4,15 +4,12 @@ import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-
-fun Observable<Document>.convertToSingleTransaction(): Observable<Element> =
+fun Observable<Document>.convertToTransactionMessage(lastTimeChecked: Long): Observable<String> =
     flatMapIterable {
         it.select("transaction")
-    }
-
-fun Observable<Element>.convertToTransactionMessage(): Observable<String> =
-    // TODO: Need to filter out messages that are older then the last time we checked
-    map {
+    }.filter {
+        it.select("timestamp").first().text().toLong() >= lastTimeChecked
+    }.map {
         when (it.select("type").first().text()) {
             "add" -> addMessage(it)
             "drop" -> dropMessage(it)
