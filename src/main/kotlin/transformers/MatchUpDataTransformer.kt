@@ -24,7 +24,7 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<String> =
 
         val teams = it.toList()
         for (team: Team in teams) {
-            teamDataBuilder.append("transformers.Team: ${team.name}\nWin Probability: ${team.winProbability}%\nProjected Points: ${team.projectedPoints}\nWaiver Priority: ${team.waiverPriority}\nFAAB: ${team.faabBalance}\nClinched Playoffs: ${team.clinchedPlayoffs}\n\n")
+            teamDataBuilder.append("Team: ${team.name}\nWin Probability: ${team.winProbability}%\nProjected Points: ${team.projectedPoints}\nWaiver Priority: ${team.waiverPriority}\nFAAB: ${team.faabBalance}\nClinched Playoffs: ${team.clinchedPlayoffs}\n\n")
         }
 
         val finalMessage = teamDataBuilder.toString().trim()

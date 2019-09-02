@@ -36,8 +36,8 @@ private fun addMessage(event: Element): String {
 
     val finalMessage = playersAdded.trimEnd().removeSuffix(",")
 
-    return "ADD ALERT\n\n" +
-            "transformers.Team: $fantasyTeam\n" +
+    return "ADD ALERT\\n\\n" +
+            "Team: $fantasyTeam\\n" +
             "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
 }
 
@@ -58,8 +58,8 @@ private fun dropMessage(event: Element): String {
 
     val finalMessage = playersDropped.trimEnd().removeSuffix(",")
 
-    return "DROP ALERT\n\n" +
-            "transformers.Team: $fantasyTeam\n" +
+    return "DROP ALERT\\n\\n" +
+            "Team: $fantasyTeam\\n" +
             "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
 }
 
@@ -92,9 +92,9 @@ private fun addDropMessage(event: Element): String {
     val finalMessageAdded = playersAdded.trimEnd().removeSuffix(",")
     val finalMessageDropped = playersDropped.trimEnd().removeSuffix(",")
 
-    return "ADD/DROP ALERT\n\n" +
-            "transformers.Team: $fantasyTeam\n" +
-            "Added ${if (playersAddedCount > 1) "Players" else "Player"}: $finalMessageAdded\n" +
+    return "ADD/DROP ALERT\\n\\n" +
+            "Team: $fantasyTeam\\n" +
+            "Added ${if (playersAddedCount > 1) "Players" else "Player"}: $finalMessageAdded\\n" +
             "Dropped ${if (playersDroppedCount > 1) "Players" else "Player"}: $finalMessageDropped"
 }
 
@@ -125,12 +125,12 @@ private fun tradeMessage(event: Element): String {
     val finalMessageFromTrader = fromTraderTeam.trimEnd().removeSuffix(",")
     val finalMessageFromTradee = fromTradeeTeam.trimEnd().removeSuffix(",")
 
-    return "TRADE ALERT\n\n" +
-            "$trader received: $finalMessageFromTradee\n" +
+    return "TRADE ALERT\\n\\n" +
+            "$trader received: $finalMessageFromTradee\\n" +
             "$tradee received: $finalMessageFromTrader"
 }
 
 private fun commissionerMessage(): String {
-    return "COMMISSIONER ALERT\n\n" +
+    return "COMMISSIONER ALERT\\n\\n" +
             "A league setting has been modified.  You may want to check or ask them what they changed!"
 }
