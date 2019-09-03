@@ -1,13 +1,7 @@
 package utils
 
-import bridges.CloseScoreUpdateBridge
-import bridges.MatchUpBridge
-import bridges.ScoreUpdateBridge
-import bridges.TransactionsBridge
+import bridges.*
 import io.reactivex.Observable
-import messaging_services.Discord
-import messaging_services.GroupMe
-import messaging_services.Slack
 import transformers.convertToMatchUpMessage
 import transformers.convertToMatchUpObject
 import transformers.convertToScoreUpdateMessage
@@ -38,9 +32,7 @@ object MessageSender {
         val transactions = TransactionsBridge.dataObservable
             .convertToTransactionMessage(1000)
 
-        transactions.subscribe(Discord)
-        transactions.subscribe(Slack)
-        transactions.subscribe(GroupMe)
+        transactions.subscribe(MessageBridge.dataObserver)
     }
 
     private fun setupScoreUpdateBridge() {
@@ -48,9 +40,7 @@ object MessageSender {
             .convertToMatchUpObject()
             .convertToScoreUpdateMessage()
 
-        transactions.subscribe(Discord)
-        transactions.subscribe(Slack)
-        transactions.subscribe(GroupMe)
+        transactions.subscribe(MessageBridge.dataObserver)
     }
 
     private fun setupCloseScoreUpdateBridge() {
@@ -58,9 +48,7 @@ object MessageSender {
             .convertToMatchUpObject()
             .convertToScoreUpdateMessage(true)
 
-        transactions.subscribe(Discord)
-        transactions.subscribe(Slack)
-        transactions.subscribe(GroupMe)
+        transactions.subscribe(MessageBridge.dataObserver)
     }
 
     private fun setupMatchUpBridge() {
@@ -68,9 +56,7 @@ object MessageSender {
             .convertToMatchUpObject()
             .convertToMatchUpMessage()
 
-        transactions.subscribe(Discord)
-        transactions.subscribe(Slack)
-        transactions.subscribe(GroupMe)
+        transactions.subscribe(MessageBridge.dataObserver)
     }
 
     private fun setupScheduledUpdates() {

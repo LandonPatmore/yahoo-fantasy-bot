@@ -3,8 +3,9 @@ package transformers
 import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import types.Message
 
-fun Observable<Document>.convertToTransactionMessage(lastTimeChecked: Long): Observable<String> =
+fun Observable<Document>.convertToTransactionMessage(lastTimeChecked: Long): Observable<Message> =
     flatMapIterable {
         it.select("transaction")
     }.filter {
@@ -20,7 +21,7 @@ fun Observable<Document>.convertToTransactionMessage(lastTimeChecked: Long): Obs
         }
     }
 
-private fun addMessage(event: Element): String {
+private fun addMessage(event: Element): Message {
     val fantasyTeam = event.select("destination_team_name").text()
     val players = event.select("player")
 
@@ -36,12 +37,13 @@ private fun addMessage(event: Element): String {
 
     val finalMessage = playersAdded.trimEnd().removeSuffix(",")
 
-    return "ADD ALERT\\n\\n" +
-            "Team: $fantasyTeam\\n" +
-            "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
+    return Message.Transaction.Add(
+        "Team: $fantasyTeam\\n" +
+                "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
+    )
 }
 
-private fun dropMessage(event: Element): String {
+private fun dropMessage(event: Element): Message {
     val fantasyTeam = event.select("source_team_name").text()
     val players = event.select("player")
 
@@ -58,12 +60,13 @@ private fun dropMessage(event: Element): String {
 
     val finalMessage = playersDropped.trimEnd().removeSuffix(",")
 
-    return "DROP ALERT\\n\\n" +
-            "Team: $fantasyTeam\\n" +
-            "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
+    return Message.Transaction.Drop(
+        "Team: $fantasyTeam\\n" +
+                "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
+    )
 }
 
-private fun addDropMessage(event: Element): String {
+private fun addDropMessage(event: Element): Message {
     val fantasyTeam = event.select("source_team_name").text()
     val players = event.select("player")
 
@@ -92,13 +95,14 @@ private fun addDropMessage(event: Element): String {
     val finalMessageAdded = playersAdded.trimEnd().removeSuffix(",")
     val finalMessageDropped = playersDropped.trimEnd().removeSuffix(",")
 
-    return "ADD/DROP ALERT\\n\\n" +
-            "Team: $fantasyTeam\\n" +
-            "Added ${if (playersAddedCount > 1) "Players" else "Player"}: $finalMessageAdded\\n" +
-            "Dropped ${if (playersDroppedCount > 1) "Players" else "Player"}: $finalMessageDropped"
+    return Message.Transaction.AddDrop(
+        "Team: $fantasyTeam\\n" +
+                "Added ${if (playersAddedCount > 1) "Players" else "Player"}: $finalMessageAdded\\n" +
+                "Dropped ${if (playersDroppedCount > 1) "Players" else "Player"}: $finalMessageDropped"
+    )
 }
 
-private fun tradeMessage(event: Element): String {
+private fun tradeMessage(event: Element): Message {
     val trader = event.select("trader_team_name").text()
     val tradee = event.select("tradee_team_name").text()
 
@@ -125,12 +129,12 @@ private fun tradeMessage(event: Element): String {
     val finalMessageFromTrader = fromTraderTeam.trimEnd().removeSuffix(",")
     val finalMessageFromTradee = fromTradeeTeam.trimEnd().removeSuffix(",")
 
-    return "TRADE ALERT\\n\\n" +
-            "$trader received: $finalMessageFromTradee\\n" +
-            "$tradee received: $finalMessageFromTrader"
+    return Message.Transaction.Trade(
+        "$trader received: $finalMessageFromTradee\\n" +
+                "$tradee received: $finalMessageFromTrader"
+    )
 }
 
-private fun commissionerMessage(): String {
-    return "COMMISSIONER ALERT\\n\\n" +
-            "A league setting has been modified.  You may want to check or ask them what they changed!"
+private fun commissionerMessage(): Message {
+    return Message.Transaction.Commish("A league setting has been modified.  You may want to check or ask them what they changed!")
 }

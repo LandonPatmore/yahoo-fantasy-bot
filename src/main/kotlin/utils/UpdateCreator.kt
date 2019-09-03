@@ -3,13 +3,14 @@ package utils
 import bridges.CloseScoreUpdateBridge
 import bridges.MatchUpBridge
 import bridges.ScoreUpdateBridge
+import types.Task
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 private const val EVERY_AMOUNT_OF_DAYS = 7L
 
 object UpdateCreator {
-    fun createUpdate(updateName: String, hour: Int, minute: Int, day: Int, type: TaskType) {
+    fun createUpdate(updateName: String, hour: Int, minute: Int, day: Int, type: Task) {
         val timer = Timer()
         timer.scheduleAtFixedRate(
             createTask(updateName, type),
@@ -33,29 +34,23 @@ object UpdateCreator {
         return today.time
     }
 
-    private fun createTask(updateName: String, type: TaskType): TimerTask {
+    private fun createTask(updateName: String, type: Task): TimerTask {
         return object : TimerTask() {
             override fun run() {
                 println("$updateName running...")
                 val data = DataRetriever.getTeamsData()
                 when (type) {
-                    is TaskType.MatchUpUpdate -> {
+                    is Task.MatchUpUpdate -> {
                         MatchUpBridge.dataObserver.onNext(data)
                     }
-                    is TaskType.ScoreUpdate -> {
+                    is Task.ScoreUpdate -> {
                         ScoreUpdateBridge.dataObserver.onNext(data)
                     }
-                    is TaskType.CloseScoreUpdate -> {
+                    is Task.CloseScoreUpdate -> {
                         CloseScoreUpdateBridge.dataObserver.onNext(data)
                     }
                 }
             }
         }
-    }
-
-    sealed class TaskType {
-        object MatchUpUpdate : TaskType()
-        object ScoreUpdate : TaskType()
-        object CloseScoreUpdate : TaskType()
     }
 }

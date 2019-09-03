@@ -5,7 +5,7 @@ import io.reactivex.Observer
 import io.reactivex.subjects.PublishSubject
 import org.jsoup.nodes.Document
 
-object MatchUpBridge : Bridge {
+object MatchUpBridge : Bridge<Document> {
     private val dataBridge = PublishSubject.create<Document>()
 
     override val dataObserver: Observer<Document>

@@ -3,6 +3,7 @@ package transformers
 import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import types.Message
 import kotlin.math.abs
 
 fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> =
@@ -16,7 +17,7 @@ fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> 
         Pair(teamOne, teamTwo)
     }
 
-fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<String> =
+fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> =
     map {
         val teamDataBuilder = StringBuilder()
         teamDataBuilder.append("${it.first.name} vs. ${it.second.name}\\n")
@@ -29,10 +30,10 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<String> =
 
         val finalMessage = teamDataBuilder.toString().trim()
 
-        finalMessage
+        Message.MatchUp(finalMessage)
     }
 
-fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: Boolean = false): Observable<String> =
+fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: Boolean = false): Observable<Message> =
     filter {
         if (closeScoreUpdate) {
             if (abs(it.first.points - it.second.points) != 0.0) {
@@ -44,8 +45,14 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
             true
         }
     }.map {
-        "${it.first.name} vs. ${it.second.name}\\n" +
+        val message = "${it.first.name} vs. ${it.second.name}\\n" +
                 "${it.first.points} - ${it.second.points}"
+
+        if (closeScoreUpdate) {
+            Message.CloseScoreUpdate(message)
+        } else {
+            Message.ScoreUpdate(message)
+        }
     }
 
 private fun generateTeamData(team: Element): Team {
