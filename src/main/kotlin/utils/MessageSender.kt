@@ -1,5 +1,6 @@
 package utils
 
+import bridges.CloseScoreUpdateBridge
 import bridges.MatchUpBridge
 import bridges.ScoreUpdateBridge
 import bridges.TransactionsBridge
@@ -53,7 +54,7 @@ object MessageSender {
     }
 
     private fun setupCloseScoreUpdateBridge() {
-        val transactions = MatchUpBridge.dataObservable
+        val transactions = CloseScoreUpdateBridge.dataObservable
             .convertToMatchUpObject()
             .convertToScoreUpdateMessage(true)
 

@@ -19,12 +19,12 @@ fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> 
 fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<String> =
     map {
         val teamDataBuilder = StringBuilder()
-        teamDataBuilder.append("${it.first.name} vs. ${it.second.name}\n")
-        teamDataBuilder.append("===\n")
+        teamDataBuilder.append("${it.first.name} vs. ${it.second.name}\\n")
+        teamDataBuilder.append("===\\n")
 
         val teams = it.toList()
         for (team: Team in teams) {
-            teamDataBuilder.append("Team: ${team.name}\nWin Probability: ${team.winProbability}%\nProjected Points: ${team.projectedPoints}\nWaiver Priority: ${team.waiverPriority}\nFAAB: ${team.faabBalance}\nClinched Playoffs: ${team.clinchedPlayoffs}\n\n")
+            teamDataBuilder.append("Team: ${team.name}\\nWin Probability: ${team.winProbability}%\\nProjected Points: ${team.projectedPoints}\\nWaiver Priority: ${team.waiverPriority}\\nFAAB: ${team.faabBalance}\\nClinched Playoffs: ${team.clinchedPlayoffs}\\n\\n")
         }
 
         val finalMessage = teamDataBuilder.toString().trim()
@@ -37,13 +37,14 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
         if (closeScoreUpdate) {
             if (abs(it.first.points - it.second.points) != 0.0) {
                 abs(it.first.points - it.second.points) <= 15
+            } else {
+                false
             }
-            false
         } else {
             true
         }
     }.map {
-        "${it.first.name} vs. ${it.second.name}\n" +
+        "${it.first.name} vs. ${it.second.name}\\n" +
                 "${it.first.points} - ${it.second.points}"
     }
 
