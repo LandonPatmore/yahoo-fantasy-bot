@@ -6,18 +6,12 @@ import utils.Yahoo;
 public class CommandInterpreter {
 
     public static void interpretCommand(String message) {
-        if (isBotCommand(message)) {
-            final String commandResponse = commandResponse(message);
-            if (commandResponse != null) {
-                ServicesHandler.sendMessage(commandResponse);
-            } else {
-                ServicesHandler.sendMessage(unknownCommand(message));
-            }
+        final String commandResponse = commandResponse(message);
+        if (commandResponse != null) {
+            ServicesHandler.sendMessage(commandResponse);
+        } else {
+            ServicesHandler.sendMessage(unknownCommand(message));
         }
-    }
-
-    private static boolean isBotCommand(String command) {
-        return command.startsWith("./fantasy");
     }
 
     private static String commandResponse(String message) {
