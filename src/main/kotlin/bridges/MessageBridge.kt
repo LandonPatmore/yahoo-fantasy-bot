@@ -11,6 +11,6 @@ object MessageBridge : Bridge<Message> {
     override val dataObserver: Observer<Message>
         get() = dataBridge
 
-    override val dataObservable: Observable<Message>dd
+    override val dataObservable: Observable<Message>
         get() = dataBridge
 }

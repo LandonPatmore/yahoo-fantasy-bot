@@ -2,10 +2,10 @@ package utils
 
 import bridges.*
 import io.reactivex.Observable
-import transformers.convertToMatchUpMessage
-import transformers.convertToMatchUpObject
-import transformers.convertToScoreUpdateMessage
-import transformers.convertToTransactionMessage
+import messaging_services.Discord
+import messaging_services.GroupMe
+import messaging_services.Slack
+import transformers.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -16,6 +16,8 @@ object MessageSender {
         setupCloseScoreUpdateBridge()
         setupMatchUpBridge()
         setupScheduledUpdates()
+
+        setupMessageBridge()
     }
 
     fun start() {
@@ -57,6 +59,15 @@ object MessageSender {
             .convertToMatchUpMessage()
 
         transactions.subscribe(MessageBridge.dataObserver)
+    }
+
+    private fun setupMessageBridge() {
+        val messages = MessageBridge.dataObservable
+            .convertToStringMessage()
+
+        messages.subscribe(Discord)
+        messages.subscribe(GroupMe)
+        messages.subscribe(Slack)
     }
 
     private fun setupScheduledUpdates() {
