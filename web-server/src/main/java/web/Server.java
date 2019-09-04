@@ -46,9 +46,9 @@ public class Server {
         post("/message", (req, res) -> {
             if(req.body() != null && !req.body().isEmpty()) {
                 log.debug("POST Request received to /message endpoint");
-                log.debug(req.getParameter("text"));
-                // final JSONObject j = new JSONObject(req.getParameter());
-                CommandInterpreter.interpretCommand(req.getParameter("text"));
+                log.debug(req.params("text"));
+                // final JSONObject j = new JSONObject(req.params());
+                CommandInterpreter.interpretCommand(req.params("text"));
             }
             return null;
         });
