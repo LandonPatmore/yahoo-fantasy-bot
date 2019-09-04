@@ -47,9 +47,9 @@ public class Server {
                 log.debug("POST Request received to /message endpoint");
                 log.debug(req.body());
                 final JSONObject j = new JSONObject(req.body());
-                CommandInterpreter.interpretCommand(j.getString("text"));
+                return CommandInterpreter.interpretCommand(j.getString("text"));
             }
-            return null;
+            return "Invalid Request";
         });
 
         get("/keepalive", (req, res) -> true);

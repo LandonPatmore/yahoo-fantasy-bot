@@ -8,9 +8,9 @@ public class CommandInterpreter {
     public static void interpretCommand(String message) {
         final String commandResponse = commandResponse(message);
         if (commandResponse != null) {
-            ServicesHandler.sendMessage(commandResponse);
+            return ServicesHandler.sendMessage(commandResponse);
         } else {
-            ServicesHandler.sendMessage(unknownCommand(message));
+            return ServicesHandler.sendMessage(unknownCommand(message));
         }
     }
 
