@@ -39,7 +39,7 @@ private fun addMessage(event: Element): Message {
 
     return Message.Transaction.Add(
         "Team: $fantasyTeam\\n" +
-                "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
+                "Added: $finalMessage"
     )
 }
 
@@ -62,7 +62,7 @@ private fun dropMessage(event: Element): Message {
 
     return Message.Transaction.Drop(
         "Team: $fantasyTeam\\n" +
-                "${if (players.size > 1) "Players" else "Player"}: $finalMessage"
+                "Dropped: $finalMessage"
     )
 }
 
@@ -97,8 +97,8 @@ private fun addDropMessage(event: Element): Message {
 
     return Message.Transaction.AddDrop(
         "Team: $fantasyTeam\\n" +
-                "Added ${if (playersAddedCount > 1) "Players" else "Player"}: $finalMessageAdded\\n" +
-                "Dropped ${if (playersDroppedCount > 1) "Players" else "Player"}: $finalMessageDropped"
+                "Added: $finalMessageAdded\\n" +
+                "Dropped: $finalMessageDropped"
     )
 }
 
@@ -130,8 +130,8 @@ private fun tradeMessage(event: Element): Message {
     val finalMessageFromTradee = fromTradeeTeam.trimEnd().removeSuffix(",")
 
     return Message.Transaction.Trade(
-        "$trader received: $finalMessageFromTradee\\n" +
-                "$tradee received: $finalMessageFromTrader"
+        "$trader traded: $finalMessageFromTradee\\n" +
+                "$tradee traded: $finalMessageFromTrader"
     )
 }
 
