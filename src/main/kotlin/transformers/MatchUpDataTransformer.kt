@@ -3,7 +3,7 @@ package transformers
 import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import types.Message
+import messaging_services.Message
 import kotlin.math.abs
 
 fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> =

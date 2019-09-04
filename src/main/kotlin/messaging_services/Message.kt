@@ -1,4 +1,4 @@
-package types
+package messaging_services
 
 sealed class Message(val message : String) {
     class ScoreUpdate(message: String) : Message(message)

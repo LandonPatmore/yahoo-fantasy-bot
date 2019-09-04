@@ -1,7 +1,7 @@
 package transformers
 
 import io.reactivex.Observable
-import types.Message
+import messaging_services.Message
 
 fun Observable<Message>.convertToStringMessage(): Observable<String> =
     map {

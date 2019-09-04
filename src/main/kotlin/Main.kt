@@ -1,11 +1,8 @@
-
-import bridges.StandingsBridge
+import utils.BotArbiter
 import utils.DataRetriever
-import utils.MessageSender
 
 
 fun main() {
     DataRetriever.authenticate()
-    MessageSender
-    StandingsBridge.dataObserver.onNext(DataRetriever.getStandings())
+    BotArbiter.start()
 }

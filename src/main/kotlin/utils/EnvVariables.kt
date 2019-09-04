@@ -10,7 +10,6 @@ sealed class EnvVariables(val variable: String?) {
     object GroupMeAccessToken : EnvVariables(System.getenv("GROUP_ME_ACCESS_TOKEN"))
     object DiscordWebhookUrl : EnvVariables(System.getenv("DISCORD_WEBHOOK_URL"))
     object SlackWebhookUrl : EnvVariables(System.getenv("SLACK_WEBHOOK_URL"))
-    object RestartAlert : EnvVariables(System.getenv("RESTART_ALERT"))
     object Port : EnvVariables(System.getenv("PORT"))
     object JdbcDatabaseUrl : EnvVariables(System.getenv("JDBC_DATABASE_URL"))
     object DropAlert : EnvVariables(System.getenv("DROP_ALERT"))

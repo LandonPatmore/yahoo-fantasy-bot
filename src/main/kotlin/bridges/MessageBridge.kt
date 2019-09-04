@@ -3,7 +3,7 @@ package bridges
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.subjects.PublishSubject
-import types.Message
+import messaging_services.Message
 
 object MessageBridge : Bridge<Message> {
     private val dataBridge = PublishSubject.create<Message>()

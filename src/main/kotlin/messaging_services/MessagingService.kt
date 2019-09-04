@@ -11,7 +11,7 @@ abstract class MessagingService(private val maxMessageLength: Int) : Consumer<St
     protected abstract fun sendMessage(message: String)
 
     private fun createMessage(message: String) {
-        Thread.sleep(500)
+        Thread.sleep(1000)
         if (message.length > maxMessageLength) {
             val subMessage = message.substring(0, maxMessageLength + 1)
             sendMessage(correctMessage(subMessage))

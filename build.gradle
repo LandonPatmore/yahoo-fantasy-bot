@@ -16,6 +16,7 @@ dependencies {
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
     implementation 'com.github.kittinunf.fuel:fuel:2.2.0'
     implementation group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+    implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
 
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.0.0'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.1'

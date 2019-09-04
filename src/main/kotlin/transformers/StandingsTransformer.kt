@@ -1,9 +1,9 @@
 package transformers
 
 import io.reactivex.Observable
+import messaging_services.Message
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import types.Message
 
 fun Observable<Document>.convertToStandingsObject(): Observable<Element> =
     flatMapIterable {
