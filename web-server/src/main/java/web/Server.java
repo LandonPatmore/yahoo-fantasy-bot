@@ -12,6 +12,7 @@ import worker.Bot;
 
 import static spark.Spark.*;
 
+
 public class Server {
     private static final Logger log = LogManager.getLogger(Server.class);
     private static OAuth20Service service;
@@ -45,9 +46,9 @@ public class Server {
         post("/message", (req, res) -> {
             if(req.body() != null && !req.body().isEmpty()) {
                 log.debug("POST Request received to /message endpoint");
-                log.debug(req.body());
-                final JSONObject j = new JSONObject(req.body());
-                CommandInterpreter.interpretCommand(j.getString("text"));
+                log.debug(req.getParameter("text"));
+                // final JSONObject j = new JSONObject(req.getParameter());
+                CommandInterpreter.interpretCommand(req.getParameter("text"));
             }
             return null;
         });
