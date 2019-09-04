@@ -6,6 +6,8 @@ import messaging_services.Discord
 import messaging_services.GroupMe
 import messaging_services.Slack
 import transformers.*
+import types.Task
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -80,31 +82,32 @@ object MessageSender {
     }
 
     private fun setupScheduledUpdates() {
-//        UpdateCreator.createUpdate(
-//            "Weekly match up update",
-//            19,
-//            30,
-//            Calendar.THURSDAY,
-//            UpdateCreator.TaskType.MatchUpUpdate
-//        )
-//        UpdateCreator.createUpdate(
-//            "Thursday score update",
-//            23,
-//            55,
-//            Calendar.THURSDAY,
-//            UpdateCreator.TaskType.ScoreUpdate
-//        )
-//        UpdateCreator.createUpdate("Sunday score update", 12, 30, Calendar.SUNDAY, UpdateCreator.TaskType.ScoreUpdate)
-//        UpdateCreator.createUpdate("Sunday score update", 16, 0, Calendar.SUNDAY, UpdateCreator.TaskType.ScoreUpdate)
-//        UpdateCreator.createUpdate("Sunday score update", 20, 0, Calendar.SUNDAY, UpdateCreator.TaskType.ScoreUpdate)
-//        UpdateCreator.createUpdate("Sunday score update", 23, 55, Calendar.SUNDAY, UpdateCreator.TaskType.ScoreUpdate)
-//        UpdateCreator.createUpdate("Monday score update", 23, 55, Calendar.MONDAY, UpdateCreator.TaskType.ScoreUpdate)
-//        UpdateCreator.createUpdate(
-//            "Close score update",
-//            18,
-//            30,
-//            Calendar.MONDAY,
-//            UpdateCreator.TaskType.CloseScoreUpdate
-//        )
+        UpdateCreator.createUpdate(
+            "Weekly match up update",
+            19,
+            30,
+            Calendar.THURSDAY,
+            Task.MatchUpUpdate
+        )
+        UpdateCreator.createUpdate(
+            "Thursday score update",
+            23,
+            55,
+            Calendar.THURSDAY,
+            Task.ScoreUpdate
+        )
+        UpdateCreator.createUpdate("Sunday score update", 12, 30, Calendar.SUNDAY, Task.ScoreUpdate)
+        UpdateCreator.createUpdate("Sunday score update", 16, 0, Calendar.SUNDAY, Task.ScoreUpdate)
+        UpdateCreator.createUpdate("Sunday score update", 20, 0, Calendar.SUNDAY, Task.ScoreUpdate)
+        UpdateCreator.createUpdate("Sunday score update", 23, 55, Calendar.SUNDAY, Task.ScoreUpdate)
+        UpdateCreator.createUpdate("Monday score update", 23, 55, Calendar.MONDAY, Task.ScoreUpdate)
+        UpdateCreator.createUpdate(
+            "Close score update",
+            18,
+            30,
+            Calendar.MONDAY,
+            Task.CloseScoreUpdate
+        )
+        UpdateCreator.createUpdate("Standings update", 12, 30, Calendar.TUESDAY, Task.StandingsUpdate)
     }
 }

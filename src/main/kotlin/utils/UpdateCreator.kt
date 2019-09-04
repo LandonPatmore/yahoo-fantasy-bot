@@ -3,6 +3,7 @@ package utils
 import bridges.CloseScoreUpdateBridge
 import bridges.MatchUpBridge
 import bridges.ScoreUpdateBridge
+import bridges.StandingsBridge
 import types.Task
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -38,16 +39,22 @@ object UpdateCreator {
         return object : TimerTask() {
             override fun run() {
                 println("$updateName running...")
-                val data = DataRetriever.getTeamsData()
                 when (type) {
                     is Task.MatchUpUpdate -> {
+                        val data = DataRetriever.getTeamsData()
                         MatchUpBridge.dataObserver.onNext(data)
                     }
                     is Task.ScoreUpdate -> {
+                        val data = DataRetriever.getTeamsData()
                         ScoreUpdateBridge.dataObserver.onNext(data)
                     }
                     is Task.CloseScoreUpdate -> {
+                        val data = DataRetriever.getTeamsData()
                         CloseScoreUpdateBridge.dataObserver.onNext(data)
+                    }
+                    is Task.StandingsUpdate -> {
+                        val data = DataRetriever.getStandings()
+                        StandingsBridge.dataObserver.onNext(data)
                     }
                 }
             }

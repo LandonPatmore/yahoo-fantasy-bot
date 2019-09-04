@@ -3,7 +3,7 @@ package transformers
 import io.reactivex.Observable
 import types.Message
 
-fun Observable<Message>.convertToStringMessage(): Observable<String?> =
+fun Observable<Message>.convertToStringMessage(): Observable<String> =
     map {
         when (it) {
             is Message.Transaction.Add -> createMessage("===ADD ALERT===", it)
