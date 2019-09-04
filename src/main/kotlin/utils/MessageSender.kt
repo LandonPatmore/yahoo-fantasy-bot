@@ -15,6 +15,7 @@ object MessageSender {
         setupScoreUpdateBridge()
         setupCloseScoreUpdateBridge()
         setupMatchUpBridge()
+        setupStandingsBridge()
         setupScheduledUpdates()
 
         setupMessageBridge()
@@ -59,6 +60,14 @@ object MessageSender {
             .convertToMatchUpMessage()
 
         transactions.subscribe(MessageBridge.dataObserver)
+    }
+
+    private fun setupStandingsBridge() {
+        val standings = StandingsBridge.dataObservable
+            .convertToStandingsObject()
+            .convertToStandingsMessage()
+
+        standings.subscribe(MessageBridge.dataObserver)
     }
 
     private fun setupMessageBridge() {
