@@ -5,7 +5,7 @@ import utils.Yahoo;
 
 public class CommandInterpreter {
 
-    public static String interpretCommand(String message) {
+    public static void interpretCommand(String message) {
         final String commandResponse = commandResponse(message);
         if (commandResponse != null) {
             ServicesHandler.sendMessage(commandResponse);
