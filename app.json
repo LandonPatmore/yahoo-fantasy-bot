@@ -1,0 +1,58 @@
+{
+  "name": "Yahoo Trader Bot",
+  "description": "Bot that alerts users about various things happening in their Yahoo Fantasy Sports league.  Can be used with Discord, GroupMe, and Slack",
+  "keywords": [
+    "fantasy football",
+    "yahoo",
+    "groupme",
+    "discord",
+    "slack",
+    "chat bot",
+    "ff"
+  ],
+  "website": "https://github.com/landonp1203/yahoo-fantasy-bot",
+  "repository": "https://github.com/landonp1203/yahoo-fantasy-bot",
+  "scripts": {
+    "postdeploy": "psql $DATABASE_URL -f db_provision.sql"
+  },
+  "env": {
+    "APP_NAME": {
+      "description": "Yahoo Fantasy Bot",
+      "value": "",
+      "required": true
+    },
+    "GROUP_ME_BOT_ID": {
+      "description": "GroupMe Bot ID",
+      "value": "",
+      "required": false
+    },
+    "DISCORD_WEBHOOK_URL": {
+      "description": "Discord Web Hook URL",
+      "value": "",
+      "required": false
+    },
+    "SLACK_WEBHOOK_URL": {
+      "description": "Discord Web Hook URL",
+      "value": "",
+      "required": false
+    },
+    "YAHOO_CLIENT_ID": {
+      "description": "Yahoo Client ID",
+      "value": "",
+      "required": false
+    },
+    "YAHOO_CLIENT_SECRET": {
+      "description": "Yahoo Client Secret",
+      "value": "",
+      "required": false
+    },
+    "YAHOO_LEAGUE_ID": {
+      "description": "Yahoo League ID",
+      "value": "",
+      "required": false
+    }
+  },
+  "addons": [
+    "heroku-postgresql"
+  ]
+}

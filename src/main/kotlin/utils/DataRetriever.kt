@@ -10,17 +10,20 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.parser.Parser
 
-private const val BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2/league/380.l." + "test_league_id"
-private const val SCOREBOARD = "/scoreboard"
-private const val STANDINGS = "/standings"
-private const val TRANSACTIONS = "/transactions"
-
 object DataRetriever {
-    private val oauthService = ServiceBuilder("test_api_key")
-        .apiSecret("test_api_secret")
+    private const val SCOREBOARD = "/scoreboard"
+    private const val STANDINGS = "/standings"
+    private const val TRANSACTIONS = "/transactions"
+
+    private val BASE_URL =
+        "https://fantasysports.yahooapis.com/fantasy/v2/league/nfl.l.${EnvVariables.YahooLeagueId.variable}"
+
+    private val oauthService = ServiceBuilder(EnvVariables.YahooClientId.variable)
+        .apiSecret(EnvVariables.YahooClientSecret.variable)
         .callback(OAuthConstants.OOB)
         .build(YahooApi20.instance())
     private var currentToken: Pair<Long, OAuth2AccessToken>? = null
+
 
     /**
      * Checks to see whether or not a token is expired.
