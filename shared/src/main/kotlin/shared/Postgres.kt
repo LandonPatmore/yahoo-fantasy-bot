@@ -168,8 +168,7 @@ object Postgres {
         try {
             getConnection()
 
-            println("Attempting to save last time checked...")
-            println("LATEST TIME SAVING IN POSTGRES: ${System.currentTimeMillis() / 1000}")
+            println("Attempting to save last time checked...${System.currentTimeMillis() / 1000}")
 
             val statement = connection!!.createStatement()
             val sql =
