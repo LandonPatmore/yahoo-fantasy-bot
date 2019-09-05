@@ -29,18 +29,21 @@ fun Observable<Element>.convertToStandingsMessage(): Observable<Message> =
         val ties = outcomeTotals.select("ties").first().text()
         val wltPercentage = outcomeTotals.select("percentage").first().text()
 
-        val streak = teamStandings.select("streak")
-        val streakType = if (streak.select("type").first().text() == "win") "W" else "L"
-        val streakAmount = streak.select("value").first().text()
+        var streakType: String? = null
+        var streakAmount: String? = null
+        val streak = teamStandings.select("streak").first()?.let { streak ->
+            streakType = if (streak.select("type").first().text() == "win") "W" else "L"
+            streakAmount = streak.select("value").first().text()
+        }
 
         val pointsFor = teamStandings.select("points_for").first().text()
         val pointsAgainst = teamStandings.select("points_against").first().text()
 
         val finalMessage = "Team: $name\\n" +
-                "Rank: $rank\\n" +
+                "Rank: ${if(rank.isEmpty()) "N/A" else rank}\\n" +
                 "Record: $wins-$losses-$ties\\n" +
-                "Win %: $wltPercentage\\n" +
-                "Streak: $streakAmount$streakType\\n" +
+                "Win %: ${if (wltPercentage.isEmpty()) "N/A" else wltPercentage}\\n" +
+                "Streak: ${if (streak == null) "N/A" else "$streakAmount$streakType"}\\n" +
                 "Points For: $pointsFor\\n" +
                 "Points Against: $pointsAgainst\\n" +
                 "Division ID: $divisionId\\n" +
