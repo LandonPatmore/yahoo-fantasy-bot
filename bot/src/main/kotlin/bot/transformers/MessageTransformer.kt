@@ -16,7 +16,10 @@ fun Observable<Message>.convertToStringMessage(): Observable<String> =
             is Message.CloseScore -> createMessage("===CLOSE SCORE ALERT===", it)
             is Message.MatchUp -> createMessage("===MATCH UP ALERT===", it)
             is Message.Generic -> createMessage(null, it)
+            is Message.Unknown -> createMessage(null, it)
         }
+    }.filter {
+        it.isNotEmpty()
     }
 
 private fun createMessage(alertTitle: String?, message: Message): String {

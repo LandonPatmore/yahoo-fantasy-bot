@@ -18,7 +18,7 @@ fun Observable<Document>.convertToTransactionMessage(): Observable<Message> =
             "add/drop" -> addDropMessage(it)
             "trade" -> tradeMessage(it)
             "commish" -> commissionerMessage()
-            else -> null
+            else -> Message.Unknown("")
         }
     }
 
