@@ -17,8 +17,6 @@ import utils.JobRunner
 import java.util.concurrent.TimeUnit
 
 object Arbiter {
-    private var lastTimeChecked: Long = 0
-
     init {
         setupTransactionsBridge()
         setupScoreUpdateBridge()
@@ -34,7 +32,6 @@ object Arbiter {
         Observable.interval(0, 15, TimeUnit.SECONDS)
             .subscribe {
                 try {
-                    lastTimeChecked = Postgres.latestTimeChecked
                     val event = DataRetriever.getTransactions()
                     TransactionsBridge.dataObserver.onNext(event)
                     Postgres.saveLastTimeChecked()
@@ -58,7 +55,7 @@ object Arbiter {
 
     private fun setupTransactionsBridge() {
         val transactions = TransactionsBridge.dataObservable
-            .convertToTransactionMessage(lastTimeChecked)
+            .convertToTransactionMessage()
 
         transactions.subscribe(MessageBridge.dataObserver)
     }
