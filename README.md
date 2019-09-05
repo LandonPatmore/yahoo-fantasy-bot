@@ -36,7 +36,7 @@ You will need a Yahoo Access Token, Client ID, and Client Secret for this bot to
 3. Fill out required information.
   * Name the application whatever you would like
   * Click "Installed Application"
-  * The Redirect URI will be HEROKU-APP-NAME.herokuapp.com/auth (Do not put http:// or https://)
+  * The Redirect URI will be https://HEROKU-APP-NAME.herokuapp.com/auth
   * Click "Fantasy Sports" and then "Read"
   * Click "Create App"
   
