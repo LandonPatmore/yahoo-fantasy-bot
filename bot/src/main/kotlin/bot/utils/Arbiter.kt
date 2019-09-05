@@ -34,20 +34,21 @@ object Arbiter {
         Observable.interval(0, 15, TimeUnit.SECONDS)
             .subscribe {
                 try {
-                lastTimeChecked = Postgres.latestTimeChecked
-                val event = DataRetriever.getTransactions()
-                TransactionsBridge.dataObserver.onNext(event)
-                Postgres.saveLastTimeChecked()
-                } catch (e : Exception) {
+                    lastTimeChecked = Postgres.latestTimeChecked
+                    val event = DataRetriever.getTransactions()
+                    TransactionsBridge.dataObserver.onNext(event)
+                    Postgres.saveLastTimeChecked()
+                } catch (e: Exception) {
                     println(e.localizedMessage)
                 }
             }
     }
 
     private fun sendInitialMessage() {
-        val startUpMessage = "Hey there! I am the Yahoo Fantasy Bot that notifies you about all things happening in your league!" +
-                "  Star me on Github: https://github.com/landonp1203/yahoo-fantasy-bot"
-        if(!Postgres.startupMessageSent) {
+        val startUpMessage =
+            "Hey there! I am the Yahoo Fantasy Bot that notifies you about all things happening in your league!" +
+                    "  Star me on Github: https://github.com/landonp1203/yahoo-fantasy-bot"
+        if (!Postgres.startupMessageSent) {
             MessageBridge.dataObserver.onNext(Message.Generic(startUpMessage))
             Postgres.markStartupMessageReceived()
         } else {
