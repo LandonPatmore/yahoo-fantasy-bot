@@ -8,7 +8,7 @@ import shared.Postgres
 
 fun Observable<Pair<Long, Document>>.convertToTransactionMessage(): Observable<Message> =
     flatMap {
-        Observable.fromIterable(it.second.select("transactions"))
+        Observable.fromIterable(it.second.select("transaction"))
             .map { transaction ->
                 Pair(it.first, transaction)
             }

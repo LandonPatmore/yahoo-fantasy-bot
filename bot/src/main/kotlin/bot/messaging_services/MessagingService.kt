@@ -5,7 +5,7 @@ import io.reactivex.functions.Consumer
 import java.io.IOException
 import java.lang.Exception
 
-abstract class MessagingService(private val name: String, private val maxMessageLength: Int) : Consumer<String> {
+abstract class MessagingService(private val maxMessageLength: Int) : Consumer<String> {
 
     override fun accept(message: String?) {
         message?.let { createMessage(it) }
@@ -17,7 +17,6 @@ abstract class MessagingService(private val name: String, private val maxMessage
     private fun createMessage(message: String) {
         try {
             Thread.sleep(1000)
-            println("Sending $name message...")
             if (message.length > maxMessageLength) {
                 val subMessage = message.substring(0, maxMessageLength + 1)
                 sendMessage(correctMessage(subMessage))
