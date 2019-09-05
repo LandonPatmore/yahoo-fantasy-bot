@@ -1,4 +1,4 @@
-package utils
+package bot.utils
 
 import org.quartz.CronScheduleBuilder
 import org.quartz.JobBuilder.newJob

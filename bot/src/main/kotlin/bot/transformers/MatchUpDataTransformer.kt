@@ -25,7 +25,7 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> 
 
         val teams = it.toList()
         for (team: Team in teams) {
-            teamDataBuilder.append("Team: ${team.name}\\nWin Probability: ${team.winProbability}%\\nProjected Points: ${team.projectedPoints}\\nWaiver Priority: ${team.waiverPriority}\\nFAAB: ${team.faabBalance}\\nClinched Playoffs: ${team.clinchedPlayoffs}\\n\\n")
+            teamDataBuilder.append("Team: ${team.name}\\nWin Probability: ${team.winProbability}%\\nProjected Points: ${team.projectedPoints}\\nWaiver Priority: ${team.waiverPriority}\\nFAAB: ${team.faabBalance}\\n\\n")
         }
 
         val finalMessage = teamDataBuilder.toString().trim()
@@ -62,7 +62,6 @@ private fun generateTeamData(team: Element): Team {
     val faabBalance = team.select("faab_balance").text().toInt()
     val numberOfMoves = team.select("number_of_moves").text().toInt()
     val numberOfTrades = team.select("number_of_trades").text().toInt()
-    val clinchedPlayoffs = team.select("clinched_playoffs").text() == "1"
     val winProbability = team.select("win_probability").text().toDouble() * 100
     val points = team.select("team_points").select("total").text().toDouble()
     val projectedPoints = team.select("team_projected_points").select("total").text().toDouble()
@@ -76,12 +75,11 @@ private fun generateTeamData(team: Element): Team {
         numberOfTrades,
         winProbability,
         points,
-        projectedPoints,
-        clinchedPlayoffs
+        projectedPoints
     )
 }
 
-class Team(
+data class Team(
     val name: String,
     val id: Int,
     val waiverPriority: Int,
@@ -90,6 +88,5 @@ class Team(
     val numberOfTrades: Int,
     val winProbability: Double,
     val points: Double,
-    val projectedPoints: Double,
-    val clinchedPlayoffs: Boolean
+    val projectedPoints: Double
 )
