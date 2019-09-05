@@ -16,23 +16,8 @@
     "postdeploy": "psql $DATABASE_URL -f db_provision.sql"
   },
   "env": {
-    "APP_NAME": {
-      "description": " Yahoo Fantasy Bot",
-      "value": "",
-      "required": true
-    },
-    "GROUP_ME_ACCESS_TOKEN": {
-      "description": "GroupMe Access Token",
-      "value": "",
-      "required": false
-    },
     "GROUP_ME_BOT_ID": {
       "description": "GroupMe Bot ID",
-      "value": "",
-      "required": false
-    },
-    "GROUP_ME_GROUP_ID": {
-      "description": "GroupMe Group ID",
       "value": "",
       "required": false
     },
@@ -46,32 +31,20 @@
       "value": "",
       "required": false
     },
-    "RESTART_MESSAGE": {
-      "description": "Should restart messages be sent to the group when the bot is restarted/updated.",
-      "value": "FALSE"
-    },
-    "SHOW_DROP_ALERT": {
-      "description": "Should drop alerts be sent.",
-      "value": "TRUE"
-    },
     "YAHOO_CLIENT_ID": {
       "description": "Yahoo Client ID",
       "value": "",
-      "required": false
+      "required": true
     },
     "YAHOO_CLIENT_SECRET": {
       "description": "Yahoo Client Secret",
       "value": "",
-      "required": false
+      "required": true
     },
     "YAHOO_LEAGUE_ID": {
       "description": "Yahoo League ID",
       "value": "",
-      "required": false
-    },
-    "TIMEZONE": {
-      "description": "Timezone for messages. (See a list of valid timezones: https://garygregory.wordpress.com/2013/06/18/what-are-the-java-timezone-ids/)",
-      "value": "EST"
+      "required": true
     }
   },
   "addons": [

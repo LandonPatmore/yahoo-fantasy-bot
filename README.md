@@ -10,9 +10,8 @@ Bot that alerts GroupMe, Slack, and Discord users about various things happening
 ## Follow these steps EXACTLY!
 1. Click the above button.  It will auto-deploy the application to Heroku.
 2. Name the application whatever you would like.
-3. APP_NAME ENV VARIABLE MUST BE THE EXACT NAME OF YOUR APPLICATION YOU ENTERED ABOVE. (filling this in wrong will not keep your server alive.)
-4. When it asks for environment variables at first, you do not need to put any in that are not already filled in.  These will be added later.
-5. Click "Deploy App".  This will automatically configure the dynos and run all required scripts to get the app created.
+3. When it asks for environment variables at first, you do not need to put any in that are not already filled in.  These will be added later.
+4. Click "Deploy App".  This will automatically configure the dynos and run all required scripts to get the app created.
 
 6. Follow the below section.
 
@@ -155,10 +154,11 @@ Save the "Webhook URL" on this page
 
 ![](https://imgur.com/8k1tZPs.png)
 
-2. Fill out all of the variables from: Yahoo, (whichever you chose) GroupMe, Slack, and Discord
+2. Fill out all of the variables from: Yahoo, GroupMe, Slack, and Discord (You can have any combination of messaging services.)
 3. Click 'Overview"
 4. Click "Configure Dynos" and turn on the "web" dyno
 5. Click "Open App" at the top right
 6. Follow the setup and then close the window once it says "You are authorized".
+7. Once you are authorized, Click "Configure Dynos" and turn OFF the "web" dyno (failing to do this will put your bot to sleep because of heroku policy, thus your bot will not function.)
 
 ### You are all set!  Enjoy the bot!
