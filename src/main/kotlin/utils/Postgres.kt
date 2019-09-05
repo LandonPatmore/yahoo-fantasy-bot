@@ -4,7 +4,6 @@ import com.github.scribejava.core.model.OAuth2AccessToken
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
-import kotlin.system.exitProcess
 
 
 object Postgres {
@@ -103,21 +102,13 @@ object Postgres {
         }
 
     /**
-     * Gets the connection to the DB.  If there are 100 attempts, and none are successful, the application will exit.
+     * Gets the connection to the DB.  Loops indefinitely.
      *
      * @return connection to DB
      */
     private fun getConnection(): Connection? {
-        var attempts = 0
 
         while (connection == null) {
-            if (attempts >= 100) {
-                println(
-                    "There have been 100 attempts to connect to the DB.  None have been successful.  Exiting."
-                )
-                exitProcess(-1)
-            }
-
             try {
                 println("Connection does not exist to database.  Creating...")
 
@@ -133,8 +124,6 @@ object Postgres {
                 } catch (e1: InterruptedException) {
                     println(e.localizedMessage)
                 }
-
-                attempts++
             }
         }
 

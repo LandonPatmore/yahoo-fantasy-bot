@@ -41,38 +41,34 @@ object DataRetriever {
      * Refreshes an expired token.
      */
     private fun refreshExpiredToken() {
-        currentToken?.second?.let {
-            val refreshToken = oauthService.refreshAccessToken(it.refreshToken)
+        currentToken?.let {
+            if (isTokenExpired(it.first, it.second.expiresIn)) {
+                refreshExpiredToken()
+            }
+            val refreshToken = oauthService.refreshAccessToken(it.second.refreshToken)
             currentToken = Pair(System.currentTimeMillis(), refreshToken)
             Postgres.saveTokenData(refreshToken)
         }
     }
 
-    private fun authenticate() {
-        currentToken?.let {
-            if (isTokenExpired(it.first, it.second.expiresIn)) {
-                refreshExpiredToken()
-            }
-        } ?: run {
-            currentToken = Postgres.latestTokenData
+    fun authenticate() {
+        currentToken = Postgres.latestTokenData
 
-            if (currentToken == null) { // This will run only if there is no data in the database
-                // TODO: Need to loop indef in here
-                println("Authorize usage here: ${oauthService.authorizationUrl}")
-                println("Paste the verification string:")
-                val oauthVerifier = readLine()
+        if (currentToken == null) { // This will run only if there is no data in the database
+            // TODO: Need to loop indef in here
+            println("Authorize usage here: ${oauthService.authorizationUrl}")
+            println("Paste the verification string:")
+            val oauthVerifier = readLine()
 
-                // Trade the Request Token and Verifier for the Access Token
-                println("Trading request token for access token...")
-                currentToken = Pair(System.currentTimeMillis(), oauthService.getAccessToken(oauthVerifier))
-                println("Access token received.  Authorized successfully.")
-            }
+            // Trade the Request Token and Verifier for the Access Token
+            println("Trading request token for access token...")
+            currentToken = Pair(System.currentTimeMillis(), oauthService.getAccessToken(oauthVerifier))
+            println("Access token received.  Authorized successfully.")
         }
     }
 
     private fun grabData(url: String): Document {
-        authenticate()
-        // TODO: Probably want to just check refresh here instead of using auth, thus negating refresh inside that method
+        refreshExpiredToken()
         println("Grabbing Data...")
         val request = OAuthRequest(Verb.GET, url)
         oauthService.signRequest(currentToken?.second, request)
