@@ -1,0 +1,44 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '4.0.2'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.50'
+}
+
+shadowJar {
+    baseName = 'shadow'
+    classifier = null
+    version = null
+}
+
+allprojects {
+    apply plugin:'java'
+    apply plugin:'kotlin'
+
+    sourceCompatibility = 1.8
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib:1.1.2"
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    }
+    repositories {
+        mavenCentral()
+    }
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+}
+
+apply from: file('gradle/heroku/clean.gradle')
+
+project(":bot") {
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle")
+}
+
+project(":webserver") {
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle")
+}

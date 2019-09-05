@@ -1,3 +1,4 @@
+@file:JvmName("Bot")
 package bot
 
 import bot.utils.Arbiter

@@ -1,3 +1,4 @@
+@file:JvmName("Server")
 package webserver
 
 import com.github.scribejava.apis.YahooApi20
