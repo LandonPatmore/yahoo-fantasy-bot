@@ -1,7 +1,6 @@
 package shared
 
 sealed class EnvVariables(val variable: String?) {
-    object AppName : EnvVariables(System.getenv("APP_NAME"))
     object YahooClientId : EnvVariables(System.getenv("YAHOO_CLIENT_ID"))
     object YahooClientSecret : EnvVariables(System.getenv("YAHOO_CLIENT_SECRET"))
     object YahooLeagueId : EnvVariables(System.getenv("YAHOO_LEAGUE_ID"))

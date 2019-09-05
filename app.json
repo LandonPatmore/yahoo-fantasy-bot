@@ -16,11 +16,6 @@
     "postdeploy": "psql $DATABASE_URL -f db_provision.sql"
   },
   "env": {
-    "APP_NAME": {
-      "description": "Name you gave the heroku application.  Exactly how you spelt it.",
-      "value": "",
-      "required": true
-    },
     "GROUP_ME_BOT_ID": {
       "description": "GroupMe Bot ID",
       "value": "",
