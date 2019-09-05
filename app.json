@@ -34,17 +34,17 @@
     "YAHOO_CLIENT_ID": {
       "description": "Yahoo Client ID",
       "value": "",
-      "required": true
+      "required": false
     },
     "YAHOO_CLIENT_SECRET": {
       "description": "Yahoo Client Secret",
       "value": "",
-      "required": true
+      "required": false
     },
     "YAHOO_LEAGUE_ID": {
       "description": "Yahoo League ID",
       "value": "",
-      "required": true
+      "required": false
     }
   },
   "addons": [
