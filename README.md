@@ -2,6 +2,7 @@
 
 #### Current Roadmap
 
+- [x] Kotlin (because why not :?)
 - [x] Reactive X
 - [ ] Docker Support
 - [ ] More in depth messages
