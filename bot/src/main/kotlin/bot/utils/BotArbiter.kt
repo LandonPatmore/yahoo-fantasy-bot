@@ -17,16 +17,14 @@ import java.util.concurrent.TimeUnit
 
 object BotArbiter {
     init {
-        sendInitialMessage()
-
         setupTransactionsBridge()
         setupScoreUpdateBridge()
         setupCloseScoreUpdateBridge()
         setupMatchUpBridge()
         setupStandingsBridge()
         setupJobs()
-
         setupMessageBridge()
+        sendInitialMessage()
     }
 
     fun start() {
@@ -34,12 +32,14 @@ object BotArbiter {
             .subscribe {
                 val event = DataRetriever.getTransactions()
                 TransactionsBridge.dataObserver.onNext(event)
+
+                Postgres.saveLastTimeChecked()
             }
     }
 
     private fun sendInitialMessage() {
-        val startUpMessage = "Hey there! I am a Yahoo Fantasy bot that notifies you about all things happening in your league." +
-                "Hope I can help your league! Check me out at: https://github.com/landonp1203/yahoo-fantasy-bot"
+        val startUpMessage = "Hey there! I am the Yahoo Fantasy bot that notifies you about all things happening in your league!" +
+                "  Star me on Github: https://github.com/landonp1203/yahoo-fantasy-bot"
         if(!Postgres.startupMessageSent) {
             MessageBridge.dataObserver.onNext(Message.Generic(startUpMessage))
             Postgres.markStartupMessageReceived()
@@ -51,11 +51,6 @@ object BotArbiter {
     private fun setupTransactionsBridge() {
         val transactions = TransactionsBridge.dataObservable
             .convertToTransactionMessage()
-
-        // This is here because technically the last time checked can change
-        // between the above interval and when the transformer does its check
-        // for the latest time
-        Postgres.saveLastTimeChecked()
 
         transactions.subscribe(MessageBridge.dataObserver)
     }

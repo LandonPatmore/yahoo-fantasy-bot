@@ -45,27 +45,24 @@ object DataRetriever {
     private fun refreshExpiredToken() {
         currentToken?.let {
             if (isTokenExpired(it.first, it.second.expiresIn)) {
-                refreshExpiredToken()
+                val refreshToken = oauthService.refreshAccessToken(it.second.refreshToken)
+                currentToken = Pair(System.currentTimeMillis(), refreshToken)
+                Postgres.saveTokenData(refreshToken)
             }
-            val refreshToken = oauthService.refreshAccessToken(it.second.refreshToken)
-            currentToken = Pair(System.currentTimeMillis(), refreshToken)
-            Postgres.saveTokenData(refreshToken)
         }
     }
 
     fun authenticate() {
-        currentToken = Postgres.latestTokenData
+        while (true) {
+            currentToken = Postgres.latestTokenData
 
-        if (currentToken == null) { // This will run only if there is no data in the database
-            // TODO: Need to loop indef in here
-            println("Authorize usage here: ${oauthService.authorizationUrl}")
-            println("Paste the verification string:")
-            val oauthVerifier = readLine()
+            if (currentToken == null) { // This will run only if there is no data in the database
+                println("There is currently no token data in the database.  Please authenticate with Yahoo.")
+            } else {
+                return
+            }
 
-            // Trade the Request Token and Verifier for the Access Token
-            println("Trading request token for access token...")
-            currentToken = Pair(System.currentTimeMillis(), oauthService.getAccessToken(oauthVerifier))
-            println("Access token received.  Authorized successfully.")
+            Thread.sleep(5000)
         }
     }
 
