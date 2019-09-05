@@ -33,10 +33,14 @@ object Arbiter {
     fun start() {
         Observable.interval(0, 15, TimeUnit.SECONDS)
             .subscribe {
+                try {
                 lastTimeChecked = Postgres.latestTimeChecked
                 val event = DataRetriever.getTransactions()
                 TransactionsBridge.dataObserver.onNext(event)
                 Postgres.saveLastTimeChecked()
+                } catch (e : Exception) {
+                    println(e.localizedMessage)
+                }
             }
     }
 
