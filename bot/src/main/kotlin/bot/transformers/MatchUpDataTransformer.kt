@@ -49,9 +49,9 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
                 "${it.first.points} - ${it.second.points}"
 
         if (closeScoreUpdate) {
-            Message.CloseScoreUpdate(message)
+            Message.CloseScore(message)
         } else {
-            Message.ScoreUpdate(message)
+            Message.Score(message)
         }
     }
 
