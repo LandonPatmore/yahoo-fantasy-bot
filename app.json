@@ -17,7 +17,7 @@
   },
   "env": {
     "APP_NAME": {
-      "description": "Yahoo Fantasy Bot",
+      "description": "Name you gave the heroku application.  Exactly how you spelt it.",
       "value": "",
       "required": true
     },
@@ -39,17 +39,17 @@
     "YAHOO_CLIENT_ID": {
       "description": "Yahoo Client ID",
       "value": "",
-      "required": false
+      "required": true
     },
     "YAHOO_CLIENT_SECRET": {
       "description": "Yahoo Client Secret",
       "value": "",
-      "required": false
+      "required": true
     },
     "YAHOO_LEAGUE_ID": {
       "description": "Yahoo League ID",
       "value": "",
-      "required": false
+      "required": true
     }
   },
   "addons": [
