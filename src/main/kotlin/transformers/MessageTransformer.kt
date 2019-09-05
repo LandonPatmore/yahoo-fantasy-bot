@@ -15,9 +15,12 @@ fun Observable<Message>.convertToStringMessage(): Observable<String> =
             is Message.ScoreUpdate -> createMessage("===SCORE UPDATE===", it)
             is Message.CloseScoreUpdate -> createMessage("===CLOSE SCORE UPDATE===", it)
             is Message.MatchUp -> createMessage("===MATCH UP ALERT===", it)
+            is Message.Generic -> createMessage(null, it)
         }
     }
 
-private fun createMessage(alertTitle: String, message: Message): String {
-    return "$alertTitle\\n\\n${message.message}"
+private fun createMessage(alertTitle: String?, message: Message): String {
+    return alertTitle?.let {
+        "$alertTitle\\n\\n${message.message}"
+    } ?: message.message
 }

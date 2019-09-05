@@ -4,6 +4,7 @@ import bridges.*
 import io.reactivex.Observable
 import messaging_services.Discord
 import messaging_services.GroupMe
+import messaging_services.Message
 import messaging_services.Slack
 import transformers.*
 import utils.jobs.CloseScoreUpdateJob
@@ -14,6 +15,8 @@ import java.util.concurrent.TimeUnit
 
 object BotArbiter {
     init {
+        sendInitialMessage()
+
         setupTransactionsBridge()
         setupScoreUpdateBridge()
         setupCloseScoreUpdateBridge()
@@ -32,9 +35,25 @@ object BotArbiter {
             }
     }
 
+    private fun sendInitialMessage() {
+        val startUpMessage = "Hey there! I am a Yahoo Fantasy bot that notifies you about all things happening in your league." +
+                "Hope I can help your league! Check me out at: https://github.com/landonp1203/yahoo-fantasy-bot"
+        if(!Postgres.startupMessageSent) {
+            MessageBridge.dataObserver.onNext(Message.Generic(startUpMessage))
+            Postgres.markStartupMessageReceived()
+        } else {
+            println("Start up message already sent, not sending...")
+        }
+    }
+
     private fun setupTransactionsBridge() {
         val transactions = TransactionsBridge.dataObservable
-            .convertToTransactionMessage(1000)
+            .convertToTransactionMessage()
+
+        // This is here because technically the last time checked can change
+        // between the above interval and when the transformer does its check
+        // for the latest time
+        Postgres.saveLastTimeChecked()
 
         transactions.subscribe(MessageBridge.dataObserver)
     }

@@ -4,12 +4,13 @@ import io.reactivex.Observable
 import messaging_services.Message
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import utils.Postgres
 
-fun Observable<Document>.convertToTransactionMessage(lastTimeChecked: Long): Observable<Message> =
+fun Observable<Document>.convertToTransactionMessage(): Observable<Message> =
     flatMapIterable {
         it.select("transaction")
     }.filter {
-        it.select("timestamp").first().text().toLong() >= lastTimeChecked
+        it.select("timestamp").first().text().toLong() >= Postgres.latestTimeChecked
     }.map {
         when (it.select("type").first().text()) {
             "add" -> addMessage(it)

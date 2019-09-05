@@ -32,7 +32,6 @@ object Postgres {
                 println(e.localizedMessage)
                 false
             }
-
         }
 
     /**
@@ -57,7 +56,6 @@ object Postgres {
                 println(e.localizedMessage)
                 System.currentTimeMillis() / 1000
             }
-
         }
 
     /**
@@ -65,7 +63,7 @@ object Postgres {
      *
      * @return token data
      */
-    val latestTokenData: Pair<OAuth2AccessToken, Long>?
+    val latestTokenData: Pair<Long, OAuth2AccessToken>?
         get() {
             dropTopRows("tokens", "yahooTokenRetrievedTime")
 
@@ -86,6 +84,7 @@ object Postgres {
                     val scope = row.getString("yahooTokenScope")
 
                     return Pair(
+                        retrievedTime,
                         OAuth2AccessToken(
                             accessToken,
                             tokenType,
@@ -93,7 +92,7 @@ object Postgres {
                             refreshToken,
                             scope,
                             rawResponse
-                        ), retrievedTime
+                        )
                     )
                 }
                 return null
@@ -101,7 +100,6 @@ object Postgres {
                 println(e.localizedMessage)
                 return null
             }
-
         }
 
     /**
@@ -115,7 +113,8 @@ object Postgres {
         while (connection == null) {
             if (attempts >= 100) {
                 println(
-                    "There have been 100 attempts to connect to the DB.  None have been successful.  Exiting.")
+                    "There have been 100 attempts to connect to the DB.  None have been successful.  Exiting."
+                )
                 exitProcess(-1)
             }
 
@@ -137,7 +136,6 @@ object Postgres {
 
                 attempts++
             }
-
         }
 
         return connection
@@ -169,12 +167,9 @@ object Postgres {
             statement.executeUpdate(sql)
 
             println("Token data has been saved.")
-
-            return
         } catch (e: SQLException) {
             println(e.localizedMessage)
         }
-
     }
 
     /**
