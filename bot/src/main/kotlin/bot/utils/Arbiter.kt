@@ -17,6 +17,8 @@ import utils.JobRunner
 import java.util.concurrent.TimeUnit
 
 object Arbiter {
+    private var lastTimeChecked: Long = 0
+
     init {
         setupTransactionsBridge()
         setupScoreUpdateBridge()
@@ -31,15 +33,15 @@ object Arbiter {
     fun start() {
         Observable.interval(0, 15, TimeUnit.SECONDS)
             .subscribe {
+                lastTimeChecked = Postgres.latestTimeChecked
                 val event = DataRetriever.getTransactions()
                 TransactionsBridge.dataObserver.onNext(event)
-
                 Postgres.saveLastTimeChecked()
             }
     }
 
     private fun sendInitialMessage() {
-        val startUpMessage = "Hey there! I am the Yahoo Fantasy bot that notifies you about all things happening in your league!" +
+        val startUpMessage = "Hey there! I am the Yahoo Fantasy Bot that notifies you about all things happening in your league!" +
                 "  Star me on Github: https://github.com/landonp1203/yahoo-fantasy-bot"
         if(!Postgres.startupMessageSent) {
             MessageBridge.dataObserver.onNext(Message.Generic(startUpMessage))
@@ -51,7 +53,7 @@ object Arbiter {
 
     private fun setupTransactionsBridge() {
         val transactions = TransactionsBridge.dataObservable
-            .convertToTransactionMessage()
+            .convertToTransactionMessage(lastTimeChecked)
 
         transactions.subscribe(MessageBridge.dataObserver)
     }
