@@ -1,5 +1,12 @@
 ### Feel free to contribute!
 
+#### Current Roadmap
+
+- [x] Reactive X
+- [ ] Docker Support
+- [ ] More in depth messages
+- [ ] Clean up code
+
 **Auto-deploys do not happen automatically.  You will need to come back and click the "Deploy" button again to get the latest bot.  It will reset everything.  Just follow all the steps again and you will be good!**
 
 # yahoo-fantasy-bot
