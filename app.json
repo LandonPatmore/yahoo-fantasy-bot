@@ -1,5 +1,5 @@
 {
-  "name": "Yahoo Trader Bot",
+  "name": "Yahoo Fantasy Bot",
   "description": "Bot that alerts users about various things happening in their Yahoo Fantasy Sports league.  Can be used with Discord, GroupMe, and Slack",
   "keywords": [
     "fantasy football",

@@ -10,7 +10,7 @@
 
 **Auto-deploys do not happen automatically.  You will need to come back and click the "Deploy" button again to get the latest bot.  It will reset everything.  Just follow all the steps again and you will be good!**
 
-# yahoo-fantasy-bot
+# Yahoo Fantasy Bot
 Bot that alerts GroupMe, Slack, and Discord users about various things happening in their Yahoo Fantasy Football League.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
