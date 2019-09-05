@@ -5,12 +5,12 @@ import io.reactivex.Observer
 import io.reactivex.subjects.PublishSubject
 import org.jsoup.nodes.Document
 
-object TransactionsBridge : Bridge<Document> {
-    private val dataBridge = PublishSubject.create<Document>()
+object TransactionsBridge : Bridge<Pair<Long, Document>> {
+    private val dataBridge = PublishSubject.create<Pair<Long, Document>>()
 
-    override val dataObserver: Observer<Document>
+    override val dataObserver: Observer<Pair<Long, Document>>
         get() = dataBridge
 
-    override val dataObservable: Observable<Document>
+    override val dataObservable: Observable<Pair<Long, Document>>
         get() = dataBridge
 }

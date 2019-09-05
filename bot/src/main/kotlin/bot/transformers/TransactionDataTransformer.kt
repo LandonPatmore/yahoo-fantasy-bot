@@ -6,18 +6,20 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import shared.Postgres
 
-fun Observable<Document>.convertToTransactionMessage(latestTimeChecked: Long): Observable<Message> =
-    flatMapIterable {
-        it.select("transaction")
+fun Observable<Pair<Long, Document>>.convertToTransactionMessage(): Observable<Message> =
+    flatMap {
+        Observable.fromIterable(it.second.select("transaction"))
+            .map { transaction ->
+                Pair(it.first, transaction)
+            }
     }.filter {
-        println("Last time checked: $latestTimeChecked")
-        it.select("timestamp").first().text().toLong() >= latestTimeChecked
+        it.second.select("timestamp").first().text().toLong() >= it.first
     }.map {
-        when (it.select("type").first().text()) {
-            "add" -> addMessage(it)
-            "drop" -> dropMessage(it)
-            "add/drop" -> addDropMessage(it)
-            "trade" -> tradeMessage(it)
+        when (it.second.select("type").first().text()) {
+            "add" -> addMessage(it.second)
+            "drop" -> dropMessage(it.second)
+            "add/drop" -> addDropMessage(it.second)
+            "trade" -> tradeMessage(it.second)
             "commish" -> commissionerMessage()
             else -> Message.Unknown("")
         }
