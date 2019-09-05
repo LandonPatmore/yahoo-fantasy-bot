@@ -164,7 +164,7 @@ Save the "Webhook URL" on this page
 
 2. Fill out all of the variables from: Yahoo, GroupMe, Slack, and Discord (You can have any combination of messaging services.)
 3. Click 'Overview"
-4. Click "Configure Dynos" and turn on the "web" dyno
+4. Click "Configure Dynos" and turn on the "web" and "bot" dyno
 5. Click "Open App" at the top right
 6. Follow the setup and then close the window once it says "You are authorized".
 7. Once you are authorized, Click "Configure Dynos" and turn OFF the "web" dyno (failing to do this will put your bot to sleep because of heroku policy, thus your bot will not function.)
