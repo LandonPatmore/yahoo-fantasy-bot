@@ -11,9 +11,7 @@ import bot.utils.jobs.CloseScoreUpdateJob
 import bot.utils.jobs.MatchUpJob
 import bot.utils.jobs.ScoreUpdateJob
 import bot.utils.jobs.StandingsJob
-import org.quartz.CronExpression
 import shared.Postgres
-import utils.JobRunner
 import java.util.concurrent.TimeUnit
 
 object Arbiter {
