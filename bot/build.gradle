@@ -9,4 +9,6 @@ dependencies {
     implementation("org.quartz-scheduler:quartz:2.3.0")
     implementation("com.github.scribejava:scribejava-apis:6.0.0")
     implementation("org.jsoup:jsoup:1.7.2")
+
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.1'
 }
