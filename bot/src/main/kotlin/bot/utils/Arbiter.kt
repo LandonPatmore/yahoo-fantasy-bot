@@ -113,6 +113,19 @@ object Arbiter {
         JobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 MON *")
         JobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 TUE *")
 
+        // TMP
+        JobRunner.createJob(ScoreUpdateJob::class.java, "0 20 4 ? 9-1 MON *")
+        // JobRunner.createJob(ScoreUpdateJob::class.java, "0 00 4 ? 9-1 MON *")
+        // JobRunner.createJob(ScoreUpdateJob::class.java, "0 01 4 ? 9-1 MON *")
+        // JobRunner.createJob(ScoreUpdateJob::class.java, "0 02 4 ? 9-1 MON *")
+        // JobRunner.createJob(ScoreUpdateJob::class.java, "0 03 4 ? 9-1 MON *")
+        // JobRunner.createJob(ScoreUpdateJob::class.java, "0 04 4 ? 9-1 MON *")
+        // JobRunner.createJob(ScoreUpdateJob::class.java, "0 05 4 ? 9-1 MON *")
+        // JobRunner.createJob(ScoreUpdateJob::class.java, "0 06 4 ? 9-1 MON *")
+        // JobRunner.createJob(ScoreUpdateJob::class.java, "0 07 4 ? 9-1 MON *")
+        // JobRunner.createJob(ScoreUpdateJob::class.java, "0 08 4 ? 9-1 MON *")
+        // JobRunner.createJob(ScoreUpdateJob::class.java, "0 09 4 ? 9-1 MON *")
+
         JobRunner.runJobs()
     }
 }
