@@ -20,7 +20,7 @@ fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> 
 fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> =
     map {
         val teamDataBuilder = StringBuilder()
-        teamDataBuilder.append("${it.first.name} vs. ${it.second.name}\\n")
+        teamDataBuilder.append("*${it.first.name}* (${it.first.manager}) vs. *${it.second.name}* (${it.second.manager})\\n")
         teamDataBuilder.append("===\\n")
 
         val teams = it.toList()
@@ -51,8 +51,25 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
             true
         }
     }.map {
-        val message = "${it.first.name} vs. ${it.second.name}\\n" +
-                "${it.first.points} - ${it.second.points}"
+        val ignoreCase = true
+        val messageBuilder = StringBuilder()
+        // messageBuilder.append("💯 *SCORE ALERT* 📈\n⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯\n")
+
+        messageBuilder.append(">*${it.first.name}*")
+        if (!it.first.name.contains(it.first.manager, ignoreCase)) {
+            messageBuilder.append(" (${it.first.manager})")
+        }
+
+        messageBuilder.append(" 🆚 ")
+
+        messageBuilder.append("*${it.second.name}*")
+        if (!it.second.name.contains(it.second.manager, ignoreCase)) {
+            messageBuilder.append(" (${it.second.manager})")
+        }
+
+        messageBuilder.append("\\n>${it.first.points} ➖ ${it.second.points}")
+
+        val message = messageBuilder.toString().trim()
 
         if (closeScoreUpdate) {
             Message.CloseScore(message)
@@ -64,6 +81,7 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
 private fun generateTeamData(team: Element): Team {
     val id = team.select("team_id").text().toInt()
     val name = team.select("name").text()
+    val manager = team.select("managers").select("manager").first().select("nickname").text()
     val waiverPriority = team.select("waiver_priority").text().toIntOrNull()
     val faabBalance = team.select("faab_balance").text().toIntOrNull()
     val numberOfMoves = team.select("number_of_moves").text().toInt()
@@ -75,6 +93,7 @@ private fun generateTeamData(team: Element): Team {
     return Team(
         name,
         id,
+        manager,
         waiverPriority,
         faabBalance,
         numberOfMoves,
@@ -88,6 +107,7 @@ private fun generateTeamData(team: Element): Team {
 data class Team(
     val name: String,
     val id: Int,
+    val manager: String,
     val waiverPriority: Int?,
     val faabBalance: Int?,
     val numberOfMoves: Int,
