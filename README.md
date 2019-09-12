@@ -1,14 +1,15 @@
-### Feel free to contribute!
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-#### Current ### Feel free to contribute!
+### Feel free to contribute!
 
 #### Current Roadmap
 
 - [x] Kotlin (because why not :?)
 - [x] Reactive X
 - [ ] Break out Yahoo data retrieval into independent library
-- [ ] Docker Support
+- [ ] Docker Support (hopefully by mid-season)
 - [ ] More in depth messages
+- [ ] Respond to chat commands from various messaging services
 - [ ] Clean up code
 
 **Auto-deploys do not happen automatically.  You will need to come back and click the "Deploy" button again to get the latest bot.  It will reset everything.  Just follow all the steps again and you will be good!**
@@ -16,15 +17,15 @@
 # Yahoo Fantasy Bot
 Bot that alerts GroupMe, Slack, and Discord users about various things happening in their Yahoo Fantasy Football League.
 ## What it does:
->Sends out messages on certain intervals: (All times are in GMT as DST does not affect it. Will be sent at the correct times.)
+>Sends out messages at certain intervals: (All times are in GMT since it is not affected by DST. Will be sent at the correct times across timezones.)
 >
 >**Score Updates**
->Friday: 03:55 GMT
->Sunday: 17:00 GMT
->Sunday: 20:00 GMT
->Monday: 00:00 GMT
->Monday: 03:55 GMT
->Tuesday: 03:55 GMT
+>* Friday: 03:55 GMT
+>* Sunday: 17:00 GMT
+>* Sunday: 20:00 GMT
+>* Monday: 00:00 GMT
+>* Monday: 03:55 GMT
+>* Tuesday: 03:55 GMT
 >
 >**Close Score Update (matches within 15pts):** Monday 23:30 GMT
 >
@@ -33,19 +34,11 @@ Bot that alerts GroupMe, Slack, and Discord users about various things happening
 >**Weekly Standings:** Tuesday 16:30 GMT
 >
 >**Alerts about any transactions that happen in the league:**
->-ADD
->-DROP
->-ADD/DROP
->-TRADE
->-COMMISH CHANGES
->
->**Future plans:**
->-Add more chat services
->-Allow the bot to respond to messages that are directed at it (was an experimental feature at first, haven't had time to figure this one out for Heroku and docker support)
->-Docker support (hopefully by mid-season)
-
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+>* ADD
+>* DROP
+>* ADD/DROP
+>* TRADE
+>* COMMISH CHANGES
 
 ## Follow these steps EXACTLY!
 1. Click the above button.  It will auto-deploy the application to Heroku.
