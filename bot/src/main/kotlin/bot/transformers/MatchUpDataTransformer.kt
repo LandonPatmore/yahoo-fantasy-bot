@@ -25,7 +25,7 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> 
 
         val teams = it.toList()
         for (team: Team in teams) {
-            teamDataBuilder.append("Team: ${team.name}\\nWin Probability: ${team.winProbability}%\\nProjected Points: ${team.projectedPoints}")
+            teamDataBuilder.append("Team: ${team.name}\\n${"Win Probability: %.2f".format(team.winProbability)}%\\nProjected Points: ${team.projectedPoints}")
             teamDataBuilder.append(
                 team.faabBalance?.let { balance ->
                     "\\nFAAB: $balance"
