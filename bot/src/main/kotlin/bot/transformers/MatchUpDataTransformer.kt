@@ -42,17 +42,15 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> 
 fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: Boolean = false): Observable<Message> =
     filter {
         if (closeScoreUpdate) {
-            if (abs(it.first.points - it.second.points) != 0.0) {
-                abs(it.first.points - it.second.points) <= 15
-            } else {
-                false
-            }
+            abs(it.first.winProbability - it.second.winProbability) < 40.0
         } else {
             true
         }
     }.map {
         val message = "${it.first.name} vs. ${it.second.name}\\n" +
-                "${it.first.points} - ${it.second.points}"
+                "${it.first.points} (${it.first.projectedPoints})" +
+                " - " +
+                "${it.second.points} (${it.second.projectedPoints})"
 
         if (closeScoreUpdate) {
             Message.CloseScore(message)
