@@ -28,8 +28,8 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> 
             teamDataBuilder.append("Team: ${team.name}\\nWin Probability: ${team.winProbability}%\\nProjected Points: ${team.projectedPoints}")
             teamDataBuilder.append(
                 team.faabBalance?.let { balance ->
-                    teamDataBuilder.append("\\nFAAB: $balance")
-                } ?: teamDataBuilder.append("\\nWaiver Priority: ${team.waiverPriority}")
+                    "\\nFAAB: $balance"
+                } ?: "\\nWaiver Priority: ${team.waiverPriority}"
             )
             teamDataBuilder.append("\\n\\n")
         }
@@ -64,7 +64,7 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
 private fun generateTeamData(team: Element): Team {
     val id = team.select("team_id").text().toInt()
     val name = team.select("name").text()
-    val waiverPriority = team.select("waiver_priority").text().toInt()
+    val waiverPriority = team.select("waiver_priority").text().toIntOrNull()
     val faabBalance = team.select("faab_balance").text().toIntOrNull()
     val numberOfMoves = team.select("number_of_moves").text().toInt()
     val numberOfTrades = team.select("number_of_trades").text().toInt()
@@ -88,7 +88,7 @@ private fun generateTeamData(team: Element): Team {
 data class Team(
     val name: String,
     val id: Int,
-    val waiverPriority: Int,
+    val waiverPriority: Int?,
     val faabBalance: Int?,
     val numberOfMoves: Int,
     val numberOfTrades: Int,
