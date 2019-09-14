@@ -18,6 +18,9 @@ allprojects {
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib:1.1.2"
         compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        implementation("com.github.scribejava:scribejava-apis:6.0.0")
+
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.1'
     }
     repositories {
         mavenCentral()
