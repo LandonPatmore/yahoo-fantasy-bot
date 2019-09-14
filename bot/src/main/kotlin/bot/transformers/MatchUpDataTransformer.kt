@@ -23,18 +23,15 @@ fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> 
 fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> =
     map {
         val teamDataBuilder = StringBuilder()
-        teamDataBuilder.append("<b>${it.first.name}</b> (${it.first.manager}) vs. <b>${it.second.name}</b> (${it.second.manager})\\n")
-        teamDataBuilder.append("===\\n")
 
         val teams = it.toList()
         for (team: Team in teams) {
-            teamDataBuilder.append("Team: ${team.name}\\n${"Win Probability: %.2f".format(team.winProbability)}%\\nProjected Points: ${team.projectedPoints}")
-            teamDataBuilder.append(
-                team.faabBalance?.let { balance ->
-                    "\\nFAAB: $balance"
-                } ?: "\\nWaiver Priority: ${team.waiverPriority}"
-            )
-            teamDataBuilder.append("\\n\\n")
+            teamDataBuilder.append("> ${generateTeamName(team)}\\n")
+            teamDataBuilder.append("> • Win Probability: <b>${team.winProbability}%</b>\\n")
+            teamDataBuilder.append("> • Projected Points: <b>${team.projectedPoints}</b>\\n")
+            if (teams.indexOf(team) == 0) {
+                teamDataBuilder.append("> 🆚\\n")
+            }
         }
 
         val finalMessage = teamDataBuilder.toString().trim()
@@ -54,23 +51,12 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
             true
         }
     }.map {
-        val ignoreCase = true
         val messageBuilder = StringBuilder()
-        // messageBuilder.append("💯 *SCORE ALERT* 📈\n⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯\n")
 
-        messageBuilder.append("> <b>${it.first.name}</b>")
-        if (!it.first.name.contains(it.first.manager, ignoreCase)) {
-            messageBuilder.append(" (${it.first.manager})")
-        }
+        val header = generateMatchUpHeader(it.first, it.second)
+        messageBuilder.append(header)
 
-        messageBuilder.append(" 🆚 ")
-
-        messageBuilder.append("<b>${it.second.name}</b>")
-        if (!it.second.name.contains(it.second.manager, ignoreCase)) {
-            messageBuilder.append(" (${it.second.manager})")
-        }
-
-        messageBuilder.append("\\n> ${it.first.points} – ${it.second.points}")
+        messageBuilder.append("> ${it.first.points} – ${it.second.points}")
 
         val message = messageBuilder.toString().trim()
 
@@ -80,6 +66,29 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
             Message.Score(message)
         }
     }
+
+private fun generateTeamName(team: Team): String {
+    val ignoreCase = true
+    val name = StringBuilder()
+
+    name.append("<b>${team.name}</b>")
+    if (!team.name.contains(team.manager, ignoreCase)) {
+        name.append(" (${team.manager})")
+    }
+
+    return name.toString().trim()
+}
+
+private fun generateMatchUpHeader(teamOne: Team, teamTwo: Team): String {
+    val header = StringBuilder()
+
+    header.append("> ${generateTeamName(teamOne)}")
+    header.append(" 🆚 ")
+    header.append("${generateTeamName(teamTwo)}")
+    header.append("\\n")
+
+    return header.toString().trim()
+}
 
 private fun generateTeamData(team: Element): Team {
     val id = team.select("team_id").text().toInt()

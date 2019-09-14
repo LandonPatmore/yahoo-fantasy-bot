@@ -14,7 +14,7 @@ fun Observable<Message>.convertToStringMessage(): Observable<String> =
             is Message.Standings -> createMessage("===STANDINGS ALERT===", it)
             is Message.Score -> createMessage(null, it)
             is Message.CloseScore -> createMessage("===CLOSE SCORE ALERT===", it)
-            is Message.MatchUp -> createMessage("===MATCH UP ALERT===", it)
+            is Message.MatchUp -> createMessage(null, it)
             is Message.Generic -> createMessage(null, it)
             is Message.Unknown -> createMessage(null, it)
         }
