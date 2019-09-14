@@ -4,6 +4,7 @@ import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import bot.messaging_services.Message
+import java.text.DecimalFormat
 import kotlin.math.abs
 
 fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> =
@@ -98,7 +99,7 @@ private fun generateTeamData(team: Element): Team {
     val faabBalance = team.select("faab_balance").text().toIntOrNull()
     val numberOfMoves = team.select("number_of_moves").text().toInt()
     val numberOfTrades = team.select("number_of_trades").text().toInt()
-    val winProbability = Math.round(team.select("win_probability").text().toDouble() * 100).toInt()
+    val winProbability = DecimalFormat("#.##").format(team.select("win_probability").text().toDouble() * 100)
     val points = team.select("team_points").select("total").text().toDouble()
     val projectedPoints = team.select("team_projected_points").select("total").text().toDouble()
 
@@ -124,7 +125,7 @@ data class Team(
     val faabBalance: Int?,
     val numberOfMoves: Int,
     val numberOfTrades: Int,
-    val winProbability: Int,
+    val winProbability: String,
     val points: Double,
     val projectedPoints: Double
 )
