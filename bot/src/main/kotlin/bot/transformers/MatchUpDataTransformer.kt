@@ -72,7 +72,7 @@ private fun generateTeamName(team: Team): String {
     val name = StringBuilder()
 
     name.append("<b>${team.name}</b>")
-    if (!team.name.contains(team.manager, ignoreCase)) {
+    if (!team.name.contains(team.manager, ignoreCase) && !team.manager.contains("hidden")) {
         name.append(" (${team.manager})")
     }
 
@@ -98,7 +98,7 @@ private fun generateTeamData(team: Element): Team {
     val faabBalance = team.select("faab_balance").text().toIntOrNull()
     val numberOfMoves = team.select("number_of_moves").text().toInt()
     val numberOfTrades = team.select("number_of_trades").text().toInt()
-    val winProbability = team.select("win_probability").text().toDouble() * 100
+    val winProbability = Math.round(team.select("win_probability").text().toDouble() * 100).toInt()
     val points = team.select("team_points").select("total").text().toDouble()
     val projectedPoints = team.select("team_projected_points").select("total").text().toDouble()
 
@@ -124,7 +124,7 @@ data class Team(
     val faabBalance: Int?,
     val numberOfMoves: Int,
     val numberOfTrades: Int,
-    val winProbability: Double,
+    val winProbability: Int,
     val points: Double,
     val projectedPoints: Double
 )
