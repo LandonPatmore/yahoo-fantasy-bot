@@ -103,12 +103,12 @@ object Arbiter {
     private fun setupJobs() {
         // Times are in GMT since it is not effected by DST
 
-        // 9am PT is 2am GMT on the same day
-        JobRunner.createJob(CloseScoreUpdateJob::class.java, "0 00 2 ? 9-1 MON *")
-        JobRunner.createJob(StandingsJob::class.java, "0 00 2 ? 9-1 TUE *")
+        // 9am PT is 4pm (16:00) GMT on the same day
+        JobRunner.createJob(CloseScoreUpdateJob::class.java, "0 00 16 ? 9-1 MON *")
+        JobRunner.createJob(StandingsJob::class.java, "0 00 16 ? 9-1 TUE *")
 
-        // 12:55pm PT is 5:55am GMT on the same day
-        JobRunner.createJob(MatchUpJob::class.java, "0 55 5 ? 9-1 THU *")
+        // 12:55pm PT is 7:55pm (19:55) GMT on the same day
+        JobRunner.createJob(MatchUpJob::class.java, "0 55 19 ? 9-1 THU *")
 
         // JobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 FRI *")
         // JobRunner.createJob(ScoreUpdateJob::class.java, "0 00 17 ? 9-1 SUN *")
