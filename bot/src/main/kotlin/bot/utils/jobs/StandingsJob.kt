@@ -11,7 +11,7 @@ class StandingsJob : Job {
     override fun execute(context: JobExecutionContext?) {
         println("Running Standings Update Job...")
 
-        val header = Message.Generic(":mega: <b>STANDINGS ALERT</b> :1234:\\n━━━━━━━━━━━━━")
+        val header = Message.Generic("📣 <b>STANDINGS ALERT</b> 🔢\\n━━━━━━━━━━━━━")
         MessageBridge.dataObserver.onNext(header)
 
         val data = DataRetriever.getStandings()
