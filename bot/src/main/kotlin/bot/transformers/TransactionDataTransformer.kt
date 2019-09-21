@@ -13,9 +13,9 @@ fun Observable<Pair<Long, Document>>.convertToTransactionMessage(): Observable<M
                 Pair(it.first, transaction)
             }
     }.filter {
-        it.second.select("timestamp").text().toLong() >= it.first
+        it.second.select("timestamp").first().text().toLong() >= it.first
     }.map {
-        when (it.second.select("type").text()) {
+        when (it.second.select("type").first().text()) {
             "add" -> addMessage(it.second)
             "drop" -> dropMessage(it.second)
             "add/drop" -> addDropMessage(it.second)
