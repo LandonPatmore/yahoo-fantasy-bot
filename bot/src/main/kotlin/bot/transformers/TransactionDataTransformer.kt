@@ -13,9 +13,9 @@ fun Observable<Pair<Long, Document>>.convertToTransactionMessage(): Observable<M
                 Pair(it.first, transaction)
             }
     }.filter {
-        it.second.select("timestamp").text().toLong() >= it.first
+        it.second.select("timestamp").first().text().toLong() >= it.first
     }.map {
-        when (it.second.select("type").text()) {
+        when (it.second.select("type").first().text()) {
             "add" -> addMessage(it.second)
             "drop" -> dropMessage(it.second)
             "add/drop" -> addDropMessage(it.second)
@@ -36,13 +36,13 @@ private fun addMessage(event: Element): Message {
         val nflTeam = player.select("editorial_team_abbr").text()
         val position = player.select("display_position").text()
 
-        playersAdded.append("$name ($nflTeam, $position), ")
+        playersAdded.append("<b>$name</b> ($nflTeam, $position), ")
     }
 
     val finalMessage = playersAdded.trimEnd().removeSuffix(",")
 
     return Message.Transaction.Add(
-        "Team: $fantasyTeam\\n" +
+        "<b>$fantasyTeam</b>\\n" +
                 "Added: $finalMessage"
     )
 }
@@ -59,13 +59,13 @@ private fun dropMessage(event: Element): Message {
         val nflTeam = player.select("editorial_team_abbr").text()
         val position = player.select("display_position").text()
 
-        playersDropped.append("$name ($nflTeam, $position), ")
+        playersDropped.append("<b>$name</b> ($nflTeam, $position), ")
     }
 
     val finalMessage = playersDropped.trimEnd().removeSuffix(",")
 
     return Message.Transaction.Drop(
-        "Team: $fantasyTeam\\n" +
+        "<b>$fantasyTeam</b>\\n" +
                 "Dropped: $finalMessage"
     )
 }
@@ -85,7 +85,7 @@ private fun addDropMessage(event: Element): Message {
         val nflTeam = player.select("editorial_team_abbr").text()
         val position = player.select("display_position").text()
 
-        val e = "$name ($nflTeam, $position), "
+        val e = "<b>$name</b> ($nflTeam, $position), "
 
         if (player.select("type").text() == "add") {
             playersAdded.append(e)
@@ -100,7 +100,7 @@ private fun addDropMessage(event: Element): Message {
     val finalMessageDropped = playersDropped.trimEnd().removeSuffix(",")
 
     return Message.Transaction.AddDrop(
-        "Team: $fantasyTeam\\n" +
+        "<b>$fantasyTeam</b>\\n" +
                 "Added: $finalMessageAdded\\n" +
                 "Dropped: $finalMessageDropped"
     )
@@ -121,7 +121,7 @@ private fun tradeMessage(event: Element): Message {
         val nflTeam = player.select("editorial_team_abbr").text()
         val position = player.select("display_position").text()
 
-        val e = "$name ($nflTeam, $position), "
+        val e = "<b>$name</b> ($nflTeam, $position), "
 
         if (fantasyTeam == trader) {
             fromTraderTeam.append(e)
@@ -134,11 +134,11 @@ private fun tradeMessage(event: Element): Message {
     val finalMessageFromTradee = fromTradeeTeam.trimEnd().removeSuffix(",")
 
     return Message.Transaction.Trade(
-        "$trader traded: $finalMessageFromTradee\\n" +
-                "$tradee traded: $finalMessageFromTrader"
+        "<b>$trader</b> traded: $finalMessageFromTradee\\n" +
+                "<b>$tradee</b> traded: $finalMessageFromTrader"
     )
 }
 
 private fun commissionerMessage(): Message {
-    return Message.Transaction.Commish("A league setting has been modified.  You may want to check or ask them what they changed!")
+    return Message.Transaction.Commish("A league setting has been modified. You may want to check or ask them what they changed!")
 }
