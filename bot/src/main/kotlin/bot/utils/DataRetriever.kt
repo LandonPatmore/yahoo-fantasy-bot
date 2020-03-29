@@ -18,7 +18,7 @@ object DataRetriever {
     private const val TRANSACTIONS = "/transactions"
 
     private val BASE_URL =
-        "https://fantasysports.yahooapis.com/fantasy/v2/league/nfl.l.${EnvVariables.YahooLeagueId.variable}"
+        "https://fantasysports.yahooapis.com/fantasy/v2/league/${EnvVariables.YahooGameKey.variable}.l.${EnvVariables.YahooLeagueId.variable}"
 
     private val oauthService = ServiceBuilder(EnvVariables.YahooClientId.variable)
         .apiSecret(EnvVariables.YahooClientSecret.variable)
