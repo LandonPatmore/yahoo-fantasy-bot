@@ -48,18 +48,11 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
             true
         }
     }.map {
-        val messageBuilder = StringBuilder()
-
-        val header = generateMatchUpHeader(it.first, it.second)
-        messageBuilder.append(header)
-
-        messageBuilder.append("> ")
-        messageBuilder.append("${it.first.points} (proj: ${it.first.projectedPoints})")
-        messageBuilder.append(" - ")
-        messageBuilder.append("${it.second.points} (proj: ${it.second.projectedPoints})")
-
-        val message = messageBuilder.toString().trim()
-
+        val message = "${it.first.name} vs. ${it.second.name}\\n" +
+                "${it.first.points} (${it.first.projectedPoints})" +
+                " - " +
+                "${it.second.points} (${it.second.projectedPoints})"
+      
         if (closeScoreUpdate) {
             Message.CloseScore(message)
         } else {
