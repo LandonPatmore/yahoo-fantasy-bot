@@ -3,6 +3,7 @@ package shared
 sealed class EnvVariables(val variable: String?) {
     object YahooClientId : EnvVariables(System.getenv("YAHOO_CLIENT_ID"))
     object YahooClientSecret : EnvVariables(System.getenv("YAHOO_CLIENT_SECRET"))
+    object YahooGameKey : EnvVariables(System.getenv("YAHOO_GAME_KEY"))
     object YahooLeagueId : EnvVariables(System.getenv("YAHOO_LEAGUE_ID"))
     object GroupMeBotId : EnvVariables(System.getenv("GROUP_ME_BOT_ID"))
     object DiscordWebhookUrl : EnvVariables(System.getenv("DISCORD_WEBHOOK_URL"))
