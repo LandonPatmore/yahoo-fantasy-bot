@@ -7,5 +7,4 @@ interface Bridge<T> {
     val dataObserver: Observer<T>
 
     val dataObservable: Observable<T>
-
 }

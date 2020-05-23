@@ -1,16 +1,13 @@
 package bot.utils
 
 import bot.bridges.*
-import io.reactivex.Observable
 import bot.messaging_services.Discord
 import bot.messaging_services.GroupMe
 import bot.messaging_services.Message
 import bot.messaging_services.Slack
 import bot.transformers.*
-import bot.utils.jobs.CloseScoreUpdateJob
-import bot.utils.jobs.MatchUpJob
 import bot.utils.jobs.ScoreUpdateJob
-import bot.utils.jobs.StandingsJob
+import io.reactivex.Observable
 import shared.Postgres
 import java.util.concurrent.TimeUnit
 
@@ -41,11 +38,15 @@ object Arbiter {
     }
 
     private fun sendInitialMessage() {
-        val startUpMessage =
-            "Hey there! I am the Yahoo Fantasy Bot that notifies you about all things happening in your league!" +
-                    "  Star me on Github: https://github.com/landonp1203/yahoo-fantasy-bot"
         if (!Postgres.startupMessageSent) {
-            MessageBridge.dataObserver.onNext(Message.Generic(startUpMessage))
+            MessageBridge.dataObserver.onNext(
+                Message.Generic(
+                    """
+                        |Hey there! I am the Yahoo Fantasy Bot that notifies you about all things happening in your league!
+                        |Star me on Github: https://github.com/landonp1203/yahoo-fantasy-bot
+                    """.trimIndent()
+                )
+            )
             Postgres.markStartupMessageReceived()
         } else {
             println("Start up message already sent, not sending...")

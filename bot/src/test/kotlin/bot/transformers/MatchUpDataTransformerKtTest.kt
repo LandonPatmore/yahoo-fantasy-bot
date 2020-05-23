@@ -266,7 +266,7 @@ internal class MatchUpDataTransformerKtTest {
 
         testObserver.assertValueCount(1)
         testObserver.assertValue {
-            it.first.faabBalance == 17 && it.second.faabBalance == 100
+            it.first.faabBalance == 17
         }
     }
 

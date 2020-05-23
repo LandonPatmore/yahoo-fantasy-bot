@@ -11,7 +11,7 @@ class MatchUpJob : Job {
     override fun execute(context: JobExecutionContext?) {
         println("Running Match Up Update Job...")
 
-        val header = Message.Generic("📣 <b>MATCH UP ALERT</b> 👯\\n━━━━━━━━━━━━")
+        val header = Message.Generic("📣<b>MATCH UP ALERT</b> 👯\\n━━━━━━━━━━━━")
         MessageBridge.dataObserver.onNext(header)
 
         val data = DataRetriever.getTeamsData()

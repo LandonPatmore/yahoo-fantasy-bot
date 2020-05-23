@@ -1,10 +1,9 @@
 package bot.transformers
 
-import io.reactivex.Observable
 import bot.messaging_services.Message
+import io.reactivex.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import shared.Postgres
 
 fun Observable<Pair<Long, Document>>.convertToTransactionMessage(): Observable<Message> =
     flatMap {
@@ -27,46 +26,23 @@ fun Observable<Pair<Long, Document>>.convertToTransactionMessage(): Observable<M
 
 private fun addMessage(event: Element): Message {
     val fantasyTeam = event.select("destination_team_name").text()
-    val players = event.select("player")
-
-    val playersAdded = StringBuilder()
-
-    for (player: Element in players) {
-        val name = player.select("full").text()
-        val nflTeam = player.select("editorial_team_abbr").text()
-        val position = player.select("display_position").text()
-
-        playersAdded.append("<b>$name</b> ($nflTeam, $position), ")
-    }
-
-    val finalMessage = playersAdded.trimEnd().removeSuffix(",")
 
     return Message.Transaction.Add(
-        "<b>$fantasyTeam</b>\\n" +
-                "Added: $finalMessage"
+        """
+            |<b>$fantasyTeam</b>
+            |Added: ${getPlayerInfo(event)}
+        """.trimIndent()
     )
 }
 
 private fun dropMessage(event: Element): Message {
     val fantasyTeam = event.select("source_team_name").text()
-    val players = event.select("player")
-
-    val playersDropped = StringBuilder()
-
-
-    for (player: Element in players) {
-        val name = player.select("full").text()
-        val nflTeam = player.select("editorial_team_abbr").text()
-        val position = player.select("display_position").text()
-
-        playersDropped.append("<b>$name</b> ($nflTeam, $position), ")
-    }
-
-    val finalMessage = playersDropped.trimEnd().removeSuffix(",")
 
     return Message.Transaction.Drop(
-        "<b>$fantasyTeam</b>\\n" +
-                "Dropped: $finalMessage"
+        """
+            |<b>$fantasyTeam</b>
+            |Dropped: ${getPlayerInfo(event)}
+        """.trimIndent()
     )
 }
 
@@ -96,13 +72,12 @@ private fun addDropMessage(event: Element): Message {
         }
     }
 
-    val finalMessageAdded = playersAdded.trimEnd().removeSuffix(",")
-    val finalMessageDropped = playersDropped.trimEnd().removeSuffix(",")
-
     return Message.Transaction.AddDrop(
-        "<b>$fantasyTeam</b>\\n" +
-                "Added: $finalMessageAdded\\n" +
-                "Dropped: $finalMessageDropped"
+        """
+            |<b>$fantasyTeam</b>
+            |Added: ${playersAdded.trimEnd().removeSuffix(",")}
+            |Dropped: ${playersDropped.trimEnd().removeSuffix(",")}
+        """.trimIndent()
     )
 }
 
@@ -134,11 +109,29 @@ private fun tradeMessage(event: Element): Message {
     val finalMessageFromTradee = fromTradeeTeam.trimEnd().removeSuffix(",")
 
     return Message.Transaction.Trade(
-        "<b>$trader</b> traded: $finalMessageFromTradee\\n" +
-                "<b>$tradee</b> traded: $finalMessageFromTrader"
+        """
+            |<b>$trader</b> traded: $finalMessageFromTradee
+            |<b>$tradee</b> traded: $finalMessageFromTrader
+        """.trimIndent()
     )
 }
 
 private fun commissionerMessage(): Message {
     return Message.Transaction.Commish("A league setting has been modified. You may want to check or ask them what they changed!")
+}
+
+private fun getPlayerInfo(event: Element): String {
+    val players = event.select("player")
+
+    val playersAdded = StringBuilder()
+
+    for (player: Element in players) {
+        val name = player.select("full").text()
+        val nflTeam = player.select("editorial_team_abbr").text()
+        val position = player.select("display_position").text()
+
+        playersAdded.append("<b>$name</b> ($nflTeam, $position), ")
+    }
+
+    return playersAdded.toString().trimEnd().removeSuffix(",")
 }
