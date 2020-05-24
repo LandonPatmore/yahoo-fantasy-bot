@@ -12,13 +12,8 @@ fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> 
         it.select("matchup")
     }.map {
         val teams = it.select("team")
-        val teamOne = generateTeamData(teams[0])
-        val teamTwo = generateTeamData(teams[1])
 
-        val aheadTeam = if (teamOne.points > teamTwo.points) teamOne else teamTwo
-        val behindTeam = if (aheadTeam == teamTwo) teamOne else teamTwo
-
-        Pair(aheadTeam, behindTeam)
+        Pair(generateTeamData(teams[0]), generateTeamData(teams[1]))
     }
 
 fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> =
@@ -34,7 +29,7 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> 
                 |> • Projected Points: <b>${team.projectedPoints}</b>
                 |${
                 if (teams.indexOf(team) == 0) {
-                    "> 🆚"
+                    "> \uD83C\uDD9A"
                 } else {
                     ""
                 }}

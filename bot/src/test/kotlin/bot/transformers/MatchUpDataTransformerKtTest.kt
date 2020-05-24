@@ -244,8 +244,6 @@ internal class MatchUpDataTransformerKtTest {
                     "\t</teams>\n" +
                     "</matchup>"
         )
-
-        testPublishSubject.subscribeOn(testScheduler)
     }
 
     @AfterEach
@@ -266,7 +264,7 @@ internal class MatchUpDataTransformerKtTest {
 
         testObserver.assertValueCount(1)
         testObserver.assertValue {
-            it.first.faabBalance == 17
+            it.first.faabBalance == 17 && it.second.faabBalance == 100
         }
     }
 
@@ -287,42 +285,6 @@ internal class MatchUpDataTransformerKtTest {
     }
 
     @Test
-    fun convertToMatchUpMessageFAAB() {
-        val testObserver = TestObserver.create<Message>()
-
-        testPublishSubject
-            .convertToMatchUpObject()
-            .convertToMatchUpMessage()
-            .subscribe(testObserver)
-        testPublishSubject.onNext(faabDocument)
-        testScheduler.advanceTimeBy(50, TimeUnit.MILLISECONDS)
-
-        testObserver.assertValueCount(1)
-        testObserver.assertValue { it is Message.MatchUp }
-        testObserver.assertValue {
-            it.message.contains("FAAB") && !it.message.contains("Waiver Priority")
-        }
-    }
-
-    @Test
-    fun convertToMatchUpMessageNonFAAB() {
-        val testObserver = TestObserver.create<Message>()
-
-        testPublishSubject
-            .convertToMatchUpObject()
-            .convertToMatchUpMessage()
-            .subscribe(testObserver)
-        testPublishSubject.onNext(nonFaabDocument)
-        testScheduler.advanceTimeBy(50, TimeUnit.MILLISECONDS)
-
-        testObserver.assertValueCount(1)
-        testObserver.assertValue { it is Message.MatchUp }
-        testObserver.assertValue {
-            it.message.contains("Waiver Priority") && !it.message.contains("FAAB")
-        }
-    }
-
-    @Test
     fun convertToScoreUpdateMessage() {
         val testObserver = TestObserver.create<Message>()
 
@@ -336,8 +298,8 @@ internal class MatchUpDataTransformerKtTest {
         testObserver.assertValueCount(1)
         testObserver.assertValue { it is Message.Score }
         testObserver.assertValue {
-            it.message == "TEST TEAM 1 vs. TEST TEAM 2\\n" +
-                    "129.86 - 208.52"
+            it.message == "TEST TEAM 1 \uD83C\uDD9A TEST TEAM 2\\n" +
+                    "129.86 (138.11) - 208.52 (131.0)"
         }
     }
 }
