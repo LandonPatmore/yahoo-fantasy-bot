@@ -1,4 +1,5 @@
 @file:JvmName("Server")
+
 package webserver
 
 import com.github.scribejava.apis.YahooApi20
@@ -6,8 +7,11 @@ import com.github.scribejava.core.builder.ServiceBuilder
 import com.github.scribejava.core.oauth.OAuth20Service
 import shared.EnvVariables
 import shared.Postgres
-
+import spark.Response
 import spark.Spark.*
+import webserver.exceptions.AuthenticationException
+import webserver.exceptions.PostgresException
+
 
 object Server {
     private var service: OAuth20Service? = null
@@ -33,7 +37,9 @@ object Server {
         get("/") { req, res ->
             if (Postgres.latestTokenData == null) {
                 println("User is not authenticated.  Sending to Yahoo.")
-                res.redirect(authenticationUrl(req.scheme() + "://" + req.host()))
+                authenticationUrl(req.scheme() + "://" + req.host())?.let {
+                    res.redirect(it)
+                } ?: throw AuthenticationException()
             } else {
                 println("User is already authenticated.  Not sending to Yahoo.")
                 return@get "You are already authenticated with Yahoo's servers."
@@ -41,9 +47,26 @@ object Server {
         }
 
         get("/auth") { req, _ ->
-            Postgres.saveTokenData(service!!.getAccessToken(req.queryParams("code")))
+            service?.getAccessToken(req.queryParams("code"))?.let {
+                Postgres.saveTokenData(it)
+            } ?: throw PostgresException()
             println("Access token received.  Authorized successfully.")
             "You are authorized"
+        }
+
+        exception(PostgresException::class.java) { e, _, response: Response ->
+            exceptionHandler(response, 503, e.message)
+        }
+
+        exception(AuthenticationException::class.java) { e, _, response: Response ->
+            exceptionHandler(response, 401, e.message)
+        }
+    }
+
+    private fun exceptionHandler(response: Response, statusCode: Int, message: String): Response {
+        return response.apply {
+            status(statusCode)
+            body(message)
         }
     }
 
@@ -53,7 +76,7 @@ object Server {
      * @param url the callback url
      * @return String url
      */
-    private fun authenticationUrl(url: String): String {
+    private fun authenticationUrl(url: String): String? {
         println("Initial authorization...")
 
         service = ServiceBuilder(EnvVariables.YahooClientId.variable)
@@ -61,6 +84,6 @@ object Server {
             .callback("$url/auth")
             .build(YahooApi20.instance())
 
-        return service!!.authorizationUrl
+        return service?.authorizationUrl
     }
 }
