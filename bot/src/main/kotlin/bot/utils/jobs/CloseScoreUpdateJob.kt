@@ -12,9 +12,9 @@ class CloseScoreUpdateJob : Job {
         println("Running Close Score Update Job...")
 
         val header = Message.Generic("📣<b>CLOSE SCORE ALERT</b> 🤞\\n━━━━━━━━━━━━━")
-        MessageBridge.dataObserver.onNext(header)
+        MessageBridge.dataObserver.accept(header)
 
         val data = DataRetriever.getTeamsData()
-        CloseScoreUpdateBridge.dataObserver.onNext(data)
+        CloseScoreUpdateBridge.dataObserver.accept(data)
     }
 }

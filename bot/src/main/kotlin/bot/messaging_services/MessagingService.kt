@@ -1,9 +1,7 @@
 package bot.messaging_services
 
 import com.mashape.unirest.http.exceptions.UnirestException
-import io.reactivex.functions.Consumer
-import java.io.IOException
-import java.lang.Exception
+import io.reactivex.rxjava3.functions.Consumer
 
 abstract class MessagingService(private val maxMessageLength: Int) : Consumer<String> {
 

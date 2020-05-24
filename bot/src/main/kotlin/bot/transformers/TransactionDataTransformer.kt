@@ -1,7 +1,7 @@
 package bot.transformers
 
 import bot.messaging_services.Message
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 

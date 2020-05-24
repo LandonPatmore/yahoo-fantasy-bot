@@ -12,9 +12,9 @@ class MatchUpJob : Job {
         println("Running Match Up Update Job...")
 
         val header = Message.Generic("📣<b>MATCH UP ALERT</b> 👯\\n━━━━━━━━━━━━")
-        MessageBridge.dataObserver.onNext(header)
+        MessageBridge.dataObserver.accept(header)
 
         val data = DataRetriever.getTeamsData()
-        MatchUpBridge.dataObserver.onNext(data)
+        MatchUpBridge.dataObserver.accept(data)
     }
 }

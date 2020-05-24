@@ -1,14 +1,14 @@
 package bot.bridges
 
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.subjects.PublishSubject
+import com.jakewharton.rxrelay3.PublishRelay
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.functions.Consumer
 import org.jsoup.nodes.Document
 
 object ScoreUpdateBridge : Bridge<Document> {
-    private val dataBridge = PublishSubject.create<Document>()
+    private val dataBridge = PublishRelay.create<Document>()
 
-    override val dataObserver: Observer<Document>
+    override val dataObserver: Consumer<Document>
         get() = dataBridge
 
     override val dataObservable: Observable<Document>

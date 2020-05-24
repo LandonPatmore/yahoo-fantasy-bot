@@ -12,10 +12,10 @@ class ScoreUpdateJob : Job {
         println("Running Score Update Job...")
 
         val header = Message.Generic("📣<b>SCORE ALERT</b> 💯\\n━━━━━━━━━━")
-        MessageBridge.dataObserver.onNext(header)
+        MessageBridge.dataObserver.accept(header)
 
         val data = DataRetriever.getTeamsData()
-        ScoreUpdateBridge.dataObserver.onNext(data)
+        ScoreUpdateBridge.dataObserver.accept(data)
     }
 
 }

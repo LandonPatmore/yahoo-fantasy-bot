@@ -12,10 +12,10 @@ class StandingsJob : Job {
         println("Running Standings Update Job...")
 
         val header = Message.Generic("📣<b>STANDINGS ALERT</b> 🔢\\n━━━━━━━━━━━━━")
-        MessageBridge.dataObserver.onNext(header)
+        MessageBridge.dataObserver.accept(header)
 
         val data = DataRetriever.getStandings()
-        StandingsBridge.dataObserver.onNext(data)
+        StandingsBridge.dataObserver.accept(data)
     }
 
 }

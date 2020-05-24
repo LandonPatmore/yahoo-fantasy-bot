@@ -1,9 +1,9 @@
 package bot.transformers
 
-import io.reactivex.Observable
+import bot.messaging_services.Message
+import io.reactivex.rxjava3.core.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import bot.messaging_services.Message
 import java.text.DecimalFormat
 import kotlin.math.abs
 

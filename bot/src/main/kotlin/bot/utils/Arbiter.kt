@@ -7,7 +7,7 @@ import bot.messaging_services.Message
 import bot.messaging_services.Slack
 import bot.transformers.*
 import bot.utils.jobs.ScoreUpdateJob
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import shared.Postgres
 import java.util.concurrent.TimeUnit
 
@@ -29,7 +29,7 @@ object Arbiter {
                 try {
                     val event = DataRetriever.getTransactions()
                     val latestTimeChecked = Postgres.latestTimeChecked
-                    TransactionsBridge.dataObserver.onNext(Pair(latestTimeChecked, event))
+                    TransactionsBridge.dataObserver.accept(Pair(latestTimeChecked, event))
                     Postgres.saveLastTimeChecked()
                 } catch (e: Exception) {
                     println(e.localizedMessage)
@@ -39,7 +39,7 @@ object Arbiter {
 
     private fun sendInitialMessage() {
         if (!Postgres.startupMessageSent) {
-            MessageBridge.dataObserver.onNext(
+            MessageBridge.dataObserver.accept(
                 Message.Generic(
                     """
                         |Hey there! I am the Yahoo Fantasy Bot that notifies you about all things happening in your league!

@@ -1,14 +1,14 @@
 package bot.bridges
 
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.subjects.PublishSubject
+import com.jakewharton.rxrelay3.PublishRelay
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.functions.Consumer
 import bot.messaging_services.Message
 
 object MessageBridge : Bridge<Message> {
-    private val dataBridge = PublishSubject.create<Message>()
+    private val dataBridge = PublishRelay.create<Message>()
 
-    override val dataObserver: Observer<Message>
+    override val dataObserver: Consumer<Message>
         get() = dataBridge
 
     override val dataObservable: Observable<Message>

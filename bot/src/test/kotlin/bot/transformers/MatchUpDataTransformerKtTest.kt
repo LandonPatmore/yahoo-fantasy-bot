@@ -1,9 +1,9 @@
 package bot.transformers
 
 import bot.messaging_services.Message
-import io.reactivex.observers.TestObserver
-import io.reactivex.schedulers.TestScheduler
-import io.reactivex.subjects.PublishSubject
+import com.jakewharton.rxrelay3.PublishRelay
+import io.reactivex.rxjava3.observers.TestObserver
+import io.reactivex.rxjava3.schedulers.TestScheduler
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.junit.jupiter.api.AfterEach
@@ -15,7 +15,7 @@ internal class MatchUpDataTransformerKtTest {
 
     private lateinit var testScheduler: TestScheduler
 
-    private lateinit var testPublishSubject: PublishSubject<Document>
+    private lateinit var testPublishSubject: PublishRelay<Document>
 
     private lateinit var faabDocument: Document
     private lateinit var nonFaabDocument: Document
@@ -23,7 +23,7 @@ internal class MatchUpDataTransformerKtTest {
     @BeforeEach
     fun setUp() {
         testScheduler = TestScheduler()
-        testPublishSubject = PublishSubject.create()
+        testPublishSubject = PublishRelay.create()
 
         faabDocument = Jsoup.parse(
             "<matchup>\n" +
@@ -248,7 +248,6 @@ internal class MatchUpDataTransformerKtTest {
 
     @AfterEach
     fun tearDown() {
-        testPublishSubject.onComplete()
         testScheduler.shutdown()
     }
 
@@ -259,7 +258,7 @@ internal class MatchUpDataTransformerKtTest {
         testPublishSubject
             .convertToMatchUpObject()
             .subscribe(testObserver)
-        testPublishSubject.onNext(faabDocument)
+        testPublishSubject.accept(faabDocument)
         testScheduler.advanceTimeBy(50, TimeUnit.MILLISECONDS)
 
         testObserver.assertValueCount(1)
@@ -275,7 +274,7 @@ internal class MatchUpDataTransformerKtTest {
         testPublishSubject
             .convertToMatchUpObject()
             .subscribe(testObserver)
-        testPublishSubject.onNext(nonFaabDocument)
+        testPublishSubject.accept(nonFaabDocument)
         testScheduler.advanceTimeBy(50, TimeUnit.MILLISECONDS)
 
         testObserver.assertValueCount(1)
@@ -292,7 +291,7 @@ internal class MatchUpDataTransformerKtTest {
             .convertToMatchUpObject()
             .convertToScoreUpdateMessage()
             .subscribe(testObserver)
-        testPublishSubject.onNext(faabDocument)
+        testPublishSubject.accept(faabDocument)
         testScheduler.advanceTimeBy(50, TimeUnit.MILLISECONDS)
 
         testObserver.assertValueCount(1)
