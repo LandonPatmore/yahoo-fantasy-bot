@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit
 
-internal class MatchUpDataTransformerKtTest {
+class MatchUpDataTransformerKtTest {
 
     private lateinit var testScheduler: TestScheduler
 

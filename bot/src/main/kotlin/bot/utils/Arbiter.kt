@@ -11,6 +11,7 @@ import bot.utils.jobs.MatchUpJob
 import bot.utils.jobs.ScoreUpdateJob
 import bot.utils.jobs.StandingsJob
 import io.reactivex.rxjava3.core.Observable
+import shared.EnvVariable
 import shared.Postgres
 import java.util.concurrent.TimeUnit
 
@@ -106,7 +107,10 @@ object Arbiter {
 
     private fun setupJobs() {
         // Times are in UTC since it is not effected by DST
-        JobRunner.createJob(CloseScoreUpdateJob::class.java, "0 30 23 ? 9-1 MON *")
+        if (EnvVariable.Bool.OptInCloseScore.variable) {
+            JobRunner.createJob(CloseScoreUpdateJob::class.java, "0 30 23 ? 9-1 MON *")
+        }
+
         JobRunner.createJob(MatchUpJob::class.java, "0 30 23 ? 9-1 THU *")
         JobRunner.createJob(StandingsJob::class.java, "0 30 16 ? 9-1 TUE *")
 

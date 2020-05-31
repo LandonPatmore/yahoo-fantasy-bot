@@ -9,7 +9,7 @@ import com.github.scribejava.core.model.Verb
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.parser.Parser
-import shared.EnvVariables
+import shared.EnvVariable
 import shared.Postgres
 
 object DataRetriever {
@@ -18,10 +18,10 @@ object DataRetriever {
     private const val TRANSACTIONS = "/transactions"
 
     private val BASE_URL =
-        "https://fantasysports.yahooapis.com/fantasy/v2/league/${EnvVariables.YahooGameKey.variable}.l.${EnvVariables.YahooLeagueId.variable}"
+        "https://fantasysports.yahooapis.com/fantasy/v2/league/${EnvVariable.Str.YahooGameKey.variable}.l.${EnvVariable.Str.YahooLeagueId.variable}"
 
-    private val oauthService = ServiceBuilder(EnvVariables.YahooClientId.variable)
-        .apiSecret(EnvVariables.YahooClientSecret.variable)
+    private val oauthService = ServiceBuilder(EnvVariable.Str.YahooClientId.variable)
+        .apiSecret(EnvVariable.Str.YahooClientSecret.variable)
         .callback(OAuthConstants.OOB)
         .build(YahooApi20.instance())
     private var currentToken: Pair<Long, OAuth2AccessToken>? = null

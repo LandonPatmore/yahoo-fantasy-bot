@@ -1,0 +1,22 @@
+package shared
+
+sealed class EnvVariable {
+    sealed class Str(val variable: String) : EnvVariable() {
+        object YahooClientId : Str(System.getenv("YAHOO_CLIENT_ID") ?: "")
+        object YahooClientSecret : Str(System.getenv("YAHOO_CLIENT_SECRET") ?: "")
+        object YahooGameKey : Str(System.getenv("YAHOO_GAME_KEY") ?: "")
+        object YahooLeagueId : Str(System.getenv("YAHOO_LEAGUE_ID") ?: "")
+        object GroupMeBotId : Str(System.getenv("GROUP_ME_BOT_ID") ?: "")
+        object DiscordWebhookUrl : Str(System.getenv("DISCORD_WEBHOOK_URL") ?: "")
+        object SlackWebhookUrl : Str(System.getenv("SLACK_WEBHOOK_URL") ?: "")
+        object JdbcDatabaseUrl : Str(System.getenv("JDBC_DATABASE_URL") ?: "")
+    }
+
+    sealed class Bool(val variable: Boolean) : EnvVariable() {
+        object OptInCloseScore : Bool(System.getenv("OPT_IN_CLOSE_SCORE")?.toBoolean() ?: false)
+    }
+
+    sealed class Integer(val variable: Int) : EnvVariable() {
+        object Port : Integer(System.getenv("PORT")?.toIntOrNull() ?: -1)
+    }
+}

@@ -5,7 +5,8 @@ package webserver
 import com.github.scribejava.apis.YahooApi20
 import com.github.scribejava.core.builder.ServiceBuilder
 import com.github.scribejava.core.oauth.OAuth20Service
-import shared.EnvVariables
+import shared.EnvVariable
+import shared.EnvVariablesChecker
 import shared.Postgres
 import spark.Response
 import spark.Spark.*
@@ -23,13 +24,14 @@ object Server {
      */
     private val herokuAssignedPort: Int
         get() {
-            return EnvVariables.Port.variable?.toInt() ?: 4567
+            return EnvVariable.Integer.Port.variable
         }
 
     @JvmStatic
     fun main(args: Array<String>) {
-        port(herokuAssignedPort)
+        EnvVariablesChecker.check()
 
+        port(herokuAssignedPort)
         registerRoutes()
     }
 
@@ -79,8 +81,8 @@ object Server {
     private fun authenticationUrl(url: String): String? {
         println("Initial authorization...")
 
-        service = ServiceBuilder(EnvVariables.YahooClientId.variable)
-            .apiSecret(EnvVariables.YahooClientSecret.variable)
+        service = ServiceBuilder(EnvVariable.Str.YahooClientId.variable)
+            .apiSecret(EnvVariable.Str.YahooClientSecret.variable)
             .callback("$url/auth")
             .build(YahooApi20.instance())
 
