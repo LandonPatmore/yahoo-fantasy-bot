@@ -112,7 +112,7 @@ object Postgres {
             try {
                 println("Connection does not exist to database.  Creating...")
 
-                connection = DriverManager.getConnection(EnvVariables.JdbcDatabaseUrl.variable)
+                connection = DriverManager.getConnection(EnvVariable.Str.JdbcDatabaseUrl.variable)
 
                 println("Connection established to database.")
 

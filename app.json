@@ -50,6 +50,11 @@
       "description": "Yahoo League ID",
       "value": "",
       "required": false
+    },
+    "OPT_IN_CLOSE_SCORE": {
+      "description": "Interested in getting close score updates? (TRUE OR FALSE)",
+      "value": "",
+      "required": false
     }
   },
   "addons": [
