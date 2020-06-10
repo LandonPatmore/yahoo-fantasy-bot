@@ -20,14 +20,14 @@ Bot that alerts GroupMe, Slack, and Discord users about various things happening
 >Sends out messages at certain intervals: (All times are in GMT since it is not affected by DST. Will be sent at the correct times across timezones.)
 >
 **Score Updates**
-| Weekday        | Time          |
-| ------------- |-------------|
-| Friday        | 03:55 GMT |
-| Sunday | 17:00 GMT |
-| Sunday | 20:00 GMT |
-| Monday | 00:00 GMT |
-| Monday | 03:55 GMT |
-| Tuesday | 03:55 GMT |
+>| Weekday        | Time          |
+>| ------------- |-------------|
+>| Friday        | 03:55 GMT |
+>| Sunday | 17:00 GMT |
+>| Sunday | 20:00 GMT |
+>| Monday | 00:00 GMT |
+>| Monday | 03:55 GMT |
+>| Tuesday | 03:55 GMT |
 >
 >**Close Score Update (matches within 15pts):** Monday 23:30 GMT
 >
