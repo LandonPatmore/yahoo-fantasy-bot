@@ -100,9 +100,15 @@ object Arbiter {
         val messages = MessageBridge.dataObservable
             .convertToStringMessage()
 
-        messages.subscribe(Discord)
-        messages.subscribe(GroupMe)
-        messages.subscribe(Slack)
+        if (EnvVariable.Str.DiscordWebhookUrl.variable.isNotEmpty()) {
+            messages.subscribe(Discord)
+        }
+        if (EnvVariable.Str.GroupMeBotId.variable.isNotEmpty()) {
+            messages.subscribe(GroupMe)
+        }
+        if (EnvVariable.Str.SlackWebhookUrl.variable.isNotEmpty()) {
+            messages.subscribe(Slack)
+        }
     }
 
     private fun setupJobs() {

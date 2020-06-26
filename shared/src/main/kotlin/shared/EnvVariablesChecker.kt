@@ -17,7 +17,7 @@ object EnvVariablesChecker {
     }
 
     private fun checkString(env: EnvVariable.Str) {
-        if (env.variable.trim().isEmpty()) {
+        if (!env.optional && env.variable.trim().isEmpty()) {
             throw EnvVariableException(env)
         }
     }
