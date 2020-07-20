@@ -17,7 +17,7 @@
 # Yahoo Fantasy Bot
 Bot that alerts GroupMe, Slack, and Discord users about various things happening in their Yahoo Fantasy Football League.
 ## What it does:
->Sends out messages at certain intervals: (All times are in GMT since it is not affected by DST. Will be sent at the correct times across timezones.)
+>Sends out messages at certain intervals: (All times are in UTC since it is not affected by DST. Will be sent at the correct times across timezones.)
 >
 >**Weekly Updates**
 >| Type                                        | Weekday  | Time      |
