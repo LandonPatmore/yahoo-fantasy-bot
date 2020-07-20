@@ -20,28 +20,29 @@ Bot that alerts GroupMe, Slack, and Discord users about various things happening
 >Sends out messages at certain intervals: (All times are in GMT since it is not affected by DST. Will be sent at the correct times across timezones.)
 >
 >**Weekly Updates**
->| Type                                       | Weekday  | Time      |
->|--------------------------------------------|----------|-----------|
->| Weekly Matchups                            | Thursday | 23:30 GMT |
->| Score Update                               | Friday   | 03:55 GMT |
->| Score Update                               | Sunday   | 17:00 GMT |
->| Score Update                               | Sunday   | 20:00 GMT |
->| Score Update                               | Monday   | 00:00 GMT |
->| Score Update                               | Monday   | 03:55 GMT |
->| Close Score Update (matches within 15 pts) | Monday   | 23:30 GMT |
->| Weekly Standings                           | Tuesday  | 16:30 GMT |
->| Score Update                               | Tuesday  | 03:55 GMT |
+>| Type                                        | Weekday  | Time      |
+>|---------------------------------------------|----------|-----------|
+>| Weekly Matchups                             | Thursday | 23:30 UTC |
+>| Score Update                                | Friday   | 03:55 UTC |
+>| Score Update                                | Sunday   | 17:00 UTC |
+>| Score Update                                | Sunday   | 20:00 UTC |
+>| Score Update                                | Monday   | 00:00 UTC |
+>| Score Update                                | Monday   | 03:55 UTC |
+>| Close Score Update (matches within 15 pts)* | Monday   | 23:30 UTC |
+>| Weekly Standings                            | Tuesday  | 16:30 UTC |
+>| Score Update                                | Tuesday  | 03:55 UTC |
 >
+(\* If set to show Close Score Update)
+
 >**League Transaction Alerts**
 >* ADD
 >* DROP
 >* ADD/DROP
 >* TRADE
 >* COMMISH CHANGES
-
+ 
 ## Follow these steps EXACTLY!
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-1. Click the above button. It will auto-deploy the application to Heroku.
+1. Click the `Deploy to Heroku` button at the top. It will auto-deploy the application to Heroku.
 2. Name the application whatever you would like.
 3. When it asks for environment variables at first, you do not need to put any in that are not already filled in. These will be added later.
 4. Click "Deploy App". This will automatically configure the dynos and run all required scripts to get the app created.
