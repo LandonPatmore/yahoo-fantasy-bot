@@ -1,12 +1,13 @@
 package shared
 
 import exceptions.EnvVariableException
+import exceptions.GameKeyException
 
 object EnvVariablesChecker {
     fun check() {
         checkString(EnvVariable.Str.YahooClientId)
         checkString(EnvVariable.Str.YahooClientSecret)
-        checkString(EnvVariable.Str.YahooGameKey)
+        checkGameKey(EnvVariable.Str.YahooGameKey)
         checkString(EnvVariable.Str.YahooLeagueId)
         checkString(EnvVariable.Str.GroupMeBotId)
         checkString(EnvVariable.Str.DiscordWebhookUrl)
@@ -14,6 +15,15 @@ object EnvVariablesChecker {
         checkString(EnvVariable.Str.JdbcDatabaseUrl)
         checkInt(EnvVariable.Integer.Port)
         // No need to check booleans as they are false if they don't exist or malformed
+    }
+
+    private fun checkGameKey(env: EnvVariable.Str) {
+        checkString(env)
+
+        when (env.variable) {
+            "NFL", "NBA", "MLB" -> return
+            else -> throw GameKeyException(env)
+        }
     }
 
     private fun checkString(env: EnvVariable.Str) {

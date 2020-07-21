@@ -7,6 +7,6 @@ import shared.EnvVariablesChecker
 
 fun main() {
     EnvVariablesChecker.check()
-    DataRetriever.authenticate()
+    DataRetriever.getAuthenticationToken()
     Arbiter.start()
 }

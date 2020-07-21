@@ -42,7 +42,7 @@
       "required": false
     },
     "YAHOO_GAME_KEY": {
-      "description": "Yahoo Game Key: (NBA, NFL, MLB)",
+      "description": "Yahoo Game Key: (NFL, NBA, MLB)",
       "value": "",
       "required": false
     },
