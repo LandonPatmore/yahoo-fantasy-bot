@@ -20,15 +20,13 @@ object DataRetriever {
     private const val BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2"
 
     private var currentToken: Pair<Long, OAuth2AccessToken>? = null
-    private var gameKey: String? = null
 
-    private val leagueUrl = "/league/${gameKey ?: retrieveGameKey()}.l.${EnvVariable.Str.YahooLeagueId.variable}"
-    private val gameKeyUrl = "/game/${EnvVariable.Str.YahooGameKey}"
     private val oauthService = ServiceBuilder(EnvVariable.Str.YahooClientId.variable)
         .apiSecret(EnvVariable.Str.YahooClientSecret.variable)
         .callback(OAuthConstants.OOB)
         .build(YahooApi20.instance())
-
+    private val gameKeyUrl = "/game/${EnvVariable.Str.YahooGameKey.variable}"
+    private var leagueUrl: String? = null
 
     /**
      * Checks to see whether or not a token is expired.
@@ -61,7 +59,6 @@ object DataRetriever {
     fun getAuthenticationToken() {
         while (true) {
             currentToken = Postgres.latestTokenData
-
             if (currentToken == null) { // This will run only if there is no data in the database
                 println("There is currently no token data in the database.  Please authenticate with Yahoo.")
             } else {
@@ -106,6 +103,10 @@ object DataRetriever {
      * Makes a request out to Yahoo and returns data.
      */
     fun yahooApiRequest(yahooApiRequest: YahooApiRequest): Document {
+        if (leagueUrl == null) {
+            leagueUrl = "/league/${retrieveGameKey()}.l.${EnvVariable.Str.YahooLeagueId.variable}"
+        }
+
         return when (yahooApiRequest) {
             YahooApiRequest.Transactions -> getTransactions()
             YahooApiRequest.Standings -> getStandings()

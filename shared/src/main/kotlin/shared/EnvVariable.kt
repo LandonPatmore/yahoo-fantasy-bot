@@ -7,7 +7,7 @@ sealed class EnvVariable {
 
         // Don't know if yahoo cares about the case, but looking at docs, they are lower case
         // It shouldn't matter, but knowing Yahoo, it does
-        object YahooGameKey : Str(System.getenv("YAHOO_GAME_KEY").toLowerCase() ?: "")
+        object YahooGameKey : Str(System.getenv("YAHOO_GAME_KEY")?.toLowerCase() ?: "")
         object YahooLeagueId : Str(System.getenv("YAHOO_LEAGUE_ID") ?: "")
         object GroupMeBotId : Str(System.getenv("GROUP_ME_BOT_ID") ?: "", true)
         object DiscordWebhookUrl : Str(System.getenv("DISCORD_WEBHOOK_URL") ?: "", true)
