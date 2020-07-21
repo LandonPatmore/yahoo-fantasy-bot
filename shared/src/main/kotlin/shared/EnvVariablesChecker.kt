@@ -20,8 +20,8 @@ object EnvVariablesChecker {
     private fun checkGameKey(env: EnvVariable.Str) {
         checkString(env)
 
-        when (env.variable) {
-            "NFL", "NBA", "MLB" -> return
+        when (env.variable.toLowerCase()) {
+            "nfl", "nba", "mlb" -> return
             else -> throw GameKeyException(env)
         }
     }
