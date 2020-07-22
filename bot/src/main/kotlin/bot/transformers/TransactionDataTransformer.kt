@@ -31,7 +31,7 @@ private fun addMessage(event: Element): Message {
         """
             |<b>$fantasyTeam</b>
             |Added: ${getPlayerInfo(event)}
-        """.trimIndent()
+        """.trimMargin()
     )
 }
 
@@ -42,7 +42,7 @@ private fun dropMessage(event: Element): Message {
         """
             |<b>$fantasyTeam</b>
             |Dropped: ${getPlayerInfo(event)}
-        """.trimIndent()
+        """.trimMargin()
     )
 }
 
@@ -77,7 +77,7 @@ private fun addDropMessage(event: Element): Message {
             |<b>$fantasyTeam</b>
             |Added: ${playersAdded.trimEnd().removeSuffix(",")}
             |Dropped: ${playersDropped.trimEnd().removeSuffix(",")}
-        """.trimIndent()
+        """.trimMargin()
     )
 }
 
@@ -112,7 +112,7 @@ private fun tradeMessage(event: Element): Message {
         """
             |<b>$trader</b> traded: $finalMessageFromTradee
             |<b>$tradee</b> traded: $finalMessageFromTrader
-        """.trimIndent()
+        """.trimMargin()
     )
 }
 
