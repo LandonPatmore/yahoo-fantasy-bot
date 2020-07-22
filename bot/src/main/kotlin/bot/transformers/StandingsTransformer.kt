@@ -78,7 +78,7 @@ fun Observable<Element>.convertToStandingsMessage(): Observable<Message> =
             "> • FAAB: <b>$faab</b>"
         } ?: "> • Waiver Priority: <b>$waiverPriority</b>"}
         |${clinchedPlayoffs?.let { "> • Clinched?: <b>$clinchedPlayoffs</b>" }}
-        """.trimIndent()
+        """.trimMargin()
         )
     }
 
@@ -90,7 +90,7 @@ private fun generateTeamName(team: String, manager: String): String {
     } else {
         ""
     }}
-    """.trimIndent()
+    """.trimMargin()
 }
 
 private fun numberToEmoji(number: Int): String {
