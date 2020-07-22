@@ -35,7 +35,7 @@ abstract class MessagingService(private val maxMessageLength: Int) : Consumer<St
             properJsonFormat.startsWith("\\n") -> properJsonFormat.substring(2)
             properJsonFormat.endsWith("\\") -> properJsonFormat.substring(0, message.length)
             properJsonFormat.endsWith("\\n") -> properJsonFormat.substring(0, message.length - 1)
-            else -> message
+            else -> properJsonFormat
         }.trim()
     }
 }
