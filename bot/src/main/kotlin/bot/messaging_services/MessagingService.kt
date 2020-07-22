@@ -27,7 +27,7 @@ abstract class MessagingService(private val maxMessageLength: Int) : Consumer<St
     }
 
     private fun correctMessage(message: String): String {
-        val properJsonFormat = message.replace("\\n", "\\\n")
+        val properJsonFormat = message.replace("\n", "\\n")
 
         return when {
             properJsonFormat.startsWith("n") -> properJsonFormat.substring(1)
