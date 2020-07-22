@@ -49,7 +49,7 @@ object Arbiter {
                     """
                         |Hey there! I am the Yahoo Fantasy Bot that notifies you about all things happening in your league!
                         |Star me on Github: https://github.com/landonp1203/yahoo-fantasy-bot
-                    """.trimIndent()
+                    """.trimMargin()
                 )
             )
             Postgres.markStartupMessageReceived()

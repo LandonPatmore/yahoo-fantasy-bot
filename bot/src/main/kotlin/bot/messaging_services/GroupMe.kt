@@ -12,6 +12,7 @@ object GroupMe : MessagingService(MAX_MESSAGE_LENGTH) {
         EnvVariable.Str.GroupMeBotId.variable.let {
             println("Sending $NAME message...")
             val formatted = formatMessage(message);
+            println("TEST: {\"text\" : \"$formatted\"}, \"bot_id\" : \"$it\"}")
             val response = Unirest.post(URL)
                 .header("Content-Type", "application/json")
                 .body("{\"text\" : \"$formatted\"}, \"bot_id\" : \"$it\"}")
