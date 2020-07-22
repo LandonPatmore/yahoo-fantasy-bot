@@ -17,7 +17,6 @@ object GroupMe : MessagingService(MAX_MESSAGE_LENGTH) {
                 .body("{\"text\" : \"$formatted\"}, \"bot_id\" : \"$it\"}")
                 .asString()
             println("Status Text: " + response.statusText + " | Status: " + response.status)
-            println(response.body);
         }
     }
 }
