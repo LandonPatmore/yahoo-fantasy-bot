@@ -20,7 +20,7 @@ abstract class MessagingService(private val maxMessageLength: Int) : Consumer<St
                 sendMessage(correctMessage(subMessage))
                 createMessage(message.substring(maxMessageLength + 1))
             }
-            sendMessage(message)
+            sendMessage(correctMessage(message))
         } catch (e : Exception) {
             println(e.localizedMessage)
         }
