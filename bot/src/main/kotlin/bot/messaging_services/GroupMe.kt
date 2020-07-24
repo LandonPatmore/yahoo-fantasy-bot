@@ -14,7 +14,7 @@ object GroupMe : MessagingService(MAX_MESSAGE_LENGTH) {
             val formatted = formatMessage(message);
             val response = Unirest.post(URL)
                 .header("Content-Type", "application/json")
-                .body("{\"text\" : \"$formatted\"}, \"bot_id\" : \"$it\"}")
+                .body("{\"text\" : \"$formatted\", \"bot_id\" : \"$it\"}")
                 .asString()
             println("Status Text: " + response.statusText + " | Status: " + response.status)
         }
