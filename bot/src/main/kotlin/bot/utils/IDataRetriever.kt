@@ -36,20 +36,40 @@ interface IDataRetriever {
     /**
      * Makes a request out to Yahoo and returns data.
      */
+    @Deprecated(
+        "To be replaced soon with a generic object that the rest of the system can read, thus no reliance on the document object from jsoup",
+        ReplaceWith(""),
+        DeprecationLevel.WARNING
+    )
     fun yahooApiRequest(yahooApiRequest: YahooApiRequest): Document
 
     /**
      * Gets transactions for league.
      */
+    @Deprecated(
+        "To be replaced soon with a generic object that the rest of the system can read, thus no reliance on the document object from jsoup",
+        ReplaceWith(""),
+        DeprecationLevel.WARNING
+    )
     fun getTransactions(): Document
 
     /**
      * Gets standings for league.
      */
+    @Deprecated(
+        "To be replaced soon with a generic object that the rest of the system can read, thus no reliance on the document object from jsoup",
+        ReplaceWith(""),
+        DeprecationLevel.WARNING
+    )
     fun getStandings(): Document
 
     /**
      * Gets teams data for league.
      */
+    @Deprecated(
+        "To be replaced soon with a generic object that the rest of the system can read, thus no reliance on the document object from jsoup",
+        ReplaceWith(""),
+        DeprecationLevel.WARNING
+    )
     fun getTeamsData(): Document
 }
