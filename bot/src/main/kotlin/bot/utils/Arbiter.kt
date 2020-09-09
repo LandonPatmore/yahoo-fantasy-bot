@@ -61,7 +61,7 @@ class Arbiter(
                     """
                         |Thanks for using me!  I will notify you about things happening in your league in real time!
                         |Star/fork me on Github: https://github.com/LandonPatmore/yahoo-fantasy-bot
-                        |Issues? Create an issue: https://github.com/LandonPatmore/yahoo-fantasy-bot/issues
+                        |Having issues?: https://github.com/LandonPatmore/yahoo-fantasy-bot/issues
                     """.trimMargin()
                 )
             )
