@@ -6,7 +6,7 @@ import bot.utils.models.YahooApiRequest
 import org.quartz.JobExecutionContext
 
 class ScoreUpdateJob(private val dataRetriever: DataRetriever, private val scoreUpdateBridge: ScoreUpdateBridge) :
-    BaseJob(dataRetriever) {
+    BaseJob() {
     override val name = "Score"
 
     override fun execute(context: JobExecutionContext?) {

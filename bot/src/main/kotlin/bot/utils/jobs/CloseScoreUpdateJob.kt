@@ -8,7 +8,7 @@ import org.quartz.JobExecutionContext
 class CloseScoreUpdateJob(
     private val dataRetriever: DataRetriever,
     private val closeScoreUpdateBridge: CloseScoreUpdateBridge
-) : BaseJob(dataRetriever) {
+) : BaseJob() {
     override val name = "CloseScore"
 
     override fun execute(context: JobExecutionContext?) {
