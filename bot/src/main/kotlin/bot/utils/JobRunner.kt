@@ -10,7 +10,7 @@ import org.quartz.impl.StdSchedulerFactory
 import java.util.*
 
 
-object JobRunner {
+class JobRunner {
     private val jobs = ArrayList<Job>()
 
     /**
@@ -23,7 +23,7 @@ object JobRunner {
 
         val trigger = newTrigger()
             .startNow()
-            .withSchedule(CronScheduleBuilder.cronSchedule(cron).inTimeZone(TimeZone.getTimeZone("GMT")))
+            .withSchedule(CronScheduleBuilder.cronSchedule(cron).inTimeZone(TimeZone.getTimeZone("UTC")))
             .build()
 
         jobs.add(Job(jobDetail, trigger))
@@ -43,7 +43,7 @@ object JobRunner {
             }
 
         } catch (e: SchedulerException) {
-            println(e.localizedMessage)
+            println(e.message)
         }
 
     }

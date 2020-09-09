@@ -1,3 +1,4 @@
 dependencies {
     implementation("org.postgresql:postgresql:42.2.5")
+    api("org.koin:koin-core:2.1.6")
 }

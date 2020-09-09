@@ -3,15 +3,17 @@ package bot.utils.jobs
 import bot.bridges.ScoreUpdateBridge
 import bot.utils.DataRetriever
 import bot.utils.models.YahooApiRequest
-import org.quartz.Job
 import org.quartz.JobExecutionContext
 
-class ScoreUpdateJob : Job {
-    override fun execute(context: JobExecutionContext?) {
-        println("Running Score Update Job...")
+class ScoreUpdateJob(private val dataRetriever: DataRetriever, private val scoreUpdateBridge: ScoreUpdateBridge) :
+    BaseJob(dataRetriever) {
+    override val name = "Score"
 
-        val data = DataRetriever.yahooApiRequest(YahooApiRequest.TeamsData)
-        ScoreUpdateBridge.dataObserver.accept(data)
+    override fun execute(context: JobExecutionContext?) {
+        super.execute(context)
+
+        val data = dataRetriever.yahooApiRequest(YahooApiRequest.TeamsData)
+        scoreUpdateBridge.dataObserver.accept(data)
     }
 
 }

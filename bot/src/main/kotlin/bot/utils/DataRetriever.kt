@@ -7,58 +7,46 @@ import com.github.scribejava.core.model.OAuth2AccessToken
 import com.github.scribejava.core.model.OAuthConstants
 import com.github.scribejava.core.model.OAuthRequest
 import com.github.scribejava.core.model.Verb
+import com.github.scribejava.core.oauth.OAuth20Service
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.parser.Parser
 import shared.EnvVariable
-import shared.Postgres
+import shared.IDatabase
 
-object DataRetriever {
-    private const val SCOREBOARD = "/scoreboard"
-    private const val STANDINGS = "/standings"
-    private const val TRANSACTIONS = "/transactions"
-    private const val BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2"
-
+class DataRetriever(private val database: IDatabase) : IDataRetriever {
     private var currentToken: Pair<Long, OAuth2AccessToken>? = null
 
-    private val oauthService = ServiceBuilder(EnvVariable.Str.YahooClientId.variable)
-        .apiSecret(EnvVariable.Str.YahooClientSecret.variable)
-        .callback(OAuthConstants.OOB)
-        .build(YahooApi20.instance())
-    private val gameKeyUrl = "/game/${EnvVariable.Str.YahooGameKey.variable}"
+    private lateinit var oauthService: OAuth20Service
+    private lateinit var gameKeyUrl: String
     private var leagueUrl: String? = null
 
-    /**
-     * Checks to see whether or not a token is expired.
-     *
-     * @param retrieved when the token was initially retrieved
-     * @param expiresIn when the token expires
-     * @return if the token is expired
-     */
-    private fun isTokenExpired(retrieved: Long, expiresIn: Int): Boolean {
+    fun setup() {
+        oauthService = ServiceBuilder(EnvVariable.Str.YahooClientId.variable)
+            .apiSecret(EnvVariable.Str.YahooClientSecret.variable)
+            .callback(OAuthConstants.OOB)
+            .build(YahooApi20.instance())
+        gameKeyUrl = "/game/${EnvVariable.Str.YahooGameKey.variable}"
+    }
+
+    override fun isTokenExpired(retrieved: Long, expiresIn: Int): Boolean {
         val timeElapsed = ((System.currentTimeMillis() - retrieved) / 1000)
         return timeElapsed >= expiresIn
     }
 
-    /**
-     * Refreshes an expired token.
-     */
-    private fun refreshExpiredToken() {
+    override fun refreshExpiredToken() {
         currentToken?.let {
             if (isTokenExpired(it.first, it.second.expiresIn)) {
                 val refreshToken = oauthService.refreshAccessToken(it.second.refreshToken)
                 currentToken = Pair(System.currentTimeMillis(), refreshToken)
-                Postgres.saveTokenData(refreshToken)
+                database.saveTokenData(refreshToken)
             }
         }
     }
 
-    /**
-     * Gets authentication token from DB if it exists.
-     */
-    fun getAuthenticationToken() {
+    override fun getAuthenticationToken() {
         while (true) {
-            currentToken = Postgres.latestTokenData
+            currentToken = database.latestTokenData()
             if (currentToken == null) { // This will run only if there is no data in the database
                 println("There is currently no token data in the database.  Please authenticate with Yahoo.")
             } else {
@@ -69,10 +57,7 @@ object DataRetriever {
         }
     }
 
-    /**
-     * Grabs data requested from Yahoo.
-     */
-    private fun grabData(url: String): Document {
+    override fun grabData(url: String): Document {
         refreshExpiredToken()
         println("Grabbing Data...")
         val request = OAuthRequest(Verb.GET, url)
@@ -82,10 +67,7 @@ object DataRetriever {
         return Jsoup.parse(response.body, "", Parser.xmlParser())
     }
 
-    /**
-     * Retrieves the Yahoo Game key for the specified game.
-     */
-    private fun retrieveGameKey(): String? {
+    override fun retrieveGameKey(): String? {
         while (true) {
             val data = grabData(BASE_URL + gameKeyUrl)
             val gameKey = data.select("game_key").first().text()
@@ -99,10 +81,7 @@ object DataRetriever {
         }
     }
 
-    /**
-     * Makes a request out to Yahoo and returns data.
-     */
-    fun yahooApiRequest(yahooApiRequest: YahooApiRequest): Document {
+    override fun yahooApiRequest(yahooApiRequest: YahooApiRequest): Document {
         if (leagueUrl == null) {
             leagueUrl = "/league/${retrieveGameKey()}.l.${EnvVariable.Str.YahooLeagueId.variable}"
         }
@@ -114,24 +93,22 @@ object DataRetriever {
         }
     }
 
-    /**
-     * Gets transactions for league.
-     */
-    private fun getTransactions(): Document {
+    override fun getTransactions(): Document {
         return grabData(BASE_URL + leagueUrl + TRANSACTIONS)
     }
 
-    /**
-     * Gets standings for league.
-     */
-    private fun getStandings(): Document {
+    override fun getStandings(): Document {
         return grabData(BASE_URL + leagueUrl + STANDINGS)
     }
 
-    /**
-     * Gets teams data for league.
-     */
-    private fun getTeamsData(): Document {
+    override fun getTeamsData(): Document {
         return grabData(BASE_URL + leagueUrl + SCOREBOARD)
+    }
+
+    companion object {
+        private const val SCOREBOARD = "/scoreboard"
+        private const val STANDINGS = "/standings"
+        private const val TRANSACTIONS = "/transactions"
+        private const val BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2"
     }
 }

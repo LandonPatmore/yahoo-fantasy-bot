@@ -1,19 +1,33 @@
-package bot.messaging_services
+package bot.messaging
 
 import com.mashape.unirest.http.exceptions.UnirestException
+import com.mashape.unirest.request.body.RequestBodyEntity
 import io.reactivex.rxjava3.functions.Consumer
 
-abstract class MessagingService(private val maxMessageLength: Int) : Consumer<String> {
+abstract class MessagingService : IMessagingService {
+
+    protected abstract val name: String
+
+    protected abstract val maxMessageLength: Int
+
+    protected abstract val url: String
+
+    protected abstract fun generateRequest(message: String): RequestBodyEntity
 
     override fun accept(message: String?) {
+        // message should never be null, this is just a safety check
         message?.let { createMessage(it) }
     }
 
     @Throws(UnirestException::class)
-    protected abstract fun sendMessage(message: String)
+    override fun sendMessage(message: String) {
+        val response = generateRequest(cleanMessage(message)).asJson()
+        println("$name status code: ${response.status}")
+    }
 
-    private fun createMessage(message: String) {
+    override fun createMessage(message: String) {
         try {
+            // TODO: Remove this sleep
             Thread.sleep(1000)
             if (message.length > maxMessageLength) {
                 val subMessage = message.substring(0, maxMessageLength + 1)
@@ -21,12 +35,12 @@ abstract class MessagingService(private val maxMessageLength: Int) : Consumer<St
                 createMessage(message.substring(maxMessageLength + 1))
             }
             sendMessage(correctMessage(message))
-        } catch (e : Exception) {
-            println(e.localizedMessage)
+        } catch (e: Exception) {
+            println(e.message)
         }
     }
 
-    private fun correctMessage(message: String): String {
+    override fun correctMessage(message: String): String {
         val properJsonFormat = message.replace("\n", "\\n")
 
         return when {

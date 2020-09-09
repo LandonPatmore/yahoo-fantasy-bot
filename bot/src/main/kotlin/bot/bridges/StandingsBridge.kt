@@ -5,7 +5,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.functions.Consumer
 import org.jsoup.nodes.Document
 
-object StandingsBridge : Bridge<Document> {
+class StandingsBridge : Bridge<Document> {
     private val dataBridge = PublishRelay.create<Document>()
 
     override val dataObserver: Consumer<Document>

@@ -3,7 +3,10 @@ package shared
 import exceptions.EnvVariableException
 import exceptions.GameKeyException
 
-object EnvVariablesChecker {
+// TODO: Want to remove this in favor of a frontend the user can use to
+//  type all of this in and then save it too a DB
+class EnvVariablesChecker {
+
     fun check() {
         checkString(EnvVariable.Str.YahooClientId)
         checkString(EnvVariable.Str.YahooClientSecret)

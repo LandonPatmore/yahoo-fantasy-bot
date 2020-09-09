@@ -6,100 +6,82 @@ import java.sql.DriverManager
 import java.sql.SQLException
 
 
-object Postgres {
+class Postgres : IDatabase {
     private var connection: Connection? = null
+    
+    override fun startupMessageSent(): Boolean {
+        return try {
+            getConnection()
 
-    /**
-     * Checks to see if the startup message was sent to the users.
-     *
-     * @return whether or not the startup message was sent
-     */
-    val startupMessageSent: Boolean
-        get() {
-            return try {
-                getConnection()
+            val statement = connection!!.createStatement()
+            val row =
+                statement.executeQuery("SELECT * FROM start_up_message_received ORDER BY \"was_received\" DESC LIMIT 1")
 
-                val statement = connection!!.createStatement()
-                val row =
-                    statement.executeQuery("SELECT * FROM start_up_message_received ORDER BY \"was_received\" DESC LIMIT 1")
+            if (row.next()) {
+                row.getBoolean("was_received")
+            } else false
 
-                if (row.next()) {
-                    row.getBoolean("was_received")
-                } else false
-
-            } catch (e: SQLException) {
-                println(e.localizedMessage)
-                false
-            }
+        } catch (e: SQLException) {
+            println(e.message)
+            false
         }
+    }
 
-    /**
-     * Gets the latest time checked.
-     *
-     * @return long of the time
-     */
-    val latestTimeChecked: Long
-        get() {
-            dropTopRows("latest_time", "latest_time")
-            return try {
-                getConnection()
+    override fun latestTimeChecked(): Long {
+        dropTopRows("latest_time", "latest_time")
+        return try {
+            getConnection()
 
-                val statement = connection!!.createStatement()
-                val row = statement.executeQuery("SELECT * FROM latest_time ORDER BY \"latest_time\" DESC LIMIT 1")
+            val statement = connection!!.createStatement()
+            val row = statement.executeQuery("SELECT * FROM latest_time ORDER BY \"latest_time\" DESC LIMIT 1")
 
-                if (row.next()) {
-                    row.getLong("latest_time")
-                } else System.currentTimeMillis() / 1000
+            if (row.next()) {
+                row.getLong("latest_time")
+            } else System.currentTimeMillis() / 1000
 
-            } catch (e: SQLException) {
-                println(e.localizedMessage)
-                System.currentTimeMillis() / 1000
-            }
+        } catch (e: SQLException) {
+            println(e.message)
+            System.currentTimeMillis() / 1000
         }
+    }
 
-    /**
-     * Gets the latest token data
-     *
-     * @return token data
-     */
-    val latestTokenData: Pair<Long, OAuth2AccessToken>?
-        get() {
-            dropTopRows("tokens", "yahooTokenRetrievedTime")
+    override fun latestTokenData(): Pair<Long, OAuth2AccessToken>? {
+        dropTopRows("tokens", "yahooTokenRetrievedTime")
 
-            try {
-                getConnection()
+        try {
+            getConnection()
 
-                val statement = connection!!.createStatement()
-                val row =
-                    statement.executeQuery("SELECT * FROM tokens ORDER BY \"yahooTokenRetrievedTime\" DESC LIMIT 1")
+            val statement = connection!!.createStatement()
+            val row =
+                statement.executeQuery("SELECT * FROM tokens ORDER BY \"yahooTokenRetrievedTime\" DESC LIMIT 1")
 
-                if (row.next()) {
-                    val refreshToken = row.getString("yahooRefreshToken")
-                    val retrievedTime = row.getLong("yahooTokenRetrievedTime")
-                    val rawResponse = row.getString("yahooTokenRawResponse")
-                    val tokenType = row.getString("yahooTokenType")
-                    val accessToken = row.getString("yahooAccessToken")
-                    val expiresIn = row.getLong("yahooTokenExpireTime")
-                    val scope = row.getString("yahooTokenScope")
+            if (row.next()) {
+                val refreshToken = row.getString("yahooRefreshToken")
+                val retrievedTime = row.getLong("yahooTokenRetrievedTime")
+                val rawResponse = row.getString("yahooTokenRawResponse")
+                val tokenType = row.getString("yahooTokenType")
+                val accessToken = row.getString("yahooAccessToken")
+                val expiresIn = row.getLong("yahooTokenExpireTime")
+                val scope = row.getString("yahooTokenScope")
 
-                    return Pair(
-                        retrievedTime,
-                        OAuth2AccessToken(
-                            accessToken,
-                            tokenType,
-                            expiresIn.toInt(),
-                            refreshToken,
-                            scope,
-                            rawResponse
-                        )
+                return Pair(
+                    retrievedTime,
+                    OAuth2AccessToken(
+                        accessToken,
+                        tokenType,
+                        expiresIn.toInt(),
+                        refreshToken,
+                        scope,
+                        rawResponse
                     )
-                }
-                return null
-            } catch (e: SQLException) {
-                println(e.localizedMessage)
-                return null
+                )
             }
+            return null
+        } catch (e: SQLException) {
+            println(e.message)
+            return null
         }
+    }
 
     /**
      * Gets the connection to the DB.  Loops indefinitely.
@@ -107,7 +89,6 @@ object Postgres {
      * @return connection to DB
      */
     private fun getConnection(): Connection? {
-
         while (connection == null) {
             try {
                 println("Connection does not exist to database.  Creating...")
@@ -118,11 +99,11 @@ object Postgres {
 
                 return connection
             } catch (e: SQLException) {
-                println(e.localizedMessage)
+                println(e.message)
                 try {
                     Thread.sleep(5000)
                 } catch (e1: InterruptedException) {
-                    println(e.localizedMessage)
+                    println(e.message)
                 }
             }
         }
@@ -130,12 +111,7 @@ object Postgres {
         return connection
     }
 
-    /**
-     * Saves the Yahoo token data to the DB.
-     *
-     * @param token token to be saved
-     */
-    fun saveTokenData(token: OAuth2AccessToken) {
+    override fun saveTokenData(token: OAuth2AccessToken) {
         try {
             getConnection()
 
@@ -157,14 +133,11 @@ object Postgres {
 
             println("Token data has been saved.")
         } catch (e: SQLException) {
-            println(e.localizedMessage)
+            println(e.message)
         }
     }
 
-    /**
-     * Saves the last time data was checked.
-     */
-    fun saveLastTimeChecked() {
+    override fun saveLastTimeChecked() {
         try {
             getConnection()
 
@@ -178,15 +151,12 @@ object Postgres {
 
             println("Latest time has been saved.")
         } catch (e: SQLException) {
-            println(e.localizedMessage)
+            println(e.message)
         }
 
     }
 
-    /**
-     * Marks that the start up message has been received by the users.  This is so that the message is not sent every-time the application is started.
-     */
-    fun markStartupMessageReceived() {
+    override fun markStartupMessageReceived() {
         try {
             getConnection()
 
@@ -199,7 +169,7 @@ object Postgres {
 
             println("Startup message marked sent.")
         } catch (e: SQLException) {
-            println(e.localizedMessage)
+            println(e.message)
         }
     }
 
@@ -233,7 +203,7 @@ object Postgres {
             }
 
         } catch (e: SQLException) {
-            println(e.localizedMessage)
+            println(e.message)
         }
 
     }

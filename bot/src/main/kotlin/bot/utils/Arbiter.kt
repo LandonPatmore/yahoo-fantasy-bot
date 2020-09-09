@@ -1,10 +1,7 @@
 package bot.utils
 
 import bot.bridges.*
-import bot.messaging_services.Discord
-import bot.messaging_services.GroupMe
-import bot.messaging_services.Message
-import bot.messaging_services.Slack
+import bot.messaging.*
 import bot.transformers.*
 import bot.utils.jobs.CloseScoreUpdateJob
 import bot.utils.jobs.MatchUpJob
@@ -13,11 +10,24 @@ import bot.utils.jobs.StandingsJob
 import bot.utils.models.YahooApiRequest
 import io.reactivex.rxjava3.core.Observable
 import shared.EnvVariable
+import shared.IDatabase
 import shared.Postgres
 import java.util.concurrent.TimeUnit
 
-object Arbiter {
-    init {
+class Arbiter(
+    private val dataRetriever: IDataRetriever,
+    private val messageBridge: MessageBridge,
+    private val jobRunner: JobRunner,
+    private val transactionsBridge: TransactionsBridge,
+    private val scoreUpdateBridge: ScoreUpdateBridge,
+    private val closeScoreUpdateBridge: CloseScoreUpdateBridge,
+    private val standingsBridge: StandingsBridge,
+    private val matchUpBridge: MatchUpBridge,
+    private val database: IDatabase,
+    private val messageServices: List<IMessagingService>
+) {
+
+    private fun setup() {
         setupTransactionsBridge()
         setupScoreUpdateBridge()
         setupCloseScoreUpdateBridge()
@@ -29,107 +39,111 @@ object Arbiter {
     }
 
     fun start() {
+        setup()
+
         Observable.interval(0, 15, TimeUnit.SECONDS)
             .subscribe {
                 try {
-                    val event = DataRetriever.yahooApiRequest(YahooApiRequest.Transactions)
-                    val latestTimeChecked = Postgres.latestTimeChecked
-                    TransactionsBridge.dataObserver.accept(Pair(latestTimeChecked, event))
-                    Postgres.saveLastTimeChecked()
+                    val event = dataRetriever.yahooApiRequest(YahooApiRequest.Transactions)
+                    val latestTimeChecked = database.latestTimeChecked()
+                    transactionsBridge.dataObserver.accept(Pair(latestTimeChecked, event))
+                    database.saveLastTimeChecked()
                 } catch (e: Exception) {
-                    println(e.localizedMessage)
+                    println(e.message)
                 }
             }
     }
 
     private fun sendInitialMessage() {
-        if (!Postgres.startupMessageSent) {
-            MessageBridge.dataObserver.accept(
+        if (!database.startupMessageSent()) {
+            messageBridge.dataObserver.accept(
                 Message.Generic(
                     """
                         |Thanks for using me!  I will notify you about things happening in your league in real time!
                         |Star/fork me on Github: https://github.com/LandonPatmore/yahoo-fantasy-bot
-                        |Having issues?: https://github.com/LandonPatmore/yahoo-fantasy-bot/issues
+                        |Issues? Create an issue: https://github.com/LandonPatmore/yahoo-fantasy-bot/issues
                     """.trimMargin()
                 )
             )
-            Postgres.markStartupMessageReceived()
+            database.markStartupMessageReceived()
         } else {
             println("Start up message already sent, not sending...")
         }
     }
 
     private fun setupTransactionsBridge() {
-        val transactions = TransactionsBridge.dataObservable
+        val transactions = transactionsBridge.dataObservable
             .convertToTransactionMessage()
 
-        transactions.subscribe(MessageBridge.dataObserver)
+        transactions.subscribe(messageBridge.dataObserver)
     }
 
     private fun setupScoreUpdateBridge() {
-        val transactions = ScoreUpdateBridge.dataObservable
+        val transactions = scoreUpdateBridge.dataObservable
             .convertToMatchUpObject()
             .convertToScoreUpdateMessage()
 
-        transactions.subscribe(MessageBridge.dataObserver)
+        transactions.subscribe(messageBridge.dataObserver)
     }
 
     private fun setupCloseScoreUpdateBridge() {
-        val transactions = CloseScoreUpdateBridge.dataObservable
+        val transactions = closeScoreUpdateBridge.dataObservable
             .convertToMatchUpObject()
             .convertToScoreUpdateMessage(true)
 
-        transactions.subscribe(MessageBridge.dataObserver)
+        transactions.subscribe(messageBridge.dataObserver)
     }
 
     private fun setupMatchUpBridge() {
-        val transactions = MatchUpBridge.dataObservable
+        val transactions = matchUpBridge.dataObservable
             .convertToMatchUpObject()
             .convertToMatchUpMessage()
 
-        transactions.subscribe(MessageBridge.dataObserver)
+        transactions.subscribe(messageBridge.dataObserver)
     }
 
     private fun setupStandingsBridge() {
-        val standings = StandingsBridge.dataObservable
+        val standings = standingsBridge.dataObservable
             .convertToStandingsObject()
             .convertToStandingsMessage()
 
-        standings.subscribe(MessageBridge.dataObserver)
+        standings.subscribe(messageBridge.dataObserver)
     }
 
     private fun setupMessageBridge() {
-        val messages = MessageBridge.dataObservable
+        val messages = messageBridge.dataObservable
             .convertToStringMessage()
 
-        if (EnvVariable.Str.DiscordWebhookUrl.variable.isNotEmpty()) {
-            messages.subscribe(Discord)
+        messageServices.forEach {
+            messages.subscribe(it)
         }
-        if (EnvVariable.Str.GroupMeBotId.variable.isNotEmpty()) {
-            messages.subscribe(GroupMe)
-        }
-        if (EnvVariable.Str.SlackWebhookUrl.variable.isNotEmpty()) {
-            messages.subscribe(Slack)
-        }
+
+//        if (EnvVariable.Str.DiscordWebhookUrl.variable.isNotEmpty()) {
+//            messages.subscribe(Discord())
+//        }
+//        if (EnvVariable.Str.GroupMeBotId.variable.isNotEmpty()) {
+//            messages.subscribe(GroupMe())
+//        }
+//        if (EnvVariable.Str.SlackWebhookUrl.variable.isNotEmpty()) {
+//            messages.subscribe(Slack())
+//        }
     }
 
     private fun setupJobs() {
         // Times are in UTC since it is not effected by DST
         if (EnvVariable.Bool.OptInCloseScore.variable) {
-            JobRunner.createJob(CloseScoreUpdateJob::class.java, "0 30 23 ? 9-1 MON *")
+            jobRunner.createJob(CloseScoreUpdateJob::class.java, "0 30 23 ? 9-1 MON *")
         }
 
-        JobRunner.createJob(MatchUpJob::class.java, "0 30 23 ? 9-1 THU *")
-        JobRunner.createJob(StandingsJob::class.java, "0 30 16 ? 9-1 TUE *")
+        jobRunner.createJob(MatchUpJob::class.java, "0 30 23 ? 9-1 THU *")
+        jobRunner.createJob(StandingsJob::class.java, "0 30 16 ? 9-1 TUE *")
+        jobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 FRI *")
+        jobRunner.createJob(ScoreUpdateJob::class.java, "0 00 17 ? 9-1 SUN *")
+        jobRunner.createJob(ScoreUpdateJob::class.java, "0 00 20 ? 9-1 SUN *")
+        jobRunner.createJob(ScoreUpdateJob::class.java, "0 00 0 ? 9-1 MON *")
+        jobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 MON *")
+        jobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 TUE *")
 
-        JobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 FRI *")
-        JobRunner.createJob(ScoreUpdateJob::class.java, "0 00 17 ? 9-1 SUN *")
-        JobRunner.createJob(ScoreUpdateJob::class.java, "0 00 20 ? 9-1 SUN *")
-        JobRunner.createJob(ScoreUpdateJob::class.java, "0 00 0 ? 9-1 MON *")
-        JobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 MON *")
-        JobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 TUE *")
-
-
-        JobRunner.runJobs()
+        jobRunner.runJobs()
     }
 }

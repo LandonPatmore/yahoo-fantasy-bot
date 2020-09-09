@@ -1,6 +1,6 @@
 package bot.transformers
 
-import bot.messaging_services.Message
+import bot.messaging.Message
 import io.reactivex.rxjava3.core.Observable
 
 fun Observable<Message>.convertToStringMessage(): Observable<String> =

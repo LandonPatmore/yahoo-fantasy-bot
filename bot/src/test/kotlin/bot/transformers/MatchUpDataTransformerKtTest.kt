@@ -1,6 +1,6 @@
 package bot.transformers
 
-import bot.messaging_services.Message
+import bot.messaging.Message
 import com.jakewharton.rxrelay3.PublishRelay
 import io.reactivex.rxjava3.observers.TestObserver
 import io.reactivex.rxjava3.schedulers.TestScheduler

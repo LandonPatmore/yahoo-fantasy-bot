@@ -1,4 +1,4 @@
-package bot.messaging_services
+package bot.messaging
 
 sealed class Message(val message : String) {
     class Score(message: String) : Message(message)

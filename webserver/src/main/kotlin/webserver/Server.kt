@@ -5,6 +5,11 @@ package webserver
 import com.github.scribejava.apis.YahooApi20
 import com.github.scribejava.core.builder.ServiceBuilder
 import com.github.scribejava.core.oauth.OAuth20Service
+import modules.sharedModule
+import org.koin.core.KoinComponent
+import org.koin.core.context.startKoin
+import org.koin.core.get
+import org.koin.core.inject
 import shared.EnvVariable
 import shared.EnvVariablesChecker
 import shared.Postgres
@@ -14,8 +19,10 @@ import webserver.exceptions.AuthenticationException
 import webserver.exceptions.PostgresException
 
 
-object Server {
+class Server : KoinComponent {
     private var service: OAuth20Service? = null
+    private val envVariablesChecker: EnvVariablesChecker by inject()
+    private val postgres: Postgres by inject()
 
     /**
      * Get the assigned port on Heroku
@@ -27,9 +34,12 @@ object Server {
             return EnvVariable.Integer.Port.variable
         }
 
-    @JvmStatic
     fun main(args: Array<String>) {
-        EnvVariablesChecker.check()
+        startKoin {
+            modules(sharedModule)
+        }
+
+        envVariablesChecker.check()
 
         port(herokuAssignedPort)
         registerRoutes()
@@ -37,7 +47,7 @@ object Server {
 
     private fun registerRoutes() {
         get("/") { req, res ->
-            if (Postgres.latestTokenData == null) {
+            if (postgres.latestTokenData() == null) {
                 println("User is not authenticated.  Sending to Yahoo.")
                 authenticationUrl(req.scheme() + "://" + req.host())?.let {
                     res.redirect(it)
@@ -50,7 +60,7 @@ object Server {
 
         get("/auth") { req, _ ->
             service?.getAccessToken(req.queryParams("code"))?.let {
-                Postgres.saveTokenData(it)
+                postgres.saveTokenData(it)
             } ?: throw PostgresException()
             println("Access token received.  Authorized successfully.")
             "You are authorized"
