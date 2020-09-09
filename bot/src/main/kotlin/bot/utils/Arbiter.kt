@@ -47,8 +47,9 @@ object Arbiter {
             MessageBridge.dataObserver.accept(
                 Message.Generic(
                     """
-                        |Hey there! I am the Yahoo Fantasy Bot that notifies you about all things happening in your league!
-                        |Star me on Github: https://github.com/landonp1203/yahoo-fantasy-bot
+                        |Thanks for using me!  I will notify you about things happening in your league in real time!
+                        |Star/fork me on Github: https://github.com/LandonPatmore/yahoo-fantasy-bot
+                        |Having issues?: https://github.com/LandonPatmore/yahoo-fantasy-bot/issues
                     """.trimMargin()
                 )
             )
