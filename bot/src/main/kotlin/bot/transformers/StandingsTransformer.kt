@@ -62,21 +62,23 @@ fun Observable<Element>.convertToStandingsMessage(): Observable<Message> =
         val pointsAgainst = teamStandings.select("points_against").text()
 
         Message.Standings("""
-            |> ${numberToEmoji(rank)} ${generateTeamName(name, manager)}
+            |> $rank ${generateTeamName(name, manager)}
             |> Record: <b>$wins-$losses-$ties</b>
             |> Win %: <b>$wltPercentage</b>
             |${
-        if (streakAmount > 1) {
-            "> Streak: <b>$streakAmount$streakType</b>"
-        } else {
-            ""
-        }}
+            if (streakAmount > 1) {
+                "> Streak: <b>$streakAmount$streakType</b>"
+            } else {
+                ""
+            }
+        }
             |> Points For: <b>$pointsFor</b>, Against: <b>$pointsAgainst</b>
             |${divisionId?.let { "> Division ID: <b>$divisionId</b>" }}
             |${
-        faab?.let {
-            "> FAAB: <b>$faab</b>"
-        } ?: "> Waiver Priority: <b>$waiverPriority</b>"}
+            faab?.let {
+                "> FAAB: <b>$faab</b>"
+            } ?: "> Waiver Priority: <b>$waiverPriority</b>"
+        }
         |${clinchedPlayoffs?.let { "> Clinched?: <b>$clinchedPlayoffs</b>" }}
         """.trimMargin()
         )
@@ -85,36 +87,11 @@ fun Observable<Element>.convertToStandingsMessage(): Observable<Message> =
 private fun generateTeamName(team: String, manager: String): String {
     return """
         |<b>$team</b> ${
-    if (!team.contains(manager, true) && !manager.contains("hidden")) {
-        "($manager)"
-    } else {
-        ""
-    }}
-    """.trimMargin()
-}
-
-private fun numberToEmoji(number: Int): String {
-    when (number) {
-        0 -> return "0️⃣"
-        1 -> return "1️⃣"
-        2 -> return "2️⃣"
-        3 -> return "3️⃣"
-        4 -> return "4️⃣"
-        5 -> return "5️⃣"
-        6 -> return "6️⃣"
-        7 -> return "7️⃣"
-        8 -> return "8️⃣"
-        9 -> return "9️⃣"
-        10 -> return "1️⃣0️⃣"
-        11 -> return "1️⃣1️⃣"
-        12 -> return "1️⃣2️⃣"
-        13 -> return "1️⃣3️⃣"
-        14 -> return "1️⃣4️⃣"
-        15 -> return "1️⃣5️⃣"
-        16 -> return "1️⃣6️⃣"
-        17 -> return "1️⃣7️⃣"
-        18 -> return "1️⃣8️⃣"
-        19 -> return "1️⃣9️⃣"
-        else -> return ":$number:"
+        if (!team.contains(manager, true) && !manager.contains("hidden")) {
+            "($manager)"
+        } else {
+            ""
+        }
     }
+    """.trimMargin()
 }
