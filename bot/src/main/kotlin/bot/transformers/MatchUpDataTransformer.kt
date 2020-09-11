@@ -25,8 +25,8 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> 
             teamDataBuilder.append(
                 """
                 |> ${generateTeamName(team)}
-                |> • Win Probability: <b>${DecimalFormat("#.##").format(team.winProbability)}%</b>
-                |> • Projected Points: <b>${team.projectedPoints}</b>
+                |> Win Probability: <b>${DecimalFormat("#.##").format(team.winProbability)}%</b>
+                |> Projected Points: <b>${team.projectedPoints}</b>
                 |${
                 if (teams.indexOf(team) == 0) {
                     "> \uD83C\uDD9A"

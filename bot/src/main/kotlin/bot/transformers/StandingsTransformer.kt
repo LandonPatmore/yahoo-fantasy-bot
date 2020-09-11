@@ -63,21 +63,21 @@ fun Observable<Element>.convertToStandingsMessage(): Observable<Message> =
 
         Message.Standings("""
             |> ${numberToEmoji(rank)} ${generateTeamName(name, manager)}
-            |> • Record: <b>$wins-$losses-$ties</b>
-            |> • Win %: <b>$wltPercentage</b>
+            |> Record: <b>$wins-$losses-$ties</b>
+            |> Win %: <b>$wltPercentage</b>
             |${
         if (streakAmount > 1) {
-            "> • Streak: <b>$streakAmount$streakType</b>"
+            "> Streak: <b>$streakAmount$streakType</b>"
         } else {
             ""
         }}
-            |> • Points For: <b>$pointsFor</b>, Against: <b>$pointsAgainst</b>
-            |${divisionId?.let { "> • Division ID: <b>$divisionId</b>" }}
+            |> Points For: <b>$pointsFor</b>, Against: <b>$pointsAgainst</b>
+            |${divisionId?.let { "> Division ID: <b>$divisionId</b>" }}
             |${
         faab?.let {
-            "> • FAAB: <b>$faab</b>"
-        } ?: "> • Waiver Priority: <b>$waiverPriority</b>"}
-        |${clinchedPlayoffs?.let { "> • Clinched?: <b>$clinchedPlayoffs</b>" }}
+            "> FAAB: <b>$faab</b>"
+        } ?: "> Waiver Priority: <b>$waiverPriority</b>"}
+        |${clinchedPlayoffs?.let { "> Clinched?: <b>$clinchedPlayoffs</b>" }}
         """.trimMargin()
         )
     }
