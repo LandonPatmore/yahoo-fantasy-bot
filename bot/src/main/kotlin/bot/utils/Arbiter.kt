@@ -11,7 +11,6 @@ import bot.utils.models.YahooApiRequest
 import io.reactivex.rxjava3.core.Observable
 import shared.EnvVariable
 import shared.IDatabase
-import shared.Postgres
 import java.util.concurrent.TimeUnit
 
 class Arbiter(
@@ -46,7 +45,7 @@ class Arbiter(
                 try {
                     val event = dataRetriever.yahooApiRequest(YahooApiRequest.Transactions)
                     val latestTimeChecked = database.latestTimeChecked()
-                    transactionsBridge.dataObserver.accept(Pair(latestTimeChecked, event))
+                    transactionsBridge.consumer.accept(Pair(latestTimeChecked, event))
                     database.saveLastTimeChecked()
                 } catch (e: Exception) {
                     println(e.message)
@@ -56,7 +55,7 @@ class Arbiter(
 
     private fun sendInitialMessage() {
         if (!database.startupMessageSent()) {
-            messageBridge.dataObserver.accept(
+            messageBridge.consumer.accept(
                 Message.Generic(
                     """
                         |Thanks for using me!  I will notify you about things happening in your league in real time!
@@ -72,46 +71,46 @@ class Arbiter(
     }
 
     private fun setupTransactionsBridge() {
-        val transactions = transactionsBridge.dataObservable
+        val transactions = transactionsBridge.eventStream
             .convertToTransactionMessage()
 
-        transactions.subscribe(messageBridge.dataObserver)
+        transactions.subscribe(messageBridge.consumer)
     }
 
     private fun setupScoreUpdateBridge() {
-        val transactions = scoreUpdateBridge.dataObservable
+        val transactions = scoreUpdateBridge.eventStream
             .convertToMatchUpObject()
             .convertToScoreUpdateMessage()
 
-        transactions.subscribe(messageBridge.dataObserver)
+        transactions.subscribe(messageBridge.consumer)
     }
 
     private fun setupCloseScoreUpdateBridge() {
-        val transactions = closeScoreUpdateBridge.dataObservable
+        val transactions = closeScoreUpdateBridge.eventStream
             .convertToMatchUpObject()
             .convertToScoreUpdateMessage(true)
 
-        transactions.subscribe(messageBridge.dataObserver)
+        transactions.subscribe(messageBridge.consumer)
     }
 
     private fun setupMatchUpBridge() {
-        val transactions = matchUpBridge.dataObservable
+        val transactions = matchUpBridge.eventStream
             .convertToMatchUpObject()
             .convertToMatchUpMessage()
 
-        transactions.subscribe(messageBridge.dataObserver)
+        transactions.subscribe(messageBridge.consumer)
     }
 
     private fun setupStandingsBridge() {
-        val standings = standingsBridge.dataObservable
+        val standings = standingsBridge.eventStream
             .convertToStandingsObject()
             .convertToStandingsMessage()
 
-        standings.subscribe(messageBridge.dataObserver)
+        standings.subscribe(messageBridge.consumer)
     }
 
     private fun setupMessageBridge() {
-        val messages = messageBridge.dataObservable
+        val messages = messageBridge.eventStream
             .convertToStringMessage()
 
         messageServices.forEach {

@@ -13,7 +13,7 @@ class ScoreUpdateJob(private val dataRetriever: DataRetriever, private val score
         super.execute(context)
 
         val data = dataRetriever.yahooApiRequest(YahooApiRequest.TeamsData)
-        scoreUpdateBridge.dataObserver.accept(data)
+        scoreUpdateBridge.consumer.accept(data)
     }
 
 }

@@ -4,7 +4,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.functions.Consumer
 
 interface Bridge<T> {
-    val dataObserver: Consumer<T>
+    val consumer: Consumer<T>
 
-    val dataObservable: Observable<T>
+    val eventStream: Observable<T>
 }

@@ -13,6 +13,6 @@ class MatchUpJob(private val dataRetriever: DataRetriever, private val matchUpBr
         super.execute(context)
 
         val data = dataRetriever.yahooApiRequest(YahooApiRequest.TeamsData)
-        matchUpBridge.dataObserver.accept(data)
+        matchUpBridge.consumer.accept(data)
     }
 }

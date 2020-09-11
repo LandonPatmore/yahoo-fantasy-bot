@@ -8,9 +8,9 @@ import org.jsoup.nodes.Document
 class TransactionsBridge : Bridge<Pair<Long, Document>> {
     private val dataBridge = PublishRelay.create<Pair<Long, Document>>()
 
-    override val dataObserver: Consumer<Pair<Long, Document>>
+    override val consumer: Consumer<Pair<Long, Document>>
         get() = dataBridge
 
-    override val dataObservable: Observable<Pair<Long, Document>>
+    override val eventStream: Observable<Pair<Long, Document>>
         get() = dataBridge
 }

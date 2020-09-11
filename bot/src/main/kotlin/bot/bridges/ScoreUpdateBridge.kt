@@ -8,9 +8,9 @@ import org.jsoup.nodes.Document
 class ScoreUpdateBridge : Bridge<Document> {
     private val dataBridge = PublishRelay.create<Document>()
 
-    override val dataObserver: Consumer<Document>
+    override val consumer: Consumer<Document>
         get() = dataBridge
 
-    override val dataObservable: Observable<Document>
+    override val eventStream: Observable<Document>
         get() = dataBridge
 }

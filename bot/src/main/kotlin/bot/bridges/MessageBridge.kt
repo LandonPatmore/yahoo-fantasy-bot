@@ -8,9 +8,9 @@ import bot.messaging.Message
 class MessageBridge : Bridge<Message> {
     private val dataBridge = PublishRelay.create<Message>()
 
-    override val dataObserver: Consumer<Message>
+    override val consumer: Consumer<Message>
         get() = dataBridge
 
-    override val dataObservable: Observable<Message>
+    override val eventStream: Observable<Message>
         get() = dataBridge
 }

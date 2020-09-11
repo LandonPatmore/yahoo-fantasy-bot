@@ -15,6 +15,6 @@ class CloseScoreUpdateJob(
         super.execute(context)
 
         val data = dataRetriever.yahooApiRequest(YahooApiRequest.TeamsData)
-        closeScoreUpdateBridge.dataObserver.accept(data)
+        closeScoreUpdateBridge.consumer.accept(data)
     }
 }

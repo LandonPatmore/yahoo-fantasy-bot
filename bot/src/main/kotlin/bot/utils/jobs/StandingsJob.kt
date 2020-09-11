@@ -13,7 +13,7 @@ class StandingsJob(private val dataRetriever: DataRetriever, private val standin
         super.execute(context)
 
         val data = dataRetriever.yahooApiRequest(YahooApiRequest.Standings)
-        standingsBridge.dataObserver.accept(data)
+        standingsBridge.consumer.accept(data)
     }
 
 }
