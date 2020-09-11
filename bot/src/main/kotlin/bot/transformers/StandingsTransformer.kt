@@ -6,13 +6,10 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import java.text.DecimalFormat
 
-fun Observable<Document>.convertToStandingsObject(): Observable<Element> =
+fun Observable<Document>.convertToStandingsMessage(): Observable<Message> =
     flatMapIterable {
         it.select("team")
-    }
-
-fun Observable<Element>.convertToStandingsMessage(): Observable<Message> =
-    map {
+    }.map {
         val name = it.select("name").text()
         val manager = it.select("managers").select("manager").first().select("nickname").text()
         val divisionId = it.select("division_id").text()?.let { div ->

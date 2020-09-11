@@ -103,7 +103,6 @@ class Arbiter(
 
     private fun setupStandingsBridge() {
         val standings = standingsBridge.eventStream
-            .convertToStandingsObject()
             .convertToStandingsMessage()
 
         standings.subscribe(messageBridge.consumer)
