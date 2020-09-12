@@ -53,7 +53,7 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> 
                 |Projected Points: <b>${team.projectedPoints}</b>
                 |${
                     if (teams.indexOf(team) == 0) {
-                        "\uD83C\uDD9A"
+                        "vs. "
                     } else {
                         ""
                     }
