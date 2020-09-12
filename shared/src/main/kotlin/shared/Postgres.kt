@@ -8,7 +8,7 @@ import java.sql.SQLException
 
 class Postgres : IDatabase {
     private var connection: Connection? = null
-    
+
     override fun startupMessageSent(): Boolean {
         return try {
             getConnection()
@@ -33,7 +33,8 @@ class Postgres : IDatabase {
             getConnection()
 
             val statement = connection!!.createStatement()
-            val row = statement.executeQuery("SELECT * FROM latest_time ORDER BY \"latest_time\" DESC LIMIT 1")
+            val row =
+                statement.executeQuery("SELECT * FROM latest_time ORDER BY \"latest_time\" DESC LIMIT 1")
 
             if (row.next()) {
                 row.getLong("latest_time")
@@ -93,7 +94,8 @@ class Postgres : IDatabase {
             try {
                 println("Connection does not exist to database.  Creating...")
 
-                connection = DriverManager.getConnection(EnvVariable.Str.JdbcDatabaseUrl.variable)
+                connection =
+                    DriverManager.getConnection(EnvVariable.Str.JdbcDatabaseUrl.variable)
 
                 println("Connection established to database.")
 
@@ -163,7 +165,8 @@ class Postgres : IDatabase {
             println("Marking startup message sent...")
 
             val statement = connection!!.createStatement()
-            val sql = "INSERT INTO start_up_message_received (\"was_received\")" + " VALUES (\'" + true + "\')"
+            val sql =
+                "INSERT INTO start_up_message_received (\"was_received\")" + " VALUES (\'" + true + "\')"
 
             statement.executeUpdate(sql)
 

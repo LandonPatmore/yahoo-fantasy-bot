@@ -5,7 +5,10 @@ import bot.utils.DataRetriever
 import bot.utils.models.YahooApiRequest
 import org.quartz.JobExecutionContext
 
-class ScoreUpdateJob(private val dataRetriever: DataRetriever, private val scoreUpdateBridge: ScoreUpdateBridge) :
+class ScoreUpdateJob(
+    private val dataRetriever: DataRetriever,
+    private val scoreUpdateBridge: ScoreUpdateBridge
+) :
     BaseJob() {
     override val name = "Score"
 

@@ -1,7 +1,6 @@
 package bot.messaging
 
 import com.mashape.unirest.http.Unirest
-import com.mashape.unirest.request.HttpRequestWithBody
 import com.mashape.unirest.request.body.RequestBodyEntity
 import shared.EnvVariable
 

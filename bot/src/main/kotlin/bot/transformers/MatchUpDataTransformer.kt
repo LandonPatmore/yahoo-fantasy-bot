@@ -63,7 +63,11 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
 
 private fun generateTeamName(team: Team): String {
     return "<b>${team.name}</b> ${
-        if (!team.name.contains(team.manager, true) && !team.manager.contains("hidden")) {
+        if (!team.name.contains(
+                team.manager,
+                true
+            ) && !team.manager.contains("hidden")
+        ) {
             "(${team.manager})"
         } else {
             ""
@@ -78,14 +82,17 @@ private fun generateMatchUpHeader(teamOne: Team, teamTwo: Team): String {
 private fun generateTeamData(team: Element): Team {
     val id = team.select("team_id").text().toInt()
     val name = team.select("name").text()
-    val manager = team.select("managers").select("manager").first().select("nickname").text()
+    val manager =
+        team.select("managers").select("manager").first().select("nickname")
+            .text()
     val waiverPriority = team.select("waiver_priority").text().toIntOrNull()
     val faabBalance = team.select("faab_balance").text().toIntOrNull()
     val numberOfMoves = team.select("number_of_moves").text().toInt()
     val numberOfTrades = team.select("number_of_trades").text().toInt()
     val winProbability = team.select("win_probability").text().toDouble() * 100
     val points = team.select("team_points").select("total").text().toDouble()
-    val projectedPoints = team.select("team_projected_points").select("total").text().toDouble()
+    val projectedPoints =
+        team.select("team_projected_points").select("total").text().toDouble()
 
     return Team(
         name,

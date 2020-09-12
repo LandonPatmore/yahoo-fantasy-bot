@@ -1,7 +1,8 @@
 package bot.utils
 
 import bot.bridges.*
-import bot.messaging.*
+import bot.messaging.IMessagingService
+import bot.messaging.Message
 import bot.transformers.*
 import bot.utils.jobs.CloseScoreUpdateJob
 import bot.utils.jobs.MatchUpJob
@@ -43,9 +44,15 @@ class Arbiter(
         Observable.interval(0, 15, TimeUnit.SECONDS)
             .subscribe {
                 try {
-                    val event = dataRetriever.yahooApiRequest(YahooApiRequest.Transactions)
+                    val event =
+                        dataRetriever.yahooApiRequest(YahooApiRequest.Transactions)
                     val latestTimeChecked = database.latestTimeChecked()
-                    transactionsBridge.consumer.accept(Pair(latestTimeChecked, event))
+                    transactionsBridge.consumer.accept(
+                        Pair(
+                            latestTimeChecked,
+                            event
+                        )
+                    )
                     database.saveLastTimeChecked()
                 } catch (e: Exception) {
                     println(e.message)
@@ -130,7 +137,10 @@ class Arbiter(
     private fun setupJobs() {
         // Times are in UTC since it is not effected by DST
         if (EnvVariable.Bool.OptInCloseScore.variable) {
-            jobRunner.createJob(CloseScoreUpdateJob::class.java, "0 30 23 ? 9-1 MON *")
+            jobRunner.createJob(
+                CloseScoreUpdateJob::class.java,
+                "0 30 23 ? 9-1 MON *"
+            )
         }
 
         jobRunner.createJob(MatchUpJob::class.java, "0 30 23 ? 9-1 THU *")

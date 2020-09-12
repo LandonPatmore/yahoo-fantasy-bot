@@ -19,8 +19,8 @@ shadowJar {
 }
 
 allprojects {
-    apply plugin:'java'
-    apply plugin:'kotlin'
+    apply plugin: 'java'
+    apply plugin: 'kotlin'
     apply plugin: 'koin'
 
     sourceCompatibility = 1.8

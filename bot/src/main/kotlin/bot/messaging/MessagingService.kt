@@ -2,7 +2,6 @@ package bot.messaging
 
 import com.mashape.unirest.http.exceptions.UnirestException
 import com.mashape.unirest.request.body.RequestBodyEntity
-import io.reactivex.rxjava3.functions.Consumer
 
 abstract class MessagingService : IMessagingService {
 
@@ -47,8 +46,14 @@ abstract class MessagingService : IMessagingService {
             properJsonFormat.startsWith("n") -> properJsonFormat.substring(1)
             properJsonFormat.startsWith("\\") -> properJsonFormat.substring(1)
             properJsonFormat.startsWith("\\n") -> properJsonFormat.substring(2)
-            properJsonFormat.endsWith("\\") -> properJsonFormat.substring(0, message.length)
-            properJsonFormat.endsWith("\\n") -> properJsonFormat.substring(0, message.length - 1)
+            properJsonFormat.endsWith("\\") -> properJsonFormat.substring(
+                0,
+                message.length
+            )
+            properJsonFormat.endsWith("\\n") -> properJsonFormat.substring(
+                0,
+                message.length - 1
+            )
             else -> properJsonFormat
         }.trim()
     }

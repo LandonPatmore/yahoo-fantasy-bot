@@ -37,7 +37,8 @@ class DataRetriever(private val database: IDatabase) : IDataRetriever {
     override fun refreshExpiredToken() {
         currentToken?.let {
             if (isTokenExpired(it.first, it.second.expiresIn)) {
-                val refreshToken = oauthService.refreshAccessToken(it.second.refreshToken)
+                val refreshToken =
+                    oauthService.refreshAccessToken(it.second.refreshToken)
                 currentToken = Pair(System.currentTimeMillis(), refreshToken)
                 database.saveTokenData(refreshToken)
             }
@@ -83,7 +84,8 @@ class DataRetriever(private val database: IDatabase) : IDataRetriever {
 
     override fun yahooApiRequest(yahooApiRequest: YahooApiRequest): Document {
         if (leagueUrl == null) {
-            leagueUrl = "/league/${retrieveGameKey()}.l.${EnvVariable.Str.YahooLeagueId.variable}"
+            leagueUrl =
+                "/league/${retrieveGameKey()}.l.${EnvVariable.Str.YahooLeagueId.variable}"
         }
 
         return when (yahooApiRequest) {
@@ -109,6 +111,7 @@ class DataRetriever(private val database: IDatabase) : IDataRetriever {
         private const val SCOREBOARD = "/scoreboard"
         private const val STANDINGS = "/standings"
         private const val TRANSACTIONS = "/transactions"
-        private const val BASE_URL = "https://fantasysports.yahooapis.com/fantasy/v2"
+        private const val BASE_URL =
+            "https://fantasysports.yahooapis.com/fantasy/v2"
     }
 }

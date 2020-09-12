@@ -10,16 +10,19 @@ fun Observable<Document>.convertToStandingsMessage(): Observable<Message> =
         it.select("team")
     }.map {
         val name = it.select("name").text()
-        val manager = it.select("managers").select("manager").first().select("nickname").text()
+        val manager =
+            it.select("managers").select("manager").first().select("nickname")
+                .text()
         val waiverPriority = it.select("waiver_priority").text().toIntOrNull()
         val faab = it.select("faab_balance").text().toIntOrNull()
-        val clinchedPlayoffs = it.select("clinched_playoffs").text()?.let { cp ->
-            if (cp.isEmpty() || cp == "0") {
-                null
-            } else {
-                "Yes"
+        val clinchedPlayoffs =
+            it.select("clinched_playoffs").text()?.let { cp ->
+                if (cp.isEmpty() || cp == "0") {
+                    null
+                } else {
+                    "Yes"
+                }
             }
-        }
 
         val teamStandings = it.select("team_standings")
         val rank = teamStandings.select("rank").text()?.let { rank ->
@@ -34,7 +37,8 @@ fun Observable<Document>.convertToStandingsMessage(): Observable<Message> =
         val wins = outcomeTotals.select("wins").text()
         val losses = outcomeTotals.select("losses").text()
         val ties = outcomeTotals.select("ties").text()
-        val wltPercentage = outcomeTotals.select("percentage").text().toDouble().toPercentage()
+        val wltPercentage =
+            outcomeTotals.select("percentage").text().toDouble().toPercentage()
 
         var streakType = ""
         var streakAmount = 0

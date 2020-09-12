@@ -8,7 +8,6 @@ import com.github.scribejava.core.oauth.OAuth20Service
 import modules.sharedModule
 import org.koin.core.KoinComponent
 import org.koin.core.context.startKoin
-import org.koin.core.get
 import org.koin.core.inject
 import shared.EnvVariable
 import shared.EnvVariablesChecker
@@ -75,7 +74,11 @@ class Server : KoinComponent {
         }
     }
 
-    private fun exceptionHandler(response: Response, statusCode: Int, message: String): Response {
+    private fun exceptionHandler(
+        response: Response,
+        statusCode: Int,
+        message: String
+    ): Response {
         return response.apply {
             status(statusCode)
             body(message)

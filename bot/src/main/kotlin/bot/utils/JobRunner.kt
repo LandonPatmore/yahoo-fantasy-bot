@@ -23,7 +23,10 @@ class JobRunner {
 
         val trigger = newTrigger()
             .startNow()
-            .withSchedule(CronScheduleBuilder.cronSchedule(cron).inTimeZone(TimeZone.getTimeZone("UTC")))
+            .withSchedule(
+                CronScheduleBuilder.cronSchedule(cron)
+                    .inTimeZone(TimeZone.getTimeZone("UTC"))
+            )
             .build()
 
         jobs.add(Job(jobDetail, trigger))

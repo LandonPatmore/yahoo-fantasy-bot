@@ -4,7 +4,7 @@ mainClassName = 'bot.Bot'
 
 dependencies {
     compile(project(":shared"))
-    implementation ("io.reactivex.rxjava3:rxjava:3.0.4")
+    implementation("io.reactivex.rxjava3:rxjava:3.0.4")
     implementation("com.jakewharton.rxrelay3:rxrelay:3.0.0")
     implementation("com.mashape.unirest:unirest-java:1.4.9")
     implementation("org.quartz-scheduler:quartz:2.3.0")

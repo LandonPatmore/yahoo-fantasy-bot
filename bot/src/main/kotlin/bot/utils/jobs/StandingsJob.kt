@@ -5,7 +5,10 @@ import bot.utils.DataRetriever
 import bot.utils.models.YahooApiRequest
 import org.quartz.JobExecutionContext
 
-class StandingsJob(private val dataRetriever: DataRetriever, private val standingsBridge: StandingsBridge) :
+class StandingsJob(
+    private val dataRetriever: DataRetriever,
+    private val standingsBridge: StandingsBridge
+) :
     BaseJob() {
     override val name = "Standings"
 

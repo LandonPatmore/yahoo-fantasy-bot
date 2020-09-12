@@ -5,7 +5,10 @@ import bot.utils.DataRetriever
 import bot.utils.models.YahooApiRequest
 import org.quartz.JobExecutionContext
 
-class MatchUpJob(private val dataRetriever: DataRetriever, private val matchUpBridge: MatchUpBridge) :
+class MatchUpJob(
+    private val dataRetriever: DataRetriever,
+    private val matchUpBridge: MatchUpBridge
+) :
     BaseJob() {
     override val name = "MatchUp"
 
