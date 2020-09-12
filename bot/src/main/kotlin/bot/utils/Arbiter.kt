@@ -159,7 +159,7 @@ class Arbiter(
 
     private fun setupJobs() {
         // Times are in UTC since it is not effected by DST
-        if (EnvVariable.Bool.OptInCloseScore.variable) {
+        if (TODO()) {
             jobRunner.createJob(
                 CloseScoreUpdateJob::class.java,
                 "0 30 23 ? 9-1 MON *"

@@ -45,11 +45,11 @@ class DataRetriever(private val database: IDatabase) : IDataRetriever {
     private var leagueUrl: String? = null
 
     fun setup() {
-        oauthService = ServiceBuilder(EnvVariable.Str.YahooClientId.variable)
-            .apiSecret(EnvVariable.Str.YahooClientSecret.variable)
+        oauthService = ServiceBuilder(TODO())
+            .apiSecret(TODO())
             .callback(OAuthConstants.OOB)
             .build(YahooApi20.instance())
-        gameKeyUrl = "/game/${EnvVariable.Str.YahooGameKey.variable}"
+        gameKeyUrl = "/game/${TODO()}"
     }
 
     override fun isTokenExpired(retrieved: Long, expiresIn: Int): Boolean {
@@ -108,7 +108,7 @@ class DataRetriever(private val database: IDatabase) : IDataRetriever {
     override fun yahooApiRequest(yahooApiRequest: YahooApiRequest): Document {
         if (leagueUrl == null) {
             leagueUrl =
-                "/league/${retrieveGameKey()}.l.${EnvVariable.Str.YahooLeagueId.variable}"
+                "/league/${retrieveGameKey()}.l.${TODO()}"
         }
 
         return when (yahooApiRequest) {

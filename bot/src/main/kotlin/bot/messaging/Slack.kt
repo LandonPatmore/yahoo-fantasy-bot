@@ -32,7 +32,7 @@ class Slack : MessagingService() {
 
     override val maxMessageLength = 40000
 
-    override val url = EnvVariable.Str.SlackWebhookUrl.variable
+    override val url = TODO()
 
     override fun generateRequest(message: String): RequestBodyEntity =
         Unirest.post(url)
