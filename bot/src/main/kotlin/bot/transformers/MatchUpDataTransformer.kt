@@ -24,12 +24,12 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> 
         for (team: Team in teams) {
             teamDataBuilder.append(
                 """
-                |> ${generateTeamName(team)}
-                |> Win Probability: <b>${DecimalFormat("#.##").format(team.winProbability)}%</b>
-                |> Projected Points: <b>${team.projectedPoints}</b>
+                |${generateTeamName(team)}
+                |Win Probability: <b>${DecimalFormat("#.##").format(team.winProbability)}%</b>
+                |Projected Points: <b>${team.projectedPoints}</b>
                 |${
                 if (teams.indexOf(team) == 0) {
-                    "> \uD83C\uDD9A"
+                    " \uD83C\uDD9A"
                 } else {
                     ""
                 }}
@@ -70,7 +70,7 @@ private fun generateTeamName(team: Team): String {
 }
 
 private fun generateMatchUpHeader(teamOne: Team, teamTwo: Team): String {
-    return "> ${generateTeamName(teamOne)} \uD83C\uDD9A ${generateTeamName(teamTwo)}\\n"
+    return "${generateTeamName(teamOne)} \uD83C\uDD9A ${generateTeamName(teamTwo)}\\n"
 }
 
 private fun generateTeamData(team: Element): Team {
