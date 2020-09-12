@@ -119,7 +119,7 @@ class Postgres : IDatabase {
                 println("Connection does not exist to database.  Creating...")
 
                 connection =
-                    DriverManager.getConnection(EnvVariable.Str.JdbcDatabaseUrl.variable)
+                    DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"))
 
                 println("Connection established to database.")
 

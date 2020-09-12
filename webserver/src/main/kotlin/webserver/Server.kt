@@ -29,12 +29,8 @@ package webserver
 import com.github.scribejava.apis.YahooApi20
 import com.github.scribejava.core.builder.ServiceBuilder
 import com.github.scribejava.core.oauth.OAuth20Service
-import modules.sharedModule
 import org.koin.core.KoinComponent
-import org.koin.core.context.startKoin
 import org.koin.core.inject
-import shared.EnvVariable
-import shared.EnvVariablesChecker
 import shared.Postgres
 import spark.Response
 import spark.Spark.*
@@ -42,9 +38,8 @@ import webserver.exceptions.AuthenticationException
 import webserver.exceptions.PostgresException
 
 
-class Server : KoinComponent {
+object Server : KoinComponent {
     private var service: OAuth20Service? = null
-    private val envVariablesChecker: EnvVariablesChecker by inject()
     private val postgres: Postgres by inject()
 
     /**
@@ -54,31 +49,34 @@ class Server : KoinComponent {
      */
     private val herokuAssignedPort: Int
         get() {
-            return EnvVariable.Integer.Port.variable
+            return TODO()
         }
 
+    @JvmStatic
     fun main(args: Array<String>) {
-        startKoin {
-            modules(sharedModule)
-        }
+//        startKoin {
+//            modules(sharedModule)
+//        }
 
-        envVariablesChecker.check()
+//        envVariablesChecker.check()
 
-        port(herokuAssignedPort)
+        port(8457)
+        staticFileLocation("/webapp")
         registerRoutes()
     }
 
     private fun registerRoutes() {
         get("/") { req, res ->
-            if (postgres.latestTokenData() == null) {
-                println("User is not authenticated.  Sending to Yahoo.")
-                authenticationUrl(req.scheme() + "://" + req.host())?.let {
-                    res.redirect(it)
-                } ?: throw AuthenticationException()
-            } else {
-                println("User is already authenticated.  Not sending to Yahoo.")
-                return@get "You are already authenticated with Yahoo's servers."
-            }
+            "hi"
+//            if (postgres.latestTokenData() == null) {
+//                println("User is not authenticated.  Sending to Yahoo.")
+//                authenticationUrl(req.scheme() + "://" + req.host())?.let {
+//                    res.redirect(it)
+//                } ?: throw AuthenticationException()
+//            } else {
+//                println("User is already authenticated.  Not sending to Yahoo.")
+//                return@get "You are already authenticated with Yahoo's servers."
+//            }
         }
 
         get("/auth") { req, _ ->
@@ -118,8 +116,8 @@ class Server : KoinComponent {
     private fun authenticationUrl(url: String): String? {
         println("Initial authorization...")
 
-        service = ServiceBuilder(EnvVariable.Str.YahooClientId.variable)
-            .apiSecret(EnvVariable.Str.YahooClientSecret.variable)
+        service = ServiceBuilder(TODO())
+            .apiSecret(TODO())
             .callback("$url/auth")
             .build(YahooApi20.instance())
 

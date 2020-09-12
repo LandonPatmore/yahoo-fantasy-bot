@@ -33,10 +33,8 @@ import modules.sharedModule
 import org.koin.core.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.inject
-import shared.EnvVariablesChecker
 
 class Bot : KoinComponent {
-    val envVariablesChecker: EnvVariablesChecker by inject()
     val dataRetriever: DataRetriever by inject()
     val arbiter: Arbiter by inject()
 }

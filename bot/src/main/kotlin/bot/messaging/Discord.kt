@@ -26,14 +26,13 @@ package bot.messaging
 
 import com.mashape.unirest.http.Unirest
 import com.mashape.unirest.request.body.RequestBodyEntity
-import shared.EnvVariable
 
 class Discord : MessagingService() {
     override val name = "Discord"
 
     override val maxMessageLength = 2000
 
-    override val url = EnvVariable.Str.DiscordWebhookUrl.variable
+    override val url = TODO()
 
     override fun generateRequest(message: String): RequestBodyEntity =
         Unirest.post(url)

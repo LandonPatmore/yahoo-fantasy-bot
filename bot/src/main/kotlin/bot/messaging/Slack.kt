@@ -26,7 +26,6 @@ package bot.messaging
 
 import com.mashape.unirest.http.Unirest
 import com.mashape.unirest.request.body.RequestBodyEntity
-import shared.EnvVariable
 
 class Slack : MessagingService() {
     override val name = "Slack"

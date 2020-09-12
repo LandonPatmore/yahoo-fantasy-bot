@@ -34,7 +34,6 @@ import bot.utils.jobs.ScoreUpdateJob
 import bot.utils.jobs.StandingsJob
 import bot.utils.models.YahooApiRequest
 import io.reactivex.rxjava3.core.Observable
-import shared.EnvVariable
 import shared.IDatabase
 import java.util.concurrent.TimeUnit
 

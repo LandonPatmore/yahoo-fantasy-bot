@@ -35,7 +35,6 @@ import com.github.scribejava.core.oauth.OAuth20Service
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.parser.Parser
-import shared.EnvVariable
 import shared.IDatabase
 
 class DataRetriever(private val database: IDatabase) : IDataRetriever {
