@@ -1,10 +1,9 @@
 package bot.transformers
 
 import bot.messaging.Message
+import bot.utils.toPercentage
 import io.reactivex.rxjava3.core.Observable
 import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
-import java.text.DecimalFormat
 
 fun Observable<Document>.convertToStandingsMessage(): Observable<Message> =
     flatMapIterable {
@@ -35,7 +34,7 @@ fun Observable<Document>.convertToStandingsMessage(): Observable<Message> =
         val wins = outcomeTotals.select("wins").text()
         val losses = outcomeTotals.select("losses").text()
         val ties = outcomeTotals.select("ties").text()
-        val wltPercentage = DecimalFormat("#.##").format(outcomeTotals.select("percentage").text().toDouble())
+        val wltPercentage = outcomeTotals.select("percentage").text().toDouble().toPercentage()
 
         var streakType = ""
         var streakAmount = 0

@@ -1,10 +1,10 @@
 package bot.transformers
 
 import bot.messaging.Message
+import bot.utils.toPercentage
 import io.reactivex.rxjava3.core.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import java.text.DecimalFormat
 import kotlin.math.abs
 
 fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> =
@@ -25,14 +25,15 @@ fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> 
             teamDataBuilder.append(
                 """
                 |${generateTeamName(team)}
-                |Win Probability: <b>${DecimalFormat("#.##").format(team.winProbability)}%</b>
+                |Win Probability: <b>${team.winProbability.toPercentage()}%</b>
                 |Projected Points: <b>${team.projectedPoints}</b>
                 |${
-                if (teams.indexOf(team) == 0) {
-                    " \uD83C\uDD9A"
-                } else {
-                    ""
-                }}
+                    if (teams.indexOf(team) == 0) {
+                        "\uD83C\uDD9A"
+                    } else {
+                        ""
+                    }
+                }
             """.trimMargin()
             )
         }
@@ -62,11 +63,12 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
 
 private fun generateTeamName(team: Team): String {
     return "<b>${team.name}</b> ${
-    if (!team.name.contains(team.manager, true) && !team.manager.contains("hidden")) {
-        "(${team.manager})"
-    } else {
-        ""
-    }}"
+        if (!team.name.contains(team.manager, true) && !team.manager.contains("hidden")) {
+            "(${team.manager})"
+        } else {
+            ""
+        }
+    }"
 }
 
 private fun generateMatchUpHeader(teamOne: Team, teamTwo: Team): String {
