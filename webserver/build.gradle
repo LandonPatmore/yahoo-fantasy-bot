@@ -1,8 +1,0 @@
-apply plugin: 'application'
-
-mainClassName = 'webserver.Server'
-
-dependencies {
-    compile(project(":shared"))
-    implementation("com.sparkjava:spark-core:2.7.2")
-}

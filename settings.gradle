@@ -1,1 +1,1 @@
-include "bot", "webserver", "shared"
+include ":bot", ":backend", ":shared"

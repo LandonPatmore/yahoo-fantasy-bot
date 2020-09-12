@@ -9,7 +9,7 @@ buildscript {
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '4.0.2'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.50'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.0'
 }
 
 shadowJar {
@@ -51,7 +51,7 @@ project(":bot") {
     apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle")
 }
 
-project(":webserver") {
+project(":backend") {
     apply plugin: 'com.github.johnrengelman.shadow'
 
     apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle")
