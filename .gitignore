@@ -63,3 +63,4 @@ gradle-app.setting
 # Custom
 */**/settings.properties
 .DS_Store
+backend/resources/frontend
