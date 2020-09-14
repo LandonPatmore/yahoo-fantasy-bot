@@ -1,12 +1,7 @@
 package com.example
 
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.features.*
-import io.ktor.routing.*
+import com.landonpatmore.yahoofantasybot.backend.module
 import io.ktor.http.*
-import io.ktor.gson.*
 import kotlin.test.*
 import io.ktor.server.testing.*
 
