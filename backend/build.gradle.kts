@@ -13,7 +13,7 @@ application {
 }
 
 node {
-    nodeModulesDir = file("frontend")
+    nodeModulesDir = file("../frontend")
 }
 
 repositories {
@@ -46,7 +46,7 @@ tasks.create<Delete>("cleanFrontend") {
 
 tasks.create<Copy>("copyFrontend") {
     dependsOn("cleanFrontend")
-    from(file("frontend/build"))
+    from(file("../frontend/build"))
     into(file("resources/frontend"))
 }
 
