@@ -24,13 +24,8 @@
 
 package com.landonpatmore.yahoofantasybot.backend.models
 
-data class ReleaseInformation(
-    val tag_name: String,
-    val body: String,
-    var newVersionExists: Boolean? = false
-) {
-    companion object {
-        const val URL =
-            "https://api.github.com/repos/LandonPatmore/yahoo-fantasy-bot/releases/latest"
-    }
-}
+data class MessagingServices(
+    val discordWebhooks: List<String>,
+    val groupMeBotUrls: List<String>,
+    val slackWebhooks: List<String>
+)

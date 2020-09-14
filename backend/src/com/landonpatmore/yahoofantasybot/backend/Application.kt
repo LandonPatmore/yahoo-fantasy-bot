@@ -59,10 +59,15 @@ fun Application.module(testing: Boolean = false) {
         getGameKey()
         getLeagueId()
         getAlerts()
-        getJdbcUrl()
+        getMessageType()
         getLatestVersion(this::class.java.classLoader)
 
         // put routes
+        putMessagingServices()
+        putGameKey()
+        putLeagueId()
+        putAlerts()
+        putMessageType()
     }
 }
 

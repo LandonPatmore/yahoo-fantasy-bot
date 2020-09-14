@@ -24,13 +24,9 @@
 
 package com.landonpatmore.yahoofantasybot.backend.models
 
-data class ReleaseInformation(
-    val tag_name: String,
-    val body: String,
-    var newVersionExists: Boolean? = false
-) {
+data class MessageType(val type: Int) {
     companion object {
-        const val URL =
-            "https://api.github.com/repos/LandonPatmore/yahoo-fantasy-bot/releases/latest"
+        const val INDIVIDUAL = 0
+        const val BATCH = 1
     }
 }

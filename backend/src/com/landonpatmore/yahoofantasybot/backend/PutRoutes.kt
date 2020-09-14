@@ -24,24 +24,48 @@
 
 package com.landonpatmore.yahoofantasybot.backend
 
+import com.landonpatmore.yahoofantasybot.backend.models.*
+import io.ktor.application.*
+import io.ktor.request.*
+import io.ktor.response.*
 import io.ktor.routing.*
 
 fun Route.putMessagingServices() {
     put("/messagingServices") {
+        val services = call.receive<MessagingServices>()
+        println(services)
+        call.respond("Received!")
     }
 }
 
 fun Route.putGameKey() {
     put("/gameKey") {
+        val gameKey = call.receive<GameKey>()
+        println(gameKey)
+        call.respond("Received!")
     }
 }
 
 fun Route.putLeagueId() {
     put("/leagueId") {
+        val leagueId = call.receive<LeagueId>()
+        println(leagueId)
+        call.respond("Received!")
     }
 }
 
 fun Route.putAlerts() {
     put("/alerts") {
+        val alerts = call.receive<Alerts>()
+        println(alerts)
+        call.respond("Received!")
+    }
+}
+
+fun Route.putMessageType() {
+    put("/messageType") {
+        val messageType = call.receive<MessageType>()
+        println(messageType)
+        call.respond("Received!")
     }
 }

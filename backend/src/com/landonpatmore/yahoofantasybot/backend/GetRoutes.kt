@@ -24,7 +24,7 @@
 
 package com.landonpatmore.yahoofantasybot.backend
 
-import com.landonpatmore.yahoofantasybot.backend.models.ReleaseInformation
+import com.landonpatmore.yahoofantasybot.backend.models.*
 import io.ktor.application.*
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
@@ -36,10 +36,10 @@ import io.ktor.routing.*
 fun Route.getMessagingServices() {
     get("/messagingServices") {
         call.respond(
-            mapOf(
-                "Discord" to "https://www.disocord.com/webhook/812837ahjsd",
-                "GroupMe" to "https://www.groupme.com/bots/v3/asuh238s",
-                "Slack" to "https://www.slack.com/webhooks/18237489172"
+            MessagingServices(
+                listOf("discord.com/123"), listOf(
+                    "groupme.com/12928dn1"
+                ), listOf("slack.com/129749")
             )
         )
     }
@@ -47,36 +47,33 @@ fun Route.getMessagingServices() {
 
 fun Route.getGameKey() {
     get("/gameKey") {
-        call.respond(mapOf("gameKey" to "NFL"))
+        call.respond(GameKey(GameKey.NFL))
     }
 }
 
 fun Route.getLeagueId() {
     get("/leagueId") {
-        call.respond(mapOf("leagueId" to "17264628"))
+        call.respond(LeagueId("1983729"))
     }
 }
 
 fun Route.getAlerts() {
     get("/alerts") {
         call.respond(
-            mapOf(
-                "Scores" to listOf("23:31", "11:23", "01:21"),
-                "Standings" to listOf("23:31", "11:23", "01:21"),
-                "Matchups" to listOf("23:31", "11:23", "01:21")
+            Alerts(
+                listOf(
+                    Alert(0, 1, 2, 3, 4, 5),
+                    Alert(0, 1, 2, 3, 4, 5),
+                    Alert(0, 1, 2, 3, 4, 5)
+                )
             )
         )
     }
 }
 
-fun Route.getJdbcUrl() {
-    get("/jdbcUrl") {
-        call.respond(
-            mapOf(
-                "jdbcUrl" to "jdbc:heroku.12747.sshuw" +
-                        ".com/1827893"
-            )
-        )
+fun Route.getMessageType() {
+    get("/messageType") {
+        call.respond(MessageType(MessageType.BATCH))
     }
 }
 
@@ -87,18 +84,14 @@ fun Route.getLatestVersion(classLoader: ClassLoader) {
                 serializer = GsonSerializer()
             }
         }.use {
-            val release = it.get<ReleaseInformation>(
-                "https://api.github" +
-                        ".com/repos/LandonPatmore/yahoo-fantasy-bot/releases/latest"
-            )
-            release
+            it.get<ReleaseInformation>(ReleaseInformation.URL)
         }.apply {
             newVersionExists = determineNewVersionExists(tag_name, classLoader)
         }
-
         call.respond(release)
     }
 }
+
 
 private fun determineNewVersionExists(
     tagName: String,
