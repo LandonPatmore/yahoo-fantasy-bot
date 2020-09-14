@@ -24,11 +24,15 @@
 
 package com.landonpatmore.yahoofantasybot.backend
 
-import com.landonpatmore.yahoofantasybot.backend.models.*
 import io.ktor.application.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import shared.database.models.Alerts
+import shared.database.models.GameKey
+import shared.database.models.LeagueId
+import shared.database.models.MessageType
+import shared.database.models.MessagingServices
 
 fun Route.putMessagingServices() {
     put("/messagingServices") {

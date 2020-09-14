@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.backend.models
-
-import shared.database.models.Alert
+package shared.database.models
 
 data class Alerts(
     val alerts: List<Alert>

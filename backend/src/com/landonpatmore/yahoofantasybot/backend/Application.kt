@@ -29,6 +29,7 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.routing.*
+import shared.database.DatabaseDSL
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -49,6 +50,11 @@ fun Application.module(testing: Boolean = false) {
     install(Compression)
     install(CallLogging)
     // TODO: Will move to locations later
+
+    val database = DatabaseDSL()
+    database.connect()
+    database.createTables()
+    database.insertLatestTime(1029487L)
 
     routing {
         // frontend

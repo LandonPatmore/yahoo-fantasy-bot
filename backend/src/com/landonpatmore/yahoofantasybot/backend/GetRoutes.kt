@@ -32,6 +32,10 @@ import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import shared.database.models.Alert
+import shared.database.models.Alerts
+import shared.database.models.LeagueId
+import shared.database.models.MessagingServices
 
 fun Route.getMessagingServices() {
     get("/messagingServices") {
@@ -47,7 +51,7 @@ fun Route.getMessagingServices() {
 
 fun Route.getGameKey() {
     get("/gameKey") {
-        call.respond(GameKey(GameKey.NFL))
+        call.respond(shared.database.models.GameKey(GameKey.NFL))
     }
 }
 
@@ -73,7 +77,7 @@ fun Route.getAlerts() {
 
 fun Route.getMessageType() {
     get("/messageType") {
-        call.respond(MessageType(MessageType.BATCH))
+        call.respond(shared.database.models.MessageType(MessageType.BATCH))
     }
 }
 
@@ -84,7 +88,7 @@ fun Route.getLatestVersion(classLoader: ClassLoader) {
                 serializer = GsonSerializer()
             }
         }.use {
-            it.get<ReleaseInformation>(ReleaseInformation.URL)
+            it.get<shared.database.models.ReleaseInformation>(ReleaseInformation.URL)
         }.apply {
             newVersionExists = determineNewVersionExists(tag_name, classLoader)
         }

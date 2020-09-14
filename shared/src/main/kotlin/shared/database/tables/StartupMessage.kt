@@ -22,29 +22,10 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.backend.models
+package shared.database.tables
 
-import shared.database.models.Alert
+import org.jetbrains.exposed.sql.Table
 
-data class Alerts(
-    val alerts: List<Alert>
-)
-
-data class Alert(
-    val type: Int, // TODO: Map these to actual alerts
-    val hour: Int,
-    val minute: Int,
-    val startMonth: Int,
-    val endMonth: Int,
-    val dayOfWeek: Int,
-    val timeZone: String
-)
-
-//jobRunner.createJob(MatchUpJob::class.java, "0 30 23 ? 9-1 THU *")
-//jobRunner.createJob(StandingsJob::class.java, "0 30 16 ? 9-1 TUE *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 FRI *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 00 17 ? 9-1 SUN *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 00 20 ? 9-1 SUN *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 00 0 ? 9-1 MON *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 MON *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 TUE *")
+object StartupMessage : Table() {
+    val received = bool("received").uniqueIndex()
+}
