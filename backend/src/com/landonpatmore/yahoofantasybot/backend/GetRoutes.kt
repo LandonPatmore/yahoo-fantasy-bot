@@ -62,9 +62,9 @@ fun Route.getAlerts() {
         call.respond(
             Alerts(
                 listOf(
-                    Alert(0, 1, 2, 3, 4, 5),
-                    Alert(0, 1, 2, 3, 4, 5),
-                    Alert(0, 1, 2, 3, 4, 5)
+                    Alert(0, 1, 2, 3, 4, 5, "EST"),
+                    Alert(0, 1, 2, 3, 4, 5, "EST"),
+                    Alert(0, 1, 2, 3, 4, 5, "EST")
                 )
             )
         )

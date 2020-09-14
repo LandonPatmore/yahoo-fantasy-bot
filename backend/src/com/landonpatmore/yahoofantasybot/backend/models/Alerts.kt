@@ -34,7 +34,8 @@ data class Alert(
     val minute: Int,
     val startMonth: Int,
     val endMonth: Int,
-    val dayOfWeek: Int
+    val dayOfWeek: Int,
+    val timeZone: String
 )
 
 //jobRunner.createJob(MatchUpJob::class.java, "0 30 23 ? 9-1 THU *")
