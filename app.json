@@ -10,27 +10,12 @@
     "chat bot",
     "ff"
   ],
-  "website": "https://github.com/landonp1203/yahoo-fantasy-bot",
-  "repository": "https://github.com/landonp1203/yahoo-fantasy-bot",
+  "website": "https://github.com/LandonPatmore/yahoo-fantasy-bot",
+  "repository": "https://github.com/LandonPatmore/yahoo-fantasy-bot",
   "scripts": {
     "postdeploy": "psql $DATABASE_URL -f db_provision.sql"
   },
   "env": {
-    "GROUP_ME_BOT_ID": {
-      "description": "GroupMe Bot ID",
-      "value": "",
-      "required": false
-    },
-    "DISCORD_WEBHOOK_URL": {
-      "description": "Discord Web Hook URL",
-      "value": "",
-      "required": false
-    },
-    "SLACK_WEBHOOK_URL": {
-      "description": "Discord Web Hook URL",
-      "value": "",
-      "required": false
-    },
     "YAHOO_CLIENT_ID": {
       "description": "Yahoo Client ID",
       "value": "",
@@ -38,21 +23,6 @@
     },
     "YAHOO_CLIENT_SECRET": {
       "description": "Yahoo Client Secret",
-      "value": "",
-      "required": true
-    },
-    "YAHOO_GAME_KEY": {
-      "description": "Yahoo Game Key: (NFL, NBA, MLB)",
-      "value": "",
-      "required": true
-    },
-    "YAHOO_LEAGUE_ID": {
-      "description": "Yahoo League ID",
-      "value": "",
-      "required": true
-    },
-    "OPT_IN_CLOSE_SCORE": {
-      "description": "Interested in getting close score updates? (TRUE OR FALSE)",
       "value": "",
       "required": true
     }
