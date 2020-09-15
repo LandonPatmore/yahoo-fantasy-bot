@@ -32,7 +32,7 @@ import shared.database.models.GameKey
 import shared.database.models.LeagueId
 import shared.database.tables.*
 
-class DatabaseDSL(
+class Db(
     private val url: String,
     private val user: String = "test",
     private val password: String = "test"
@@ -59,7 +59,7 @@ class DatabaseDSL(
         }
     }
 
-    fun insertAlerts(alerts: List<Alert>) {
+    fun saveAlerts(alerts: List<Alert>) {
         transaction {
             AlertsTable.deleteAll()
 
@@ -77,7 +77,7 @@ class DatabaseDSL(
         }
     }
 
-    fun insertGameKey(gameKey: GameKey) {
+    fun saveGameKey(gameKey: GameKey) {
         transaction {
             GameKeyTable.insert {
                 it[this.gameKey] = gameKey.key
@@ -85,7 +85,7 @@ class DatabaseDSL(
         }
     }
 
-    fun insertLatestTime(time: Long) {
+    fun saveLatestTime(time: Long) {
         transaction {
             dropTopRows(LatestTimeTable, LatestTimeTable.latestTime)
 
@@ -95,7 +95,7 @@ class DatabaseDSL(
         }
     }
 
-    fun insertLeagueId(leagueId: LeagueId) {
+    fun saveLeagueId(leagueId: LeagueId) {
         transaction {
             LeagueIdTable.insert {
                 it[this.leagueId] = leagueId.id
@@ -103,7 +103,7 @@ class DatabaseDSL(
         }
     }
 
-    fun insertMessagingServices(services: shared.database.models.MessagingServices) {
+    fun saveMessagingServices(services: shared.database.models.MessagingServices) {
         transaction {
             MessagingServicesTable.deleteAll()
 
@@ -116,7 +116,7 @@ class DatabaseDSL(
         }
     }
 
-    fun insertStartupMessage() {
+    fun startupMessageReceived() {
         transaction {
             StartupMessageTable.insert {
                 it[received] = true
@@ -124,7 +124,7 @@ class DatabaseDSL(
         }
     }
 
-    fun insertToken(token: OAuth2AccessToken) {
+    fun saveToken(token: OAuth2AccessToken) {
         transaction {
             dropTopRows(TokensTable, TokensTable.retrievedTime)
 

@@ -29,7 +29,7 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.routing.*
-import shared.database.DatabaseDSL
+import shared.database.Db
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -51,10 +51,10 @@ fun Application.module(testing: Boolean = false) {
     install(CallLogging)
     // TODO: Will move to locations later
 
-    val database = DatabaseDSL("jdbc:postgresql://localhost:5432/test")
+    val database = Db("jdbc:postgresql://localhost:5432/test")
     var test: Long = 1
     for (i in 0..20) {
-        database.insertLatestTime(test)
+        database.saveLatestTime(test)
         test++
     }
 

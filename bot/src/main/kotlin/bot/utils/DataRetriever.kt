@@ -35,9 +35,9 @@ import com.github.scribejava.core.oauth.OAuth20Service
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.parser.Parser
-import shared.IDatabase
+import shared.database.Db
 
-class DataRetriever(private val database: IDatabase) : IDataRetriever {
+class DataRetriever(private val database: Db) : IDataRetriever {
     private var currentToken: Pair<Long, OAuth2AccessToken>? = null
 
     private lateinit var oauthService: OAuth20Service
@@ -63,14 +63,14 @@ class DataRetriever(private val database: IDatabase) : IDataRetriever {
                 val refreshToken =
                     oauthService.refreshAccessToken(it.second.refreshToken)
                 currentToken = Pair(System.currentTimeMillis(), refreshToken)
-                database.saveTokenData(refreshToken)
+                database.saveToken(refreshToken)
             }
         }
     }
 
     override fun getAuthenticationToken() {
         while (true) {
-            currentToken = database.latestTokenData()
+            currentToken = database.getLatestTokenData()
             if (currentToken == null) { // This will run only if there is no data in the database
                 println("There is currently no token data in the database.  Please authenticate with Yahoo.")
             } else {

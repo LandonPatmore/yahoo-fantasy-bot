@@ -34,7 +34,7 @@ import bot.utils.jobs.ScoreUpdateJob
 import bot.utils.jobs.StandingsJob
 import bot.utils.models.YahooApiRequest
 import io.reactivex.rxjava3.core.Observable
-import shared.IDatabase
+import shared.database.Db
 import java.util.concurrent.TimeUnit
 
 class Arbiter(
@@ -46,7 +46,7 @@ class Arbiter(
     private val closeScoreUpdateBridge: CloseScoreUpdateBridge,
     private val standingsBridge: StandingsBridge,
     private val matchUpBridge: MatchUpBridge,
-    private val database: IDatabase,
+    private val database: Db,
     private val messageServices: List<IMessagingService>
 ) {
 
@@ -69,14 +69,14 @@ class Arbiter(
                 try {
                     val event =
                         dataRetriever.yahooApiRequest(YahooApiRequest.Transactions)
-                    val latestTimeChecked = database.latestTimeChecked()
+                    val latestTimeChecked = database.getLatestTimeChecked()
                     transactionsBridge.consumer.accept(
                         Pair(
                             latestTimeChecked,
                             event
                         )
                     )
-                    database.saveLastTimeChecked()
+                    database.saveLatestTime(System.currentTimeMillis())
                 } catch (e: Exception) {
                     println(e.message)
                 }
@@ -84,7 +84,7 @@ class Arbiter(
     }
 
     private fun sendInitialMessage() {
-        if (!database.startupMessageSent()) {
+        if (!database.wasStartupMessageReceived()) {
             messageBridge.consumer.accept(
                 Message.Generic(
                     """
@@ -94,7 +94,7 @@ class Arbiter(
                     """.trimMargin()
                 )
             )
-            database.markStartupMessageReceived()
+            database.startupMessageReceived()
         } else {
             println("Start up message already sent, not sending...")
         }

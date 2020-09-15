@@ -29,7 +29,7 @@ import bot.modules.messagingModule
 import bot.modules.utilsModule
 import bot.utils.Arbiter
 import bot.utils.DataRetriever
-import modules.sharedModule
+import shared.modules.sharedModule
 import org.koin.core.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.inject
