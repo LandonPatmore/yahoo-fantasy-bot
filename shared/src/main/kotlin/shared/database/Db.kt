@@ -87,8 +87,10 @@ class Db(
     /**
      * Saves the game key.
      */
-    fun saveGameKey(gameKeys: Array<GameKey>) {
+    fun saveGameKeys(gameKeys: Array<GameKey>) {
         transaction {
+            GameKeyTable.deleteAll()
+
             gameKeys.forEach { gameKey ->
                 GameKeyTable.insert {
                     it[this.gameKey] = gameKey.key
@@ -113,8 +115,10 @@ class Db(
     /**
      * Saves the league id.
      */
-    fun saveLeagueId(leagueIds: Array<LeagueId>) {
+    fun saveLeagueIds(leagueIds: Array<LeagueId>) {
         transaction {
+            LeagueIdTable.deleteAll()
+
             leagueIds.forEach { leagueId ->
                 LeagueIdTable.insert {
                     it[this.leagueId] = leagueId.id
@@ -171,6 +175,8 @@ class Db(
 
     fun saveMessageType(messageType: MessageType) {
         transaction {
+            MessageTypeTable.deleteAll()
+
             MessageTypeTable.insert {
                 it[type] = messageType.type
             }

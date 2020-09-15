@@ -26,7 +26,6 @@ package com.landonpatmore.yahoofantasybot.backend
 
 import com.landonpatmore.yahoofantasybot.backend.models.GameKey
 import com.landonpatmore.yahoofantasybot.backend.models.MessageType
-import com.landonpatmore.yahoofantasybot.backend.models.MessagingServices
 import com.landonpatmore.yahoofantasybot.backend.models.ReleaseInformation
 import io.ktor.application.*
 import io.ktor.client.*
@@ -37,14 +36,15 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import shared.database.models.Alert
 import shared.database.models.LeagueId
+import shared.database.models.MessagingService
 
 fun Route.getMessagingServices() {
     get("/messagingServices") {
         call.respond(
-            MessagingServices(
-                listOf("discord.com/123"), listOf(
-                    "groupme.com/12928dn1"
-                ), listOf("slack.com/129749")
+            listOf(
+                MessagingService("Discord", "discord.com/123"),
+                MessagingService("GroupMe", "groupme.com/12928dn1"),
+                MessagingService("Slack", "slack.com/129749")
             )
         )
     }

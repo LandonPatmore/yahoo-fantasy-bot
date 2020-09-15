@@ -41,17 +41,17 @@ fun Route.putMessagingServices(db: Db) {
 }
 
 fun Route.putGameKey(db: Db) {
-    put("/gameKey") {
+    put("/gameKeys") {
         val gameKey = call.receiveArray<Array<GameKey>>()
-        db.saveGameKey(gameKey)
+        db.saveGameKeys(gameKey)
         call.respond("Received!")
     }
 }
 
 fun Route.putLeagueId(db: Db) {
-    put("/leagueId") {
+    put("/leagueIds") {
         val leagueId = call.receiveArray<Array<LeagueId>>()
-        db.saveLeagueId(leagueId)
+        db.saveLeagueIds(leagueId)
         call.respond("Received!")
     }
 }
