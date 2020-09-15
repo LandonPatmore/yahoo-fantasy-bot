@@ -26,7 +26,6 @@ package shared.database.tables
 
 import org.jetbrains.exposed.sql.Table
 
-object MessagingServices : Table() {
-    val service = text("service")
-    val url = text("url").uniqueIndex()
+object MessageTypeTable : Table() {
+    val type = integer("type").uniqueIndex()
 }

@@ -26,6 +26,6 @@ package shared.database.tables
 
 import org.jetbrains.exposed.sql.Table
 
-object LatestTime : Table() {
-    val latestTime = long("latest_time").uniqueIndex()
+object LeagueIdTable : Table() {
+    val leagueId = text("league_id").uniqueIndex()
 }

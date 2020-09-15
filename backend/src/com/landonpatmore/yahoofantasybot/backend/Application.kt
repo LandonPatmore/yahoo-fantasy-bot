@@ -52,12 +52,12 @@ fun Application.module(testing: Boolean = false) {
     // TODO: Will move to locations later
 
     val database = DatabaseDSL()
-    var test: Long = 10403343234
-    for (i in 0..20) {
-        database.insertLatestTime(test)
-        test++
-    }
-    database.dropTopRows(DatabaseDSL.Companion.Drop.LatestTimes)
+//    var test: Long = 104033432999
+//    for (i in 0..20) {
+//        database.insertLatestTime(test)
+//        test++
+//    }
+//    database.dropTopRows(DatabaseDSL.Companion.Drop.LatestTimes)
 
 
     routing {

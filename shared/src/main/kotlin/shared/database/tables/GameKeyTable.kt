@@ -26,6 +26,6 @@ package shared.database.tables
 
 import org.jetbrains.exposed.sql.Table
 
-object GameKey : Table() {
+object GameKeyTable : Table() {
     val gameKey = text("game_key").uniqueIndex()
 }

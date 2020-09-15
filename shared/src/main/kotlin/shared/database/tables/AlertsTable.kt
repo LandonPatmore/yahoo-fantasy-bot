@@ -24,14 +24,14 @@
 
 package shared.database.tables
 
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.dao.id.UUIDTable
 
-object Tokens : Table() {
-    val refreshToken = text("refreshToken")
-    val retrievedTime = long("retrieved_time").uniqueIndex()
-    val rawResponse = text("raw_response")
-    val type = text("type")
-    val accessToken = text("access_token")
-    val expireTime = integer("expire_time")
-    val scope = text("scope")
+object AlertsTable : UUIDTable() {
+    val type = integer("type")
+    val hour = integer("hour")
+    val minute = integer("minute")
+    val startMonth = integer("start_month")
+    val endMonth = integer("end_month")
+    val dayOfWeek = integer("day_of_week")
+    val timeZone = text("time_zone")
 }

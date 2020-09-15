@@ -26,8 +26,7 @@ package shared.database.tables
 
 import org.jetbrains.exposed.sql.Table
 
-object Alerts : Table() {
-    val type = integer("type")
-    val cronExpression = text("cron_expression")
-    private val uniqueId = type.hashCode() + cronExpression.hashCode()
+object MessagingServicesTable : Table() {
+    val service = text("service")
+    val url = text("url").uniqueIndex()
 }

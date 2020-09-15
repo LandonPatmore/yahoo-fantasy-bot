@@ -26,6 +26,12 @@ package shared.database.tables
 
 import org.jetbrains.exposed.sql.Table
 
-object StartupMessage : Table() {
-    val received = bool("received").uniqueIndex()
+object TokensTable : Table() {
+    val refreshToken = text("refreshToken")
+    val retrievedTime = long("retrieved_time").uniqueIndex()
+    val rawResponse = text("raw_response")
+    val type = text("type")
+    val accessToken = text("access_token")
+    val expireTime = integer("expire_time")
+    val scope = text("scope")
 }

@@ -26,6 +26,6 @@ package shared.database.tables
 
 import org.jetbrains.exposed.sql.Table
 
-object LeagueId : Table() {
-    val leagueId = text("league_id").uniqueIndex()
+object StartupMessageTable : Table() {
+    val received = bool("received").uniqueIndex()
 }

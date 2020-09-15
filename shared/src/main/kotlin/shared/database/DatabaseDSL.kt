@@ -27,6 +27,7 @@ package shared.database
 import com.github.scribejava.core.model.OAuth2AccessToken
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import shared.database.models.Alert
 import shared.database.models.GameKey
 import shared.database.models.LeagueId
 import shared.database.tables.*
@@ -40,32 +41,35 @@ class DatabaseDSL {
 
     private fun connect() {
         Database.connect(
-            "jdbc:postgresql://localhost:5432/landon",
-            driver = "org.postgresql.Driver"
+            "jdbc:postgresql://localhost:5432/test",
+            driver = "org.postgresql.Driver", "test", "test"
         )
     }
 
     private fun createTables() {
         transaction {
-            addLogger(StdOutSqlLogger)
             SchemaUtils.create(
-                LatestTime, StartupMessage, Tokens,
-                MessagingServices, Alerts
+                LatestTimeTable, StartupMessageTable, TokensTable,
+                MessagingServicesTable, MessageTypeTable, AlertsTable
             )
         }
     }
 
-    fun insertAlert(alerts: shared.database.models.Alerts) {
-        alerts.alerts.forEach { alert ->
+    fun insertAlerts(alerts: List<Alert>) {
+        transaction {
+            AlertsTable.deleteAll()
+        }
+
+        alerts.forEach { alert ->
             transaction {
-                addLogger(StdOutSqlLogger)
-                Alerts.insert {
+                AlertsTable.insert {
                     it[type] = alert.type
-                    it[cronExpression] = "0 ${alert.minute} ${alert.hour} ? " +
-                            "${alert.startMonth}-${alert.endMonth} ${
-                                alert
-                                    .dayOfWeek
-                            } *"
+                    it[hour] = alert.hour
+                    it[minute] = alert.minute
+                    it[startMonth] = alert.startMonth
+                    it[endMonth] = alert.endMonth
+                    it[dayOfWeek] = alert.dayOfWeek
+                    it[timeZone] = alert.timeZone
                 }
             }
         }
@@ -73,19 +77,17 @@ class DatabaseDSL {
 
     fun insertGameKey(gameKey: GameKey) {
         transaction {
-            addLogger(StdOutSqlLogger)
-            shared.database.tables.GameKey.insert {
+            GameKeyTable.insert {
                 it[this.gameKey] = gameKey.key
             }
         }
     }
 
     fun insertLatestTime(time: Long) {
-        dropTopRows(Drop.LatestTimes)
+        dropTopRows(LatestTimeTable, LatestTimeTable.latestTime)
 
         transaction {
-            addLogger(StdOutSqlLogger)
-            LatestTime.insert {
+            LatestTimeTable.insert {
                 it[latestTime] = time
             }
         }
@@ -93,8 +95,7 @@ class DatabaseDSL {
 
     fun insertLeagueId(leagueId: LeagueId) {
         transaction {
-            addLogger(StdOutSqlLogger)
-            shared.database.tables.LeagueId.insert {
+            LeagueIdTable.insert {
                 it[this.leagueId] = leagueId.id
             }
         }
@@ -102,14 +103,12 @@ class DatabaseDSL {
 
     fun insertMessagingServices(services: shared.database.models.MessagingServices) {
         transaction {
-            addLogger(StdOutSqlLogger)
-            MessagingServices.deleteAll()
+            MessagingServicesTable.deleteAll()
         }
 
         services.urls.forEach { service ->
             transaction {
-                addLogger(StdOutSqlLogger)
-                MessagingServices.insert {
+                MessagingServicesTable.insert {
                     it[this.service] = service.service
                     it[url] = service.url
                 }
@@ -119,76 +118,120 @@ class DatabaseDSL {
 
     fun insertStartupMessage() {
         transaction {
-            addLogger(StdOutSqlLogger)
-            transaction {
-                StartupMessage.insert {
-                    it[received] = true
-                }
+            StartupMessageTable.insert {
+                it[received] = true
             }
         }
     }
 
     fun insertToken(token: OAuth2AccessToken) {
-        dropTopRows(Drop.Tokens)
+        dropTopRows(TokensTable, TokensTable.retrievedTime)
 
         transaction {
-            addLogger(StdOutSqlLogger)
-            transaction {
-                Tokens.insert {
-                    it[refreshToken] = token.refreshToken
-                    it[retrievedTime] = System.currentTimeMillis()
-                    it[rawResponse] = token.rawResponse
-                    it[type] = token.tokenType
-                    it[accessToken] = token.accessToken
-                    it[expireTime] = token.expiresIn
-                    it[scope] = token.scope
-                }
+            TokensTable.insert {
+                it[refreshToken] = token.refreshToken
+                it[retrievedTime] = System.currentTimeMillis()
+                it[rawResponse] = token.rawResponse
+                it[type] = token.tokenType
+                it[accessToken] = token.accessToken
+                it[expireTime] = token.expiresIn
+                it[scope] = token.scope
             }
         }
     }
 
-    fun dropTopRows(drop: Drop) {
-        val count = transaction {
-            addLogger(StdOutSqlLogger)
-            when (drop) {
-                Drop.Tokens -> Tokens.selectAll().count()
-                Drop.LatestTimes -> LatestTime.selectAll().count()
-            }
+    private fun <T> dropTopRows(table: Table, column: Column<T>) {
+        val list = transaction {
+            table.selectAll()
+                .orderBy(column)
+                .limit(20)
+                .map { it[column] }
         }
 
-        if (count > 20) {
+        if (list.size > 20) {
             transaction {
-                addLogger(StdOutSqlLogger)
-                when (drop) {
-                    Drop.Tokens -> {
-                        val tokens = Tokens.selectAll().orderBy(
-                            Tokens.retrievedTime
-                        ).limit(20).map {
-                            it[Tokens.retrievedTime]
-                        }
-                        Tokens.deleteWhere {
-                            Tokens.retrievedTime inList tokens
-                        }
-                    }
-                    Drop.LatestTimes -> {
-                        val latestTimes = LatestTime.selectAll().orderBy(
-                            LatestTime.latestTime
-                        ).limit(20).map {
-                            it[LatestTime.latestTime]
-                        }
-                        LatestTime.deleteWhere {
-                            LatestTime.latestTime inList latestTimes
-                        }
-                    }
-                }
+                table.deleteWhere { column inList list }
             }
         }
     }
 
-    companion object {
-        sealed class Drop {
-            object Tokens : Drop()
-            object LatestTimes : Drop()
+    fun wasStartupMessageReceived(): Boolean {
+        return transaction {
+            StartupMessageTable.selectAll().orderBy(
+                StartupMessageTable.received to SortOrder.DESC
+            ).limit(1).map {
+                it[StartupMessageTable.received]
+            }.first()
+        }
+    }
+
+    fun getLatestTimeChecked(): Long {
+        return transaction {
+            LatestTimeTable.selectAll().orderBy(
+                LatestTimeTable.latestTime to SortOrder.DESC
+            ).limit(1).map {
+                it[LatestTimeTable.latestTime]
+            }.first()
+        }
+    }
+
+    fun getLatestTokenData(): Pair<Long, OAuth2AccessToken> {
+        return transaction {
+            TokensTable.selectAll().orderBy(
+                TokensTable.retrievedTime to SortOrder.DESC
+            ).limit(1).map {
+                Pair(
+                    it[TokensTable.retrievedTime],
+                    OAuth2AccessToken(
+                        it[TokensTable.accessToken],
+                        it[TokensTable.type],
+                        it[TokensTable.expireTime].toInt(),
+                        it[TokensTable.refreshToken],
+                        it[TokensTable.scope],
+                        it[TokensTable.rawResponse]
+                    )
+                )
+            }.first()
+        }
+    }
+
+    fun getGameKeys(): List<String> {
+        return transaction {
+            GameKeyTable.selectAll().map {
+                it[GameKeyTable.gameKey]
+            }
+        }
+    }
+
+    fun getLeagueIds(): List<String> {
+        return transaction {
+            LeagueIdTable.selectAll().map {
+                it[LeagueIdTable.leagueId]
+            }
+        }
+    }
+
+    fun getMessageType(): Int {
+        return transaction {
+            MessageTypeTable.selectAll().map {
+                it[MessageTypeTable.type]
+            }.first()
+        }
+    }
+
+    fun getAlerts(): List<Alert> {
+        return transaction {
+            AlertsTable.selectAll().map {
+                Alert(
+                    it[AlertsTable.type],
+                    it[AlertsTable.hour],
+                    it[AlertsTable.minute],
+                    it[AlertsTable.startMonth],
+                    it[AlertsTable.endMonth],
+                    it[AlertsTable.dayOfWeek],
+                    it[AlertsTable.timeZone]
+                )
+            }
         }
     }
 }
