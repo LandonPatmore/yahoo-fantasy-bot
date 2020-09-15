@@ -24,36 +24,34 @@
 
 package shared.database
 
+import com.github.scribejava.core.model.OAuth2AccessToken
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import shared.database.models.GameKey
+import shared.database.models.LeagueId
 import shared.database.tables.*
 
 class DatabaseDSL {
 
-    fun connect() {
+    init {
+        connect()
+        createTables()
+    }
+
+    private fun connect() {
         Database.connect(
             "jdbc:postgresql://localhost:5432/landon",
             driver = "org.postgresql.Driver"
         )
     }
 
-    fun createTables() {
+    private fun createTables() {
         transaction {
             addLogger(StdOutSqlLogger)
-
             SchemaUtils.create(
                 LatestTime, StartupMessage, Tokens,
                 MessagingServices, Alerts
             )
-        }
-    }
-
-    fun insertLatestTime(time: Long) {
-        transaction {
-            addLogger(StdOutSqlLogger)
-            LatestTime.insert {
-                it[latestTime] = time
-            }
         }
     }
 
@@ -70,6 +68,127 @@ class DatabaseDSL {
                             } *"
                 }
             }
+        }
+    }
+
+    fun insertGameKey(gameKey: GameKey) {
+        transaction {
+            addLogger(StdOutSqlLogger)
+            shared.database.tables.GameKey.insert {
+                it[this.gameKey] = gameKey.key
+            }
+        }
+    }
+
+    fun insertLatestTime(time: Long) {
+        dropTopRows(Drop.LatestTimes)
+
+        transaction {
+            addLogger(StdOutSqlLogger)
+            LatestTime.insert {
+                it[latestTime] = time
+            }
+        }
+    }
+
+    fun insertLeagueId(leagueId: LeagueId) {
+        transaction {
+            addLogger(StdOutSqlLogger)
+            shared.database.tables.LeagueId.insert {
+                it[this.leagueId] = leagueId.id
+            }
+        }
+    }
+
+    fun insertMessagingServices(services: shared.database.models.MessagingServices) {
+        transaction {
+            addLogger(StdOutSqlLogger)
+            MessagingServices.deleteAll()
+        }
+
+        services.urls.forEach { service ->
+            transaction {
+                addLogger(StdOutSqlLogger)
+                MessagingServices.insert {
+                    it[this.service] = service.service
+                    it[url] = service.url
+                }
+            }
+        }
+    }
+
+    fun insertStartupMessage() {
+        transaction {
+            addLogger(StdOutSqlLogger)
+            transaction {
+                StartupMessage.insert {
+                    it[received] = true
+                }
+            }
+        }
+    }
+
+    fun insertToken(token: OAuth2AccessToken) {
+        dropTopRows(Drop.Tokens)
+
+        transaction {
+            addLogger(StdOutSqlLogger)
+            transaction {
+                Tokens.insert {
+                    it[refreshToken] = token.refreshToken
+                    it[retrievedTime] = System.currentTimeMillis()
+                    it[rawResponse] = token.rawResponse
+                    it[type] = token.tokenType
+                    it[accessToken] = token.accessToken
+                    it[expireTime] = token.expiresIn
+                    it[scope] = token.scope
+                }
+            }
+        }
+    }
+
+    fun dropTopRows(drop: Drop) {
+        val count = transaction {
+            addLogger(StdOutSqlLogger)
+            when (drop) {
+                Drop.Tokens -> Tokens.selectAll().count()
+                Drop.LatestTimes -> LatestTime.selectAll().count()
+            }
+        }
+
+        if (count > 20) {
+            transaction {
+                addLogger(StdOutSqlLogger)
+                when (drop) {
+                    Drop.Tokens -> {
+                        val tokens = Tokens.selectAll().orderBy(
+                            Tokens.retrievedTime
+                        ).limit(20).map {
+                            it[Tokens.retrievedTime]
+                        }
+                        Tokens.deleteWhere {
+                            Tokens.retrievedTime inList tokens
+                        }
+                    }
+                    Drop.LatestTimes -> {
+                        val latestTimes = LatestTime.selectAll().orderBy(
+                            LatestTime.latestTime
+                        ).limit(20).map {
+                            it[LatestTime.latestTime]
+                        }
+                        LatestTime.deleteWhere {
+                            LatestTime.latestTime inList latestTimes
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    companion object {
+        sealed class Drop {
+            object Tokens : Drop()
+            object LatestTimes : Drop()
         }
     }
 }

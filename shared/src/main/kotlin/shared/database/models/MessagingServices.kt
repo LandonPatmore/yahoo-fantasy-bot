@@ -25,7 +25,10 @@
 package shared.database.models
 
 data class MessagingServices(
-    val discordWebhooks: List<String>,
-    val groupMeBotUrls: List<String>,
-    val slackWebhooks: List<String>
+    val urls: List<MessagingService>
+)
+
+data class MessagingService(
+    val service: String,
+    val url: String
 )

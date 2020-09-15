@@ -25,9 +25,8 @@
 package shared.database.tables
 
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.stringLiteral
 
 object MessagingServices : Table() {
-    val service = stringLiteral("service")
+    val service = text("service")
     val url = text("url").uniqueIndex()
 }

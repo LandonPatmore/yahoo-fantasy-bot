@@ -32,6 +32,6 @@ object Tokens : Table() {
     val rawResponse = text("raw_response")
     val type = text("type")
     val accessToken = text("access_token")
-    val expireTime = long("expire_time")
+    val expireTime = integer("expire_time")
     val scope = text("scope")
 }
