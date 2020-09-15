@@ -32,7 +32,11 @@ import shared.database.models.GameKey
 import shared.database.models.LeagueId
 import shared.database.tables.*
 
-class DatabaseDSL {
+class DatabaseDSL(
+    private val url: String,
+    private val user: String = "test",
+    private val password: String = "test"
+) {
 
     init {
         connect()
@@ -41,8 +45,8 @@ class DatabaseDSL {
 
     private fun connect() {
         Database.connect(
-            "jdbc:postgresql://localhost:5432/test",
-            driver = "org.postgresql.Driver", "test", "test"
+            url,
+            driver = "org.postgresql.Driver", user, password
         )
     }
 
@@ -58,10 +62,8 @@ class DatabaseDSL {
     fun insertAlerts(alerts: List<Alert>) {
         transaction {
             AlertsTable.deleteAll()
-        }
 
-        alerts.forEach { alert ->
-            transaction {
+            alerts.forEach { alert ->
                 AlertsTable.insert {
                     it[type] = alert.type
                     it[hour] = alert.hour
@@ -84,9 +86,9 @@ class DatabaseDSL {
     }
 
     fun insertLatestTime(time: Long) {
-        dropTopRows(LatestTimeTable, LatestTimeTable.latestTime)
-
         transaction {
+            dropTopRows(LatestTimeTable, LatestTimeTable.latestTime)
+
             LatestTimeTable.insert {
                 it[latestTime] = time
             }
@@ -104,10 +106,8 @@ class DatabaseDSL {
     fun insertMessagingServices(services: shared.database.models.MessagingServices) {
         transaction {
             MessagingServicesTable.deleteAll()
-        }
 
-        services.urls.forEach { service ->
-            transaction {
+            services.urls.forEach { service ->
                 MessagingServicesTable.insert {
                     it[this.service] = service.service
                     it[url] = service.url
@@ -125,9 +125,9 @@ class DatabaseDSL {
     }
 
     fun insertToken(token: OAuth2AccessToken) {
-        dropTopRows(TokensTable, TokensTable.retrievedTime)
-
         transaction {
+            dropTopRows(TokensTable, TokensTable.retrievedTime)
+
             TokensTable.insert {
                 it[refreshToken] = token.refreshToken
                 it[retrievedTime] = System.currentTimeMillis()
@@ -136,21 +136,6 @@ class DatabaseDSL {
                 it[accessToken] = token.accessToken
                 it[expireTime] = token.expiresIn
                 it[scope] = token.scope
-            }
-        }
-    }
-
-    private fun <T> dropTopRows(table: Table, column: Column<T>) {
-        val list = transaction {
-            table.selectAll()
-                .orderBy(column)
-                .limit(20)
-                .map { it[column] }
-        }
-
-        if (list.size > 20) {
-            transaction {
-                table.deleteWhere { column inList list }
             }
         }
     }
@@ -232,6 +217,19 @@ class DatabaseDSL {
                     it[AlertsTable.timeZone]
                 )
             }
+        }
+    }
+
+    private fun <T> dropTopRows(table: Table, column: Column<T>) {
+        val count = table.selectAll().count()
+
+        if (count >= 20) {
+            val list = table.selectAll()
+                .orderBy(column)
+                .limit(20)
+                .map { it[column] }
+
+            table.deleteWhere { column inList list }
         }
     }
 }

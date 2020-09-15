@@ -51,14 +51,12 @@ fun Application.module(testing: Boolean = false) {
     install(CallLogging)
     // TODO: Will move to locations later
 
-    val database = DatabaseDSL()
-//    var test: Long = 104033432999
-//    for (i in 0..20) {
-//        database.insertLatestTime(test)
-//        test++
-//    }
-//    database.dropTopRows(DatabaseDSL.Companion.Drop.LatestTimes)
-
+    val database = DatabaseDSL("jdbc:postgresql://localhost:5432/test")
+    var test: Long = 1
+    for (i in 0..20) {
+        database.insertLatestTime(test)
+        test++
+    }
 
     routing {
         // frontend
