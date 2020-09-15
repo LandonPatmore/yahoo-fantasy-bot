@@ -54,7 +54,7 @@ fun Application.module(testing: Boolean = false) {
     val database = Db("jdbc:postgresql://localhost:5432/test")
     var test: Long = 1
     for (i in 0..20) {
-        database.saveLatestTime(test)
+        database.saveLatestTimeChecked(test)
         test++
     }
 

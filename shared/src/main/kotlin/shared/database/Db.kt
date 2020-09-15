@@ -43,6 +43,9 @@ class Db(
         createTables()
     }
 
+    /**
+     * Connects to the specified database.
+     */
     private fun connect() {
         Database.connect(
             url,
@@ -50,6 +53,9 @@ class Db(
         )
     }
 
+    /**
+     * Creates tables if they do not exist.
+     */
     private fun createTables() {
         transaction {
             SchemaUtils.create(
@@ -59,6 +65,9 @@ class Db(
         }
     }
 
+    /**
+     * Saves custom alerts.
+     */
     fun saveAlerts(alerts: List<Alert>) {
         transaction {
             AlertsTable.deleteAll()
@@ -77,6 +86,9 @@ class Db(
         }
     }
 
+    /**
+     * Saves the game key.
+     */
     fun saveGameKey(gameKey: GameKey) {
         transaction {
             GameKeyTable.insert {
@@ -85,7 +97,10 @@ class Db(
         }
     }
 
-    fun saveLatestTime(time: Long) {
+    /**
+     * Saves the latest time the bot checked the Yahoo servers for data.
+     */
+    fun saveLatestTimeChecked(time: Long) {
         transaction {
             dropTopRows(LatestTimeTable, LatestTimeTable.latestTime)
 
@@ -95,6 +110,9 @@ class Db(
         }
     }
 
+    /**
+     * Saves the league id.
+     */
     fun saveLeagueId(leagueId: LeagueId) {
         transaction {
             LeagueIdTable.insert {
@@ -103,6 +121,9 @@ class Db(
         }
     }
 
+    /**
+     * Saves the custom messaging service information.
+     */
     fun saveMessagingServices(services: shared.database.models.MessagingServices) {
         transaction {
             MessagingServicesTable.deleteAll()
@@ -116,6 +137,9 @@ class Db(
         }
     }
 
+    /**
+     * Saves the start up message was received.
+     */
     fun startupMessageReceived() {
         transaction {
             StartupMessageTable.insert {
@@ -124,6 +148,9 @@ class Db(
         }
     }
 
+    /**
+     * Saves the OAuth token that Yahoo provides.
+     */
     fun saveToken(token: OAuth2AccessToken) {
         transaction {
             dropTopRows(TokensTable, TokensTable.retrievedTime)
@@ -140,6 +167,9 @@ class Db(
         }
     }
 
+    /**
+     * Gets if start up message was received.
+     */
     fun wasStartupMessageReceived(): Boolean {
         return transaction {
             StartupMessageTable.selectAll().orderBy(
@@ -150,6 +180,9 @@ class Db(
         }
     }
 
+    /**
+     * Gets the latest time Yahoo servers were checked for data.
+     */
     fun getLatestTimeChecked(): Long {
         return transaction {
             LatestTimeTable.selectAll().orderBy(
@@ -160,6 +193,9 @@ class Db(
         }
     }
 
+    /**
+     * Gets the latest token OAuth token data.
+     */
     fun getLatestTokenData(): Pair<Long, OAuth2AccessToken> {
         return transaction {
             TokensTable.selectAll().orderBy(
@@ -180,6 +216,9 @@ class Db(
         }
     }
 
+    /**
+     * Gets the game keys.
+     */
     fun getGameKeys(): List<String> {
         return transaction {
             GameKeyTable.selectAll().map {
@@ -188,6 +227,9 @@ class Db(
         }
     }
 
+    /**
+     * Gets the league ids.
+     */
     fun getLeagueIds(): List<String> {
         return transaction {
             LeagueIdTable.selectAll().map {
@@ -196,6 +238,9 @@ class Db(
         }
     }
 
+    /**
+     * Gets the message type the boy sends to messaging services.
+     */
     fun getMessageType(): Int {
         return transaction {
             MessageTypeTable.selectAll().map {
@@ -204,6 +249,9 @@ class Db(
         }
     }
 
+    /**
+     * Gets custom alerts.
+     */
     fun getAlerts(): List<Alert> {
         return transaction {
             AlertsTable.selectAll().map {
@@ -220,6 +268,11 @@ class Db(
         }
     }
 
+    /**
+     * Drops the top rows from the table.  The reason for this is so reduce
+     * table size for space, as well as heroku has a hard limit on the amount
+     * of rows across all tables.  This makes sure we never reach that limit.
+     */
     private fun <T> dropTopRows(table: Table, column: Column<T>) {
         val count = table.selectAll().count()
 

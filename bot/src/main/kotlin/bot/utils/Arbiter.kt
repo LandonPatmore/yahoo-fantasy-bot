@@ -76,7 +76,7 @@ class Arbiter(
                             event
                         )
                     )
-                    database.saveLatestTime(System.currentTimeMillis())
+                    database.saveLatestTimeChecked(System.currentTimeMillis())
                 } catch (e: Exception) {
                     println(e.message)
                 }
