@@ -24,7 +24,10 @@
 
 package com.landonpatmore.yahoofantasybot.backend
 
-import com.landonpatmore.yahoofantasybot.backend.models.*
+import com.landonpatmore.yahoofantasybot.backend.models.GameKey
+import com.landonpatmore.yahoofantasybot.backend.models.MessageType
+import com.landonpatmore.yahoofantasybot.backend.models.MessagingServices
+import com.landonpatmore.yahoofantasybot.backend.models.ReleaseInformation
 import io.ktor.application.*
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
@@ -35,7 +38,6 @@ import io.ktor.routing.*
 import shared.database.models.Alert
 import shared.database.models.Alerts
 import shared.database.models.LeagueId
-import shared.database.models.MessagingServices
 
 fun Route.getMessagingServices() {
     get("/messagingServices") {

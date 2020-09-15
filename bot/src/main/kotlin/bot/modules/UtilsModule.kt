@@ -32,7 +32,7 @@ import org.koin.dsl.module
 
 val utilsModule = module {
     single { JobRunner() }
-    single { DataRetriever(get()) as IDataRetriever }
+    single { DataRetriever(get()) }
     single {
         Arbiter(
             get(),

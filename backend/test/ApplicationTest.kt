@@ -2,8 +2,9 @@ package com.example
 
 import com.landonpatmore.yahoofantasybot.backend.module
 import io.ktor.http.*
-import kotlin.test.*
 import io.ktor.server.testing.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ApplicationTest {
     @Test
