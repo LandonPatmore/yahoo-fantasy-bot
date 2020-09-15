@@ -24,48 +24,55 @@
 
 package com.landonpatmore.yahoofantasybot.backend
 
+import com.google.gson.Gson
 import io.ktor.application.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import shared.database.Db
 import shared.database.models.*
 
-fun Route.putMessagingServices() {
+fun Route.putMessagingServices(db: Db) {
     put("/messagingServices") {
-        val services = call.receive<MessagingServices>()
-        println(services)
+        val services = call.receiveArray<Array<MessagingService>>()
+        db.saveMessagingServices(services)
         call.respond("Received!")
     }
 }
 
-fun Route.putGameKey() {
+fun Route.putGameKey(db: Db) {
     put("/gameKey") {
-        val gameKey = call.receive<GameKey>()
-        println(gameKey)
+        val gameKey = call.receiveArray<Array<GameKey>>()
+        db.saveGameKey(gameKey)
         call.respond("Received!")
     }
 }
 
-fun Route.putLeagueId() {
+fun Route.putLeagueId(db: Db) {
     put("/leagueId") {
-        val leagueId = call.receive<LeagueId>()
-        println(leagueId)
+        val leagueId = call.receiveArray<Array<LeagueId>>()
+        db.saveLeagueId(leagueId)
         call.respond("Received!")
     }
 }
 
-fun Route.putAlerts() {
+fun Route.putAlerts(db: Db) {
     put("/alerts") {
-        val alerts = call.receive<Alerts>()
-        println(alerts)
+        val alerts = call.receiveArray<Array<Alert>>()
+        db.saveAlerts(alerts)
         call.respond("Received!")
     }
 }
 
-fun Route.putMessageType() {
+fun Route.putMessageType(db: Db) {
     put("/messageType") {
         val messageType = call.receive<MessageType>()
-        println(messageType)
+        db.saveMessageType(messageType)
         call.respond("Received!")
     }
+}
+
+private suspend inline fun <reified T> ApplicationCall.receiveArray(): T {
+    val json = this.receiveOrNull<String>()
+    return Gson().fromJson(json, T::class.java)
 }

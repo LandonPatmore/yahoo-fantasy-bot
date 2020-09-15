@@ -24,10 +24,6 @@
 
 package shared.database.models
 
-data class MessagingServices(
-    val urls: List<MessagingService>
-)
-
 data class MessagingService(
     val service: String,
     val url: String

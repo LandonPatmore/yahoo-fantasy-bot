@@ -36,7 +36,6 @@ import io.ktor.client.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import shared.database.models.Alert
-import shared.database.models.Alerts
 import shared.database.models.LeagueId
 
 fun Route.getMessagingServices() {
@@ -52,26 +51,24 @@ fun Route.getMessagingServices() {
 }
 
 fun Route.getGameKey() {
-    get("/gameKey") {
-        call.respond(shared.database.models.GameKey(GameKey.NFL))
+    get("/gameKeys") {
+        call.respond(listOf(GameKey(GameKey.NFL)))
     }
 }
 
 fun Route.getLeagueId() {
-    get("/leagueId") {
-        call.respond(LeagueId("1983729"))
+    get("/leagueIds") {
+        call.respond(listOf(LeagueId("1983729")))
     }
 }
 
 fun Route.getAlerts() {
     get("/alerts") {
         call.respond(
-            Alerts(
-                listOf(
-                    Alert(0, 1, 2, 3, 4, 5, "EST"),
-                    Alert(0, 1, 2, 3, 4, 5, "EST"),
-                    Alert(0, 1, 2, 3, 4, 5, "EST")
-                )
+            listOf(
+                Alert(0, 1, 2, 3, 4, 5, "EST"),
+                Alert(0, 1, 2, 3, 4, 5, "EST"),
+                Alert(0, 1, 2, 3, 4, 5, "EST")
             )
         )
     }
@@ -103,9 +100,8 @@ private fun determineNewVersionExists(
     tagName: String,
     classLoader: ClassLoader
 ): Boolean {
-    val currentVersion =
-        classLoader.getResource("VERSION")
-            ?.readText()?.split(".") ?: return false
+    val currentVersion = classLoader.getResource("VERSION")?.readText()?.split(".")
+        ?: return false
     val latestVersion = tagName.split(".")
 
     if (latestVersion.size > currentVersion.size) {

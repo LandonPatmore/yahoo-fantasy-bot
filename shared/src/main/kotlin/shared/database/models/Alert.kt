@@ -24,10 +24,6 @@
 
 package shared.database.models
 
-data class Alerts(
-    val alerts: List<Alert>
-)
-
 data class Alert(
     val type: Int, // TODO: Map these to actual alerts
     val hour: Int,
@@ -37,12 +33,3 @@ data class Alert(
     val dayOfWeek: Int,
     val timeZone: String
 )
-
-//jobRunner.createJob(MatchUpJob::class.java, "0 30 23 ? 9-1 THU *")
-//jobRunner.createJob(StandingsJob::class.java, "0 30 16 ? 9-1 TUE *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 FRI *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 00 17 ? 9-1 SUN *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 00 20 ? 9-1 SUN *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 00 0 ? 9-1 MON *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 MON *")
-//jobRunner.createJob(ScoreUpdateJob::class.java, "0 55 3 ? 9-1 TUE *")

@@ -24,19 +24,26 @@
 
 package com.landonpatmore.yahoofantasybot.backend
 
-import com.github.scribejava.core.oauth.OAuth20Service
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.routing.*
+import org.koin.core.context.startKoin
+import org.koin.ktor.ext.inject
 import shared.database.Db
+import shared.modules.sharedModule
 
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>): Unit {
+    startKoin {
+        modules(sharedModule)
+    }
+    io.ktor.server.netty.EngineMain.main(args)
+}
 
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
-    var service: OAuth20Service? = null
+    val db: Db by inject()
 
     install(DefaultHeaders) {
         header("X-Engine", "Ktor") // will send this header with each response
@@ -51,13 +58,6 @@ fun Application.module(testing: Boolean = false) {
     install(CallLogging)
     // TODO: Will move to locations later
 
-    val database = Db("jdbc:postgresql://localhost:5432/test")
-    var test: Long = 1
-    for (i in 0..20) {
-        database.saveLatestTimeChecked(test)
-        test++
-    }
-
     routing {
         // frontend
         serveFrontend()
@@ -71,11 +71,11 @@ fun Application.module(testing: Boolean = false) {
         getLatestVersion(this::class.java.classLoader)
 
         // put routes
-        putMessagingServices()
-        putGameKey()
-        putLeagueId()
-        putAlerts()
-        putMessageType()
+        putMessagingServices(db)
+        putGameKey(db)
+        putLeagueId(db)
+        putAlerts(db)
+        putMessageType(db)
     }
 }
 

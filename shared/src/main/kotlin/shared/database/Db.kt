@@ -27,9 +27,7 @@ package shared.database
 import com.github.scribejava.core.model.OAuth2AccessToken
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import shared.database.models.Alert
-import shared.database.models.GameKey
-import shared.database.models.LeagueId
+import shared.database.models.*
 import shared.database.tables.*
 
 class Db(
@@ -68,7 +66,7 @@ class Db(
     /**
      * Saves custom alerts.
      */
-    fun saveAlerts(alerts: List<Alert>) {
+    fun saveAlerts(alerts: Array<Alert>) {
         transaction {
             AlertsTable.deleteAll()
 
@@ -89,10 +87,12 @@ class Db(
     /**
      * Saves the game key.
      */
-    fun saveGameKey(gameKey: GameKey) {
+    fun saveGameKey(gameKeys: Array<GameKey>) {
         transaction {
-            GameKeyTable.insert {
-                it[this.gameKey] = gameKey.key
+            gameKeys.forEach { gameKey ->
+                GameKeyTable.insert {
+                    it[this.gameKey] = gameKey.key
+                }
             }
         }
     }
@@ -113,10 +113,12 @@ class Db(
     /**
      * Saves the league id.
      */
-    fun saveLeagueId(leagueId: LeagueId) {
+    fun saveLeagueId(leagueIds: Array<LeagueId>) {
         transaction {
-            LeagueIdTable.insert {
-                it[this.leagueId] = leagueId.id
+            leagueIds.forEach { leagueId ->
+                LeagueIdTable.insert {
+                    it[this.leagueId] = leagueId.id
+                }
             }
         }
     }
@@ -124,11 +126,11 @@ class Db(
     /**
      * Saves the custom messaging service information.
      */
-    fun saveMessagingServices(services: shared.database.models.MessagingServices) {
+    fun saveMessagingServices(services: Array<MessagingService>) {
         transaction {
             MessagingServicesTable.deleteAll()
 
-            services.urls.forEach { service ->
+            services.forEach { service ->
                 MessagingServicesTable.insert {
                     it[this.service] = service.service
                     it[url] = service.url
@@ -163,6 +165,14 @@ class Db(
                 it[accessToken] = token.accessToken
                 it[expireTime] = token.expiresIn
                 it[scope] = token.scope
+            }
+        }
+    }
+
+    fun saveMessageType(messageType: MessageType) {
+        transaction {
+            MessageTypeTable.insert {
+                it[type] = messageType.type
             }
         }
     }
