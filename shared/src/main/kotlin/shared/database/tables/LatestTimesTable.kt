@@ -26,6 +26,6 @@ package shared.database.tables
 
 import org.jetbrains.exposed.sql.Table
 
-object LatestTimeTable : Table() {
+object LatestTimesTable : Table() {
     val latestTime = long("latest_time").uniqueIndex()
 }

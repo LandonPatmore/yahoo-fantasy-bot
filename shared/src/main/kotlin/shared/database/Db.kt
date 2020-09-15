@@ -57,8 +57,9 @@ class Db(
     private fun createTables() {
         transaction {
             SchemaUtils.create(
-                LatestTimeTable, StartupMessageTable, TokensTable,
-                MessagingServicesTable, MessageTypeTable, AlertsTable
+                LatestTimesTable, StartupMessageTable, TokensTable,
+                MessagingServicesTable, MessageTypeTable, AlertsTable,
+                LeagueIdsTable, GameKeysTable
             )
         }
     }
@@ -89,10 +90,10 @@ class Db(
      */
     fun saveGameKeys(gameKeys: Array<GameKey>) {
         transaction {
-            GameKeyTable.deleteAll()
+            GameKeysTable.deleteAll()
 
             gameKeys.forEach { gameKey ->
-                GameKeyTable.insert {
+                GameKeysTable.insert {
                     it[this.gameKey] = gameKey.key
                 }
             }
@@ -104,9 +105,9 @@ class Db(
      */
     fun saveLatestTimeChecked(time: Long) {
         transaction {
-            dropTopRows(LatestTimeTable, LatestTimeTable.latestTime)
+            dropTopRows(LatestTimesTable, LatestTimesTable.latestTime)
 
-            LatestTimeTable.insert {
+            LatestTimesTable.insert {
                 it[latestTime] = time
             }
         }
@@ -117,10 +118,10 @@ class Db(
      */
     fun saveLeagueIds(leagueIds: Array<LeagueId>) {
         transaction {
-            LeagueIdTable.deleteAll()
+            LeagueIdsTable.deleteAll()
 
             leagueIds.forEach { leagueId ->
-                LeagueIdTable.insert {
+                LeagueIdsTable.insert {
                     it[this.leagueId] = leagueId.id
                 }
             }
@@ -201,10 +202,10 @@ class Db(
      */
     fun getLatestTimeChecked(): Long {
         return transaction {
-            LatestTimeTable.selectAll().orderBy(
-                LatestTimeTable.latestTime to SortOrder.DESC
+            LatestTimesTable.selectAll().orderBy(
+                LatestTimesTable.latestTime to SortOrder.DESC
             ).limit(1).map {
-                it[LatestTimeTable.latestTime]
+                it[LatestTimesTable.latestTime]
             }.first()
         }
     }
@@ -237,8 +238,8 @@ class Db(
      */
     fun getGameKeys(): List<String> {
         return transaction {
-            GameKeyTable.selectAll().map {
-                it[GameKeyTable.gameKey]
+            GameKeysTable.selectAll().map {
+                it[GameKeysTable.gameKey]
             }
         }
     }
@@ -248,8 +249,8 @@ class Db(
      */
     fun getLeagueIds(): List<String> {
         return transaction {
-            LeagueIdTable.selectAll().map {
-                it[LeagueIdTable.leagueId]
+            LeagueIdsTable.selectAll().map {
+                it[LeagueIdsTable.leagueId]
             }
         }
     }
