@@ -63,11 +63,11 @@ fun Application.module(testing: Boolean = false) {
         serveFrontend()
 
         // get routes
-        getMessagingServices()
-        getGameKey()
-        getLeagueId()
-        getAlerts()
-        getMessageType()
+        getMessagingServices(db)
+        getGameKey(db)
+        getLeagueId(db)
+        getAlerts(db)
+        getMessageType(db)
         getLatestVersion(this::class.java.classLoader)
 
         // put routes

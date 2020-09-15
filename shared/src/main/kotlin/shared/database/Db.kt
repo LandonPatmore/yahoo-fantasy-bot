@@ -236,10 +236,10 @@ class Db(
     /**
      * Gets the game keys.
      */
-    fun getGameKeys(): List<String> {
+    fun getGameKeys(): List<GameKey> {
         return transaction {
             GameKeysTable.selectAll().map {
-                it[GameKeysTable.gameKey]
+                GameKey(it[GameKeysTable.gameKey])
             }
         }
     }
@@ -247,10 +247,10 @@ class Db(
     /**
      * Gets the league ids.
      */
-    fun getLeagueIds(): List<String> {
+    fun getLeagueIds(): List<LeagueId> {
         return transaction {
             LeagueIdsTable.selectAll().map {
-                it[LeagueIdsTable.leagueId]
+                LeagueId(it[LeagueIdsTable.leagueId])
             }
         }
     }
@@ -280,6 +280,20 @@ class Db(
                     it[AlertsTable.endMonth],
                     it[AlertsTable.dayOfWeek],
                     it[AlertsTable.timeZone]
+                )
+            }
+        }
+    }
+
+    /**
+     * Gets messaging services information.
+     */
+    fun getMessagingServices(): List<MessagingService> {
+        return transaction {
+            MessagingServicesTable.selectAll().map {
+                MessagingService(
+                    it[MessagingServicesTable.service],
+                    it[MessagingServicesTable.url]
                 )
             }
         }

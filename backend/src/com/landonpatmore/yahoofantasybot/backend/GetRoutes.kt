@@ -24,8 +24,6 @@
 
 package com.landonpatmore.yahoofantasybot.backend
 
-import com.landonpatmore.yahoofantasybot.backend.models.GameKey
-import com.landonpatmore.yahoofantasybot.backend.models.MessageType
 import com.landonpatmore.yahoofantasybot.backend.models.ReleaseInformation
 import io.ktor.application.*
 import io.ktor.client.*
@@ -34,49 +32,35 @@ import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import shared.database.models.Alert
-import shared.database.models.LeagueId
-import shared.database.models.MessagingService
+import shared.database.Db
 
-fun Route.getMessagingServices() {
+fun Route.getMessagingServices(db: Db) {
     get("/messagingServices") {
-        call.respond(
-            listOf(
-                MessagingService("Discord", "discord.com/123"),
-                MessagingService("GroupMe", "groupme.com/12928dn1"),
-                MessagingService("Slack", "slack.com/129749")
-            )
-        )
+        call.respond(db.getMessagingServices())
     }
 }
 
-fun Route.getGameKey() {
+fun Route.getGameKey(db: Db) {
     get("/gameKeys") {
-        call.respond(listOf(GameKey(GameKey.NFL)))
+        call.respond(db.getGameKeys())
     }
 }
 
-fun Route.getLeagueId() {
+fun Route.getLeagueId(db: Db) {
     get("/leagueIds") {
-        call.respond(listOf(LeagueId("1983729")))
+        call.respond(db.getLeagueIds())
     }
 }
 
-fun Route.getAlerts() {
+fun Route.getAlerts(db: Db) {
     get("/alerts") {
-        call.respond(
-            listOf(
-                Alert(0, 1, 2, 3, 4, 5, "EST"),
-                Alert(0, 1, 2, 3, 4, 5, "EST"),
-                Alert(0, 1, 2, 3, 4, 5, "EST")
-            )
-        )
+        call.respond(db.getAlerts())
     }
 }
 
-fun Route.getMessageType() {
+fun Route.getMessageType(db: Db) {
     get("/messageType") {
-        call.respond(shared.database.models.MessageType(MessageType.BATCH))
+        call.respond(db.getMessageType())
     }
 }
 
