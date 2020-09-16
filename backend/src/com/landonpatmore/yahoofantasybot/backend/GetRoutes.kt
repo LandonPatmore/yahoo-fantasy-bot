@@ -41,7 +41,7 @@ fun Application.getRoutes(db: Db, classLoader: ClassLoader) {
         getLeagueId(db)
         getAlerts(db)
         getMessageType(db)
-        getLatestVersion(classLoader)
+        getLatestVersion()
     }
 }
 
@@ -75,7 +75,7 @@ private fun Route.getMessageType(db: Db) {
     }
 }
 
-private fun Route.getLatestVersion(classLoader: ClassLoader) {
+private fun Route.getLatestVersion() {
     get("/latestVersion") {
         val release = HttpClient(OkHttp) {
             install(JsonFeature) {
@@ -84,7 +84,7 @@ private fun Route.getLatestVersion(classLoader: ClassLoader) {
         }.use {
             it.get<shared.database.models.ReleaseInformation>(ReleaseInformation.URL)
         }.apply {
-            newVersionExists = determineNewVersionExists(tag_name, classLoader)
+            newVersionExists = determineNewVersionExists(tag_name, this.javaClass.classLoader)
         }
         call.respond(release)
     }
