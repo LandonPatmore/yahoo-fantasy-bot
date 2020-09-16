@@ -186,13 +186,13 @@ class Db(
     /**
      * Gets the latest time Yahoo servers were checked for data.
      */
-    fun getLatestTimeChecked(): Long {
+    fun getLatestTimeChecked(): LatestTime {
         return transaction {
             LatestTimesTable.selectAll().orderBy(
                 LatestTimesTable.latestTime to SortOrder.DESC
-            ).limit(1).map {
-                it[LatestTimesTable.latestTime]
-            }.first()
+            ).firstOrNull()?.let {
+                LatestTime(it[LatestTimesTable.latestTime])
+            } ?: LatestTime(-1)
         }
     }
 
@@ -203,7 +203,7 @@ class Db(
         return transaction {
             TokensTable.selectAll().orderBy(
                 TokensTable.retrievedTime to SortOrder.DESC
-            ).limit(1).map {
+            ).firstOrNull()?.let {
                 Pair(
                     it[TokensTable.retrievedTime],
                     OAuth2AccessToken(
@@ -215,7 +215,7 @@ class Db(
                         it[TokensTable.rawResponse]
                     )
                 )
-            }.first()
+            }
         }
     }
 
@@ -236,11 +236,11 @@ class Db(
     /**
      * Gets the message type the boy sends to messaging services.
      */
-    fun getMessageType(): Int {
+    fun getMessageType(): MessageType {
         return transaction {
-            MessageTypeTable.selectAll().map {
-                it[MessageTypeTable.type]
-            }.first()
+            MessageTypeTable.selectAll().firstOrNull()?.let {
+                MessageType(it[MessageTypeTable.type])
+            } ?: MessageType(-1)
         }
     }
 

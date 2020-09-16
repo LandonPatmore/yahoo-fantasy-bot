@@ -61,7 +61,7 @@ fun Application.module(testing: Boolean = false) {
     // TODO: Will move to locations later
 
     serveFrontend()
-    getRoutes(db, this::class.java.classLoader)
+    getRoutes(db)
     putRoutes(db)
 }
 

@@ -41,7 +41,7 @@ import io.ktor.routing.*
 
 private var service: OAuth20Service? = null
 
-fun Application.getRoutes(db: Db, classLoader: ClassLoader) {
+fun Application.getRoutes(db: Db) {
     routing {
         getMessagingServices(db)
         getLeagues(db)
@@ -94,6 +94,27 @@ private fun Route.getLatestVersion() {
     }
 }
 
+fun Route.authenticate(db: Db) {
+    get("/authenticate") {
+        if (db.getLatestTokenData() == null) {
+            authenticationUrl("${call.request.origin.scheme}://${call.request.origin.host}")?.let {
+                call.respondRedirect(it)
+            }
+        } else {
+            call.respond(Authentication(true))
+        }
+    }
+}
+
+fun Route.auth(db: Db) {
+    get("/auth") {
+        @Suppress("BlockingMethodInNonBlockingContext")
+        service?.getAccessToken(call.request.queryParameters["code"])?.let {
+            db.saveToken(it)
+            call.respond(Authentication(true))
+        } ?: call.respondRedirect("/authenticate")
+    }
+}
 
 private fun determineNewVersionExists(
     tagName: String,
@@ -114,28 +135,6 @@ private fun determineNewVersionExists(
             }
         }
         return false
-    }
-}
-
-fun Route.authenticate(db: Db) {
-    get("/authenticate") {
-        if (db.getLatestTokenData() == null) {
-            authenticationUrl("${call.request.origin.scheme}://${call.request.origin.host}")?.let {
-                call.respondRedirect(it)
-            }
-        } else {
-            call.respond(Authentication(true))
-        }
-    }
-}
-
-fun Route.auth(db: Db) {
-    get("/auth") {
-        @Suppress("BlockingMethodInNonBlockingContext")
-        service?.getAccessToken(call.request.queryParameters["code"])?.let {
-            db.saveToken(it)
-            call.respond(Authentication(true))
-        } ?: call.respondRedirect("/authenticate")
     }
 }
 
