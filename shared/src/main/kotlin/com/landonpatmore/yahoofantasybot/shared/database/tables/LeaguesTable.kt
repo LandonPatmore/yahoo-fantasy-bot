@@ -26,6 +26,7 @@ package com.landonpatmore.yahoofantasybot.shared.database.tables
 
 import org.jetbrains.exposed.sql.Table
 
-object LeagueIdsTable : Table() {
+object LeaguesTable : Table() {
     val leagueId = text("league_id").uniqueIndex()
+    val gameKey = text("game_key")
 }

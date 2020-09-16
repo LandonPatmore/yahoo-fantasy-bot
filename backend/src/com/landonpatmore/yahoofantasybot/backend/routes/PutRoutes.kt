@@ -35,8 +35,7 @@ import com.landonpatmore.yahoofantasybot.shared.database.models.*
 fun Application.putRoutes(db: Db) {
     routing {
         putMessagingServices(db)
-        putGameKey(db)
-        putLeagueId(db)
+        putLeagues(db)
         putAlerts(db)
         putMessageType(db)
     }
@@ -50,18 +49,10 @@ private fun Route.putMessagingServices(db: Db) {
     }
 }
 
-private fun Route.putGameKey(db: Db) {
-    put("/gameKeys") {
-        val gameKey = call.receiveArray<Array<GameKey>>()
-        db.saveGameKeys(gameKey)
-        call.respond("Received!")
-    }
-}
-
-private fun Route.putLeagueId(db: Db) {
-    put("/leagueIds") {
-        val leagueId = call.receiveArray<Array<LeagueId>>()
-        db.saveLeagueIds(leagueId)
+private fun Route.putLeagues(db: Db) {
+    put("/leagues") {
+        val leagues = call.receiveArray<Array<League>>()
+        db.saveLeagues(leagues)
         call.respond("Received!")
     }
 }

@@ -22,10 +22,9 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.shared.database.tables
+package com.landonpatmore.yahoofantasybot.shared.database.models
 
-import org.jetbrains.exposed.sql.Table
-
-object GameKeysTable : Table() {
-    val gameKey = text("game_key").uniqueIndex()
-}
+data class League(
+    val leagueId: String,
+    val gameKey: String
+)

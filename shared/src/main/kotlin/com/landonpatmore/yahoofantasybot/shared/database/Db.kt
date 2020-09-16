@@ -29,8 +29,6 @@ import com.landonpatmore.yahoofantasybot.shared.database.models.*
 import com.landonpatmore.yahoofantasybot.shared.database.tables.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import shared.database.models.*
-import shared.database.tables.*
 
 class Db(
     private val url: String,
@@ -61,7 +59,7 @@ class Db(
             SchemaUtils.create(
                 LatestTimesTable, StartupMessageTable, TokensTable,
                 MessagingServicesTable, MessageTypeTable, AlertsTable,
-                LeagueIdsTable, GameKeysTable
+                LeaguesTable
             )
         }
     }
@@ -88,15 +86,16 @@ class Db(
     }
 
     /**
-     * Saves the game key.
+     * Saves the league information.
      */
-    fun saveGameKeys(gameKeys: Array<GameKey>) {
+    fun saveLeagues(leagues: Array<League>) {
         transaction {
-            GameKeysTable.deleteAll()
+            LeaguesTable.deleteAll()
 
-            gameKeys.forEach { gameKey ->
-                GameKeysTable.insert {
-                    it[this.gameKey] = gameKey.key
+            leagues.forEach { league ->
+                LeaguesTable.insert {
+                    it[leagueId] = league.leagueId
+                    it[gameKey] = league.gameKey
                 }
             }
         }
@@ -111,21 +110,6 @@ class Db(
 
             LatestTimesTable.insert {
                 it[latestTime] = time
-            }
-        }
-    }
-
-    /**
-     * Saves the league id.
-     */
-    fun saveLeagueIds(leagueIds: Array<LeagueId>) {
-        transaction {
-            LeagueIdsTable.deleteAll()
-
-            leagueIds.forEach { leagueId ->
-                LeagueIdsTable.insert {
-                    it[this.leagueId] = leagueId.id
-                }
             }
         }
     }
@@ -236,23 +220,15 @@ class Db(
     }
 
     /**
-     * Gets the game keys.
+     * Gets all league information.
      */
-    fun getGameKeys(): List<GameKey> {
+    fun getLeagues(): List<League> {
         return transaction {
-            GameKeysTable.selectAll().map {
-                GameKey(it[GameKeysTable.gameKey])
-            }
-        }
-    }
-
-    /**
-     * Gets the league ids.
-     */
-    fun getLeagueIds(): List<LeagueId> {
-        return transaction {
-            LeagueIdsTable.selectAll().map {
-                LeagueId(it[LeagueIdsTable.leagueId])
+            LeaguesTable.selectAll().map {
+                League(
+                    it[LeaguesTable.leagueId],
+                    it[LeaguesTable.gameKey]
+                )
             }
         }
     }

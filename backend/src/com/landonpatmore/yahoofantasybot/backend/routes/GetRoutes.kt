@@ -37,8 +37,7 @@ import com.landonpatmore.yahoofantasybot.shared.database.Db
 fun Application.getRoutes(db: Db, classLoader: ClassLoader) {
     routing {
         getMessagingServices(db)
-        getGameKey(db)
-        getLeagueId(db)
+        getLeagues(db)
         getAlerts(db)
         getMessageType(db)
         getLatestVersion()
@@ -51,15 +50,9 @@ private fun Route.getMessagingServices(db: Db) {
     }
 }
 
-private fun Route.getGameKey(db: Db) {
-    get("/gameKeys") {
-        call.respond(db.getGameKeys())
-    }
-}
-
-private fun Route.getLeagueId(db: Db) {
-    get("/leagueIds") {
-        call.respond(db.getLeagueIds())
+private fun Route.getLeagues(db: Db) {
+    get("/leagues") {
+        call.respond(db.getLeagues())
     }
 }
 
