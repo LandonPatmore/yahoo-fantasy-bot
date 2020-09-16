@@ -22,46 +22,30 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.backend
+package com.landonpatmore.yahoofantasybot.bot
 
-import com.landonpatmore.yahoofantasybot.backend.routes.getRoutes
-import com.landonpatmore.yahoofantasybot.backend.routes.putRoutes
-import com.landonpatmore.yahoofantasybot.backend.routes.serveFrontend
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.gson.*
+import com.landonpatmore.yahoofantasybot.bot.modules.bridgesModule
+import com.landonpatmore.yahoofantasybot.bot.modules.messagingModule
+import com.landonpatmore.yahoofantasybot.bot.modules.utilsModule
+import com.landonpatmore.yahoofantasybot.bot.utils.Arbiter
+import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
+import org.koin.core.KoinComponent
 import org.koin.core.context.startKoin
-import org.koin.ktor.ext.inject
-import com.landonpatmore.yahoofantasybot.shared.database.Db
+import org.koin.core.inject
 import com.landonpatmore.yahoofantasybot.shared.modules.sharedModule
 
-fun main(args: Array<String>): Unit {
+class Bot : KoinComponent {
+    val dataRetriever: DataRetriever by inject()
+    val arbiter: Arbiter by inject()
+}
+
+fun main() {
     startKoin {
-        modules(sharedModule)
+        modules(sharedModule, bridgesModule, messagingModule, utilsModule)
     }
-    io.ktor.server.netty.EngineMain.main(args)
+
+    val bot = Bot()
+//    bot.envVariablesChecker.check()
+//    bot.dataRetriever.getAuthenticationToken()
+    bot.arbiter.start()
 }
-
-@Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
-fun Application.module(testing: Boolean = false) {
-    val db: Db by inject()
-
-    install(DefaultHeaders) {
-        header("X-Engine", "Ktor") // will send this header with each response
-    }
-    install(ContentNegotiation) {
-        gson {
-            setPrettyPrinting()
-            serializeNulls()
-        }
-    }
-    install(Compression)
-    install(CallLogging)
-    // TODO: Will move to locations later
-
-    serveFrontend()
-    getRoutes(db, this::class.java.classLoader)
-    putRoutes(db)
-}
-

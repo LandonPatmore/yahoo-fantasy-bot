@@ -29,8 +29,8 @@ import io.ktor.application.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import shared.database.Db
-import shared.database.models.*
+import com.landonpatmore.yahoofantasybot.shared.database.Db
+import com.landonpatmore.yahoofantasybot.shared.database.models.*
 
 fun Application.putRoutes(db: Db) {
     routing {

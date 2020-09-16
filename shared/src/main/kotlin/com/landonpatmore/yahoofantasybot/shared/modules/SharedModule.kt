@@ -22,46 +22,11 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.backend
+package com.landonpatmore.yahoofantasybot.shared.modules
 
-import com.landonpatmore.yahoofantasybot.backend.routes.getRoutes
-import com.landonpatmore.yahoofantasybot.backend.routes.putRoutes
-import com.landonpatmore.yahoofantasybot.backend.routes.serveFrontend
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.gson.*
-import org.koin.core.context.startKoin
-import org.koin.ktor.ext.inject
+import org.koin.dsl.module
 import com.landonpatmore.yahoofantasybot.shared.database.Db
-import com.landonpatmore.yahoofantasybot.shared.modules.sharedModule
 
-fun main(args: Array<String>): Unit {
-    startKoin {
-        modules(sharedModule)
-    }
-    io.ktor.server.netty.EngineMain.main(args)
+val sharedModule = module {
+    single { Db("jdbc:postgresql://localhost:5432/test") }
 }
-
-@Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
-fun Application.module(testing: Boolean = false) {
-    val db: Db by inject()
-
-    install(DefaultHeaders) {
-        header("X-Engine", "Ktor") // will send this header with each response
-    }
-    install(ContentNegotiation) {
-        gson {
-            setPrettyPrinting()
-            serializeNulls()
-        }
-    }
-    install(Compression)
-    install(CallLogging)
-    // TODO: Will move to locations later
-
-    serveFrontend()
-    getRoutes(db, this::class.java.classLoader)
-    putRoutes(db)
-}
-

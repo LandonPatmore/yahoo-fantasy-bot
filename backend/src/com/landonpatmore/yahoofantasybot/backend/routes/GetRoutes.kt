@@ -32,7 +32,7 @@ import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import shared.database.Db
+import com.landonpatmore.yahoofantasybot.shared.database.Db
 
 fun Application.getRoutes(db: Db, classLoader: ClassLoader) {
     routing {
@@ -82,7 +82,7 @@ private fun Route.getLatestVersion() {
                 serializer = GsonSerializer()
             }
         }.use {
-            it.get<shared.database.models.ReleaseInformation>(ReleaseInformation.URL)
+            it.get<com.landonpatmore.yahoofantasybot.shared.database.models.ReleaseInformation>(ReleaseInformation.URL)
         }.apply {
             newVersionExists = determineNewVersionExists(tag_name, this.javaClass.classLoader)
         }
