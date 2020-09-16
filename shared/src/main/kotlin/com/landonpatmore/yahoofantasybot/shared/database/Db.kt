@@ -199,7 +199,7 @@ class Db(
     /**
      * Gets the latest token OAuth token data.
      */
-    fun getLatestTokenData(): Pair<Long, OAuth2AccessToken> {
+    fun getLatestTokenData(): Pair<Long, OAuth2AccessToken>? {
         return transaction {
             TokensTable.selectAll().orderBy(
                 TokensTable.retrievedTime to SortOrder.DESC

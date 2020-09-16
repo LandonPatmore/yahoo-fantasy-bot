@@ -24,15 +24,22 @@
 
 package com.landonpatmore.yahoofantasybot.backend.routes
 
+import com.github.scribejava.apis.YahooApi20
+import com.github.scribejava.core.builder.ServiceBuilder
+import com.github.scribejava.core.oauth.OAuth20Service
+import com.landonpatmore.yahoofantasybot.backend.models.Authentication
 import com.landonpatmore.yahoofantasybot.backend.models.ReleaseInformation
+import com.landonpatmore.yahoofantasybot.shared.database.Db
 import io.ktor.application.*
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*
+import io.ktor.features.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import com.landonpatmore.yahoofantasybot.shared.database.Db
+
+private var service: OAuth20Service? = null
 
 fun Application.getRoutes(db: Db, classLoader: ClassLoader) {
     routing {
@@ -41,6 +48,8 @@ fun Application.getRoutes(db: Db, classLoader: ClassLoader) {
         getAlerts(db)
         getMessageType(db)
         getLatestVersion()
+        authenticate(db)
+        auth(db)
     }
 }
 
@@ -75,7 +84,9 @@ private fun Route.getLatestVersion() {
                 serializer = GsonSerializer()
             }
         }.use {
-            it.get<com.landonpatmore.yahoofantasybot.shared.database.models.ReleaseInformation>(ReleaseInformation.URL)
+            it.get<com.landonpatmore.yahoofantasybot.shared.database.models.ReleaseInformation>(
+                ReleaseInformation.URL
+            )
         }.apply {
             newVersionExists = determineNewVersionExists(tag_name, this.javaClass.classLoader)
         }
@@ -106,16 +117,34 @@ private fun determineNewVersionExists(
     }
 }
 
-// TODO: Figure out
-//fun Route.getAuth() {
-//    get("/auth") {
-//        // this is because of an IOException that can be thrown
-//        // inside of getAccessToken()
-//        @Suppress("BlockingMethodInNonBlockingContext")
-//        service?.getAccessToken(call.request.queryParameters["code"])
-//            ?.let {
-//                Postgres().saveTokenData(it)
-//            }
-//    }
-//}
+fun Route.authenticate(db: Db) {
+    get("/authenticate") {
+        if (db.getLatestTokenData() == null) {
+            authenticationUrl("${call.request.origin.scheme}://${call.request.origin.host}")?.let {
+                call.respondRedirect(it)
+            }
+        } else {
+            call.respond(Authentication(true))
+        }
+    }
+}
+
+fun Route.auth(db: Db) {
+    get("/auth") {
+        @Suppress("BlockingMethodInNonBlockingContext")
+        service?.getAccessToken(call.request.queryParameters["code"])?.let {
+            db.saveToken(it)
+            call.respond(Authentication(true))
+        } ?: call.respondRedirect("/authenticate")
+    }
+}
+
+private fun authenticationUrl(url: String): String? {
+    service = ServiceBuilder(System.getenv("YAHOO_CLIENT_ID"))
+        .apiSecret(System.getenv("YAHOO_CLIENT_SECRET"))
+        .callback("$url/auth")
+        .build(YahooApi20.instance())
+
+    return service?.authorizationUrl
+}
 
