@@ -41,13 +41,13 @@ import io.ktor.routing.*
 
 private var service: OAuth20Service? = null
 
-fun Application.getRoutes(db: Db) {
+fun Application.getRoutes(db: Db, currentVersion: String?) {
     routing {
         getMessagingServices(db)
         getLeagues(db)
         getAlerts(db)
         getMessageType(db)
-        getLatestVersion()
+        getReleaseInformation(currentVersion)
         authenticate(db)
         auth(db)
     }
@@ -77,18 +77,20 @@ private fun Route.getMessageType(db: Db) {
     }
 }
 
-private fun Route.getLatestVersion() {
-    get("/latestVersion") {
+private fun Route.getReleaseInformation(currentVersion: String?) {
+    get("/releaseInformation") {
         val release = HttpClient(OkHttp) {
             install(JsonFeature) {
                 serializer = GsonSerializer()
             }
         }.use {
-            it.get<com.landonpatmore.yahoofantasybot.shared.database.models.ReleaseInformation>(
-                ReleaseInformation.URL
-            )
+            it.get<ReleaseInformation>(ReleaseInformation.URL)
         }.apply {
-            newVersionExists = determineNewVersionExists(tag_name, this.javaClass.classLoader)
+            this.currentVersion = currentVersion
+            upgrade = versionChecker(currentVersion, latestVersion)
+            if(!upgrade) {
+                changelog = null
+            }
         }
         call.respond(release)
     }
@@ -116,25 +118,28 @@ fun Route.auth(db: Db) {
     }
 }
 
-private fun determineNewVersionExists(
-    tagName: String,
-    classLoader: ClassLoader
+private fun versionChecker(
+    currentVersion: String?,
+    tagName: String
 ): Boolean {
-    val currentVersion = classLoader.getResource("VERSION")?.readText()?.split(".")
-        ?: return false
-    val latestVersion = tagName.split(".")
-
-    if (latestVersion.size > currentVersion.size) {
-        return true
+    if (currentVersion == null) {
+        return false // since we cannot determine our current version for some reason
     } else {
-        for ((i, latest) in latestVersion.withIndex()) {
-            when {
-                latest.toInt() == currentVersion[i].toInt() -> continue
-                latest.toInt() < currentVersion[i].toInt() -> return false
-                latest.toInt() > currentVersion[i].toInt() -> return true
+        val currentVersionSplit = currentVersion.split(".")
+        val latestVersion = tagName.split(".")
+
+        if (latestVersion.size > currentVersionSplit.size) {
+            return true
+        } else {
+            for ((i, latest) in latestVersion.withIndex()) {
+                when {
+                    latest.toInt() == currentVersionSplit[i].toInt() -> continue
+                    latest.toInt() < currentVersionSplit[i].toInt() -> return false
+                    latest.toInt() > currentVersionSplit[i].toInt() -> return true
+                }
             }
+            return false
         }
-        return false
     }
 }
 

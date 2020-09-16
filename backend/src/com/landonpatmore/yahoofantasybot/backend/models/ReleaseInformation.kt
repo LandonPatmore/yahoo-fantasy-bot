@@ -24,10 +24,15 @@
 
 package com.landonpatmore.yahoofantasybot.backend.models
 
+import com.google.gson.annotations.SerializedName
+
 data class ReleaseInformation(
-    val tag_name: String,
-    val body: String,
-    var newVersionExists: Boolean? = false
+    @SerializedName(value = "changelog", alternate = ["body"])
+    var changelog: String? = null,
+    @SerializedName(value = "latestVersion", alternate = ["tag_name"])
+    val latestVersion: String,
+    var currentVersion: String? = null,
+    var upgrade: Boolean
 ) {
     companion object {
         const val URL =

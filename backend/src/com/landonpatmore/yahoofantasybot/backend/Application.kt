@@ -58,10 +58,17 @@ fun Application.module(testing: Boolean = false) {
     }
     install(Compression)
     install(CallLogging)
+    install(CORS) {
+        anyHost()
+    }
     // TODO: Will move to locations later
 
     serveFrontend()
-    getRoutes(db)
+    getRoutes(db, getCurrentVersion(this.javaClass.classLoader))
     putRoutes(db)
+}
+
+private fun getCurrentVersion(classLoader: ClassLoader) : String? {
+    return classLoader.getResource("VERSION")?.readText()
 }
 
