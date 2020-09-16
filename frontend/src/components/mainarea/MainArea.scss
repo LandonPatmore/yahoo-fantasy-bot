@@ -1,0 +1,20 @@
+#main-area {
+    // background-color: red;
+    display: grid;
+    grid-template-areas:
+    "header header"
+    "alerts leagues"
+    "messagingServices messageType";
+    grid-auto-columns: 1fr;
+    grid-auto-rows: 1fr;
+    grid-gap: 1em;
+}
+
+#dashboard-text {
+    text-align: center;
+    grid-area: header;
+}
+
+.area-header {
+    background-color: red;
+}

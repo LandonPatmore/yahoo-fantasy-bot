@@ -1,0 +1,121 @@
+:root {
+  /* breakpoints min-width */
+  --xs: 320px;
+  --sm: 500px;
+  --md: 768px;
+  --lg: 1024px;
+  --xl: 1200px;
+
+  /* colors */
+  --white: #ffffff;
+  --black: #000000;
+  --off-white: #eeeeee;
+  --light-gray: #aaaaaa;
+  --dark-gray: #333333;
+  --ruby: #aa3b33;
+  --candy-apple: #e3132c;
+
+  /* color aliases */
+  --background: var(--white);
+  --primary-text: var(--black);
+  --secondary-text: var(--dark-gray);
+  --accent-text: var(--light-gray);
+  --warning-text: var(--ruby);
+}
+
+body {
+  margin: 10px;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--background);
+  color: var(--primary-text);
+  font-size: 12px;
+  min-width: 320px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
+select.form-control,
+textarea.form-control,
+input.form-control {
+  font-size: 12px;
+}
+input[type='file'] {
+  width: 100%;
+}
+
+a {
+  font-weight: 800;
+  color: var(--black);
+  text-decoration: none;
+}
+
+@media (min-width: 0px) {
+  h1 {
+    font-size: 36px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  h4 {
+    font-size: 14px;
+  }
+
+  h5 {
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 500px) {
+  h1 {
+    font-size: 36px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  h4 {
+    font-size: 14px;
+  }
+
+  h5 {
+    font-size: 12px;
+  }
+}
+
+table {
+  text-align: center;
+  width: 100%;
+
+  th {
+    text-align: center;
+    font-size: 1.2rem;
+    border-bottom: 1px solid lightgray;
+  }
+
+  td {
+    font-size: 1.0rem;
+  }
+}
