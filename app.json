@@ -12,9 +12,6 @@
   ],
   "website": "https://github.com/LandonPatmore/yahoo-fantasy-bot",
   "repository": "https://github.com/LandonPatmore/yahoo-fantasy-bot",
-  "scripts": {
-    "postdeploy": "psql $DATABASE_URL -f db_provision.sql"
-  },
   "env": {
     "YAHOO_CLIENT_ID": {
       "description": "Yahoo Client ID",
