@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.backend
+package com.landonpatmore.yahoofantasybot.backend.routes
 
 import com.landonpatmore.yahoofantasybot.backend.models.ReleaseInformation
 import io.ktor.application.*
