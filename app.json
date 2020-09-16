@@ -22,6 +22,16 @@
       "description": "Yahoo Client Secret",
       "value": "",
       "required": true
+    },
+    "USER_NAME": {
+      "description": "Account name to access the frontend. It was be whatever you like.",
+      "value": "",
+      "required": true
+    },
+    "USER_PASSWORD": {
+      "description": "Account password to access the frontend. It was be whatever you like.",
+      "value": "",
+      "required": true
     }
   },
   "addons": [
