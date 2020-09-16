@@ -33,12 +33,15 @@ class Discord : MessagingService() {
     override val maxMessageLength = 2000
 
     override val url = TODO()
-
+    
     override fun generateRequest(message: String): RequestBodyEntity =
         Unirest.post(url)
             .header("Content-Type", "application/json")
             .body("{\"content\" : \"$message\"}")
 
-    override fun cleanMessage(message: String): String =
-        message.replace("<b>", "**").replace("</b>", "**")
+    override fun cleanMessage(message: String): String = message
+
+    override fun generateMessage(message: Pair<String, String>): String {
+        return "${message.first}\\n>>> ${message.second}"
+    }
 }

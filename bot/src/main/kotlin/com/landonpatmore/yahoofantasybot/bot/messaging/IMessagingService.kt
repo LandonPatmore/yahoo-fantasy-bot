@@ -26,7 +26,7 @@ package com.landonpatmore.yahoofantasybot.bot.messaging
 
 import io.reactivex.rxjava3.functions.Consumer
 
-interface IMessagingService : Consumer<String> {
+interface IMessagingService : Consumer<Pair<String, String>> {
     @Deprecated(
         "To be removed soon",
         ReplaceWith("correctMessage()"),
@@ -36,7 +36,9 @@ interface IMessagingService : Consumer<String> {
 
     fun sendMessage(message: String)
 
-    fun createMessage(message: String)
+    fun createMessage(message: Pair<String, String>)
 
     fun correctMessage(message: String): String
+
+    fun generateMessage(message: Pair<String, String>): String
 }

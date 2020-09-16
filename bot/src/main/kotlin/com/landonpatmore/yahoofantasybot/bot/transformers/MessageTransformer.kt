@@ -25,26 +25,22 @@
 package com.landonpatmore.yahoofantasybot.bot.transformers
 
 import com.landonpatmore.yahoofantasybot.bot.messaging.Message
+import com.landonpatmore.yahoofantasybot.bot.utils.bold
 import io.reactivex.rxjava3.core.Observable
 
-fun Observable<Message>.convertToStringMessage(): Observable<String> =
+fun Observable<Message>.convertToMessageInfo(): Observable<Pair<String, String>> =
     filter {
         it !is Message.Unknown
     }.map {
-        createMessage(createTitle(it.title), it.message)
+        Pair(createTitle(it.title), it.message)
     }.filter {
-        it.isNotEmpty()
+        it.second.isNotEmpty()
     }
 
-private fun createTitle(title: String?): String? {
-    return title?.let {
-        "\uD83D\uDCE3 <b>${("$it Alert").toUpperCase()}</b>\\n━━━━━━━━━"
-    }
+private fun createTitle(title: String): String {
+    return "\uD83D\uDCE3 ${("$title Alert").toUpperCase().bold()}\\n━━━━━━━━━"
 }
 
-// TODO: Here is where to modify the message per service
-private fun createMessage(alertTitle: String?, message: String): String {
-    return alertTitle?.let {
-        "$it\\n$message"
-    } ?: message
+private fun createMessage(alertTitle: String, message: String): Pair<String, String> {
+    return Pair(alertTitle, message)
 }

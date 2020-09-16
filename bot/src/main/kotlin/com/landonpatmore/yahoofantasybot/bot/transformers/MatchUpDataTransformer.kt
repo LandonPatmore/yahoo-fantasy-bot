@@ -25,11 +25,11 @@
 package com.landonpatmore.yahoofantasybot.bot.transformers
 
 import com.landonpatmore.yahoofantasybot.bot.messaging.Message
+import com.landonpatmore.yahoofantasybot.bot.utils.bold
 import com.landonpatmore.yahoofantasybot.bot.utils.toPercentage
 import io.reactivex.rxjava3.core.Observable
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import java.text.DecimalFormat
 import kotlin.math.abs
 
 fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> =
@@ -46,9 +46,11 @@ fun Observable<Document>.convertToMatchUpObject(): Observable<Pair<Team, Team>> 
 fun Observable<Pair<Team, Team>>.convertToMatchUpMessage(): Observable<Message> =
     map {
         val teamDataBuilder = StringBuilder()
-        teamDataBuilder.append("${it.first.name} vs. ${it.second.name}\\n")
-        teamDataBuilder.append("${it.first.projectedPoints} (${it.first.winProbability.toPercentage()}) " +
-                "- ${it.second.projectedPoints} (${it.second.winProbability.toPercentage()})")
+        teamDataBuilder.append("${it.first.name.bold()} vs. ${it.second.name.bold()}\\n")
+        teamDataBuilder.append(
+            "${it.first.projectedPoints.bold()} (${it.first.winProbability.toPercentage()}) " +
+                    "- ${it.second.projectedPoints.bold()} (${it.second.winProbability.toPercentage()})"
+        )
 
         Message.MatchUp(teamDataBuilder.toString())
     }
@@ -61,10 +63,10 @@ fun Observable<Pair<Team, Team>>.convertToScoreUpdateMessage(closeScoreUpdate: B
             true
         }
     }.map {
-        val message = "${it.first.name} vs. ${it.second.name}\\n" +
-                "${it.first.points} (${it.first.projectedPoints})" +
+        val message = "${it.first.name.bold()} vs. ${it.second.name.bold()}\\n" +
+                "${it.first.points.bold()} (${it.first.projectedPoints})" +
                 " - " +
-                "${it.second.points} (${it.second.projectedPoints})"
+                "${it.second.points.bold()} (${it.second.projectedPoints})"
 
         if (closeScoreUpdate) {
             Message.CloseScore(message)

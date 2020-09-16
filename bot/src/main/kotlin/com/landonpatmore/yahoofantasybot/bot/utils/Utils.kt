@@ -29,3 +29,11 @@ import java.text.DecimalFormat
 fun Double.toPercentage(): String {
     return "${DecimalFormat("#.##").format(this)}%"
 }
+
+fun String.bold(): String {
+    return "**${this}**"
+}
+
+fun Double.bold(): String {
+    return "$this".bold()
+}

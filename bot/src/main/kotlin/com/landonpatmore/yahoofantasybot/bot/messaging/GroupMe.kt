@@ -40,5 +40,5 @@ class GroupMe : MessagingService() {
             .body("{\"text\" : \"$message\", \"bot_id\" : \"${TODO()}\"}")
 
     override fun cleanMessage(message: String): String =
-        message.replace("<b>", "").replace("</b>", "")
+        message.replace("**", "")
 }

@@ -37,7 +37,7 @@ abstract class MessagingService : IMessagingService {
 
     protected abstract fun generateRequest(message: String): RequestBodyEntity
 
-    override fun accept(message: String?) {
+    override fun accept(message: Pair<String, String>?) {
         // message should never be null, this is just a safety check
         message?.let { createMessage(it) }
     }
@@ -48,15 +48,16 @@ abstract class MessagingService : IMessagingService {
         println("$name status code: ${response.status}")
     }
 
-    override fun createMessage(message: String) {
+    override fun createMessage(messageInfo: Pair<String, String>) {
         try {
             // TODO: Remove this sleep
+            val message = generateMessage(messageInfo)
             Thread.sleep(1000)
-            if (message.length > maxMessageLength) {
-                val subMessage = message.substring(0, maxMessageLength + 1)
-                sendMessage(correctMessage(subMessage))
-                createMessage(message.substring(maxMessageLength + 1))
-            }
+//            if (message.length > maxMessageLength) {
+//                val subMessage = message.substring(0, maxMessageLength + 1)
+//                sendMessage(correctMessage(subMessage))
+//                createMessage(message.substring(maxMessageLength + 1))
+//            }
             sendMessage(correctMessage(message))
         } catch (e: Exception) {
             println(e.message)
@@ -80,5 +81,9 @@ abstract class MessagingService : IMessagingService {
             )
             else -> properJsonFormat
         }.trim()
+    }
+
+    override fun generateMessage(message: Pair<String, String>): String {
+        return "${message.first}\\n${message.second}"
     }
 }

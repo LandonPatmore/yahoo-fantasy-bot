@@ -25,6 +25,7 @@
 package com.landonpatmore.yahoofantasybot.bot.transformers
 
 import com.landonpatmore.yahoofantasybot.bot.messaging.Message
+import com.landonpatmore.yahoofantasybot.bot.utils.bold
 import io.reactivex.rxjava3.core.Observable
 import org.jsoup.nodes.Document
 
@@ -55,10 +56,10 @@ fun Observable<Document>.convertToStandingsMessage(): Observable<Message> =
         val pointsFor = teamStandings.select("points_for").text()
         val pointsAgainst = teamStandings.select("points_against").text()
 
-        val finalMessage = "${if (rank.isNotEmpty()) "$rank. " else ""} $name\\n" +
-                "Record: $wins-$losses-$ties ${if (streak != null) "($streakAmount$streakType)" else ""}\\n" +
-                "PF: $pointsFor | PA: $pointsAgainst" +
-                if (clinchedPlayoffs) "\\nClinched Playoffs!" else ""
+        val finalMessage = "${if (rank.isNotEmpty()) "$rank. " else ""} ${name.bold()}\\n" +
+                "Record: ${"$wins-$losses-$ties".bold()} ${if (streak != null) "($streakAmount$streakType)" else ""}\\n" +
+                "PF: ${pointsFor.bold()} | PA: ${pointsAgainst.bold()}" +
+                if (clinchedPlayoffs) "\\nClinched Playoffs!".bold() else ""
 
         Message.Standings(finalMessage)
     }

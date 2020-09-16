@@ -40,5 +40,9 @@ class Slack : MessagingService() {
             .body("{\"text\" : \"$message\"}")
 
     override fun cleanMessage(message: String): String =
-        message.replace("<b>", "*").replace("</b>", "*")
+        message.replace("**", "*")
+
+    override fun generateMessage(message: Pair<String, String>): String {
+        return "${message.first}\\n>>> ${message.second}"
+    }
 }
