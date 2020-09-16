@@ -32,7 +32,17 @@ import io.ktor.routing.*
 import shared.database.Db
 import shared.database.models.*
 
-fun Route.putMessagingServices(db: Db) {
+fun Application.putRoutes(db: Db) {
+    routing {
+        putMessagingServices(db)
+        putGameKey(db)
+        putLeagueId(db)
+        putAlerts(db)
+        putMessageType(db)
+    }
+}
+
+private fun Route.putMessagingServices(db: Db) {
     put("/messagingServices") {
         val services = call.receiveArray<Array<MessagingService>>()
         db.saveMessagingServices(services)
@@ -40,7 +50,7 @@ fun Route.putMessagingServices(db: Db) {
     }
 }
 
-fun Route.putGameKey(db: Db) {
+private fun Route.putGameKey(db: Db) {
     put("/gameKeys") {
         val gameKey = call.receiveArray<Array<GameKey>>()
         db.saveGameKeys(gameKey)
@@ -48,7 +58,7 @@ fun Route.putGameKey(db: Db) {
     }
 }
 
-fun Route.putLeagueId(db: Db) {
+private fun Route.putLeagueId(db: Db) {
     put("/leagueIds") {
         val leagueId = call.receiveArray<Array<LeagueId>>()
         db.saveLeagueIds(leagueId)
@@ -56,7 +66,7 @@ fun Route.putLeagueId(db: Db) {
     }
 }
 
-fun Route.putAlerts(db: Db) {
+private fun Route.putAlerts(db: Db) {
     put("/alerts") {
         val alerts = call.receiveArray<Array<Alert>>()
         db.saveAlerts(alerts)
@@ -64,7 +74,7 @@ fun Route.putAlerts(db: Db) {
     }
 }
 
-fun Route.putMessageType(db: Db) {
+private fun Route.putMessageType(db: Db) {
     put("/messageType") {
         val messageType = call.receive<MessageType>()
         db.saveMessageType(messageType)

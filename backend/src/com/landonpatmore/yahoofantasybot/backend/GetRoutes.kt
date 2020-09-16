@@ -34,37 +34,48 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import shared.database.Db
 
-fun Route.getMessagingServices(db: Db) {
+fun Application.getRoutes(db: Db, classLoader: ClassLoader) {
+    routing {
+        getMessagingServices(db)
+        getGameKey(db)
+        getLeagueId(db)
+        getAlerts(db)
+        getMessageType(db)
+        getLatestVersion(classLoader)
+    }
+}
+
+private fun Route.getMessagingServices(db: Db) {
     get("/messagingServices") {
         call.respond(db.getMessagingServices())
     }
 }
 
-fun Route.getGameKey(db: Db) {
+private fun Route.getGameKey(db: Db) {
     get("/gameKeys") {
         call.respond(db.getGameKeys())
     }
 }
 
-fun Route.getLeagueId(db: Db) {
+private fun Route.getLeagueId(db: Db) {
     get("/leagueIds") {
         call.respond(db.getLeagueIds())
     }
 }
 
-fun Route.getAlerts(db: Db) {
+private fun Route.getAlerts(db: Db) {
     get("/alerts") {
         call.respond(db.getAlerts())
     }
 }
 
-fun Route.getMessageType(db: Db) {
+private fun Route.getMessageType(db: Db) {
     get("/messageType") {
         call.respond(db.getMessageType())
     }
 }
 
-fun Route.getLatestVersion(classLoader: ClassLoader) {
+private fun Route.getLatestVersion(classLoader: ClassLoader) {
     get("/latestVersion") {
         val release = HttpClient(OkHttp) {
             install(JsonFeature) {

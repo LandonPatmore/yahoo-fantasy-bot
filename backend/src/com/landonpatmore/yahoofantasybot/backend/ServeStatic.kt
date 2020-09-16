@@ -24,15 +24,18 @@
 
 package com.landonpatmore.yahoofantasybot.backend
 
+import io.ktor.application.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
 
-fun Route.serveFrontend() {
-    static {
-        resource("/", "frontend/index.html")
+fun Application.serveFrontend() {
+    routing {
+        static {
+            resource("/", "frontend/index.html")
 
-        static("/static") {
-            resources("frontend/static")
+            static("/static") {
+                resources("frontend/static")
+            }
         }
     }
 }

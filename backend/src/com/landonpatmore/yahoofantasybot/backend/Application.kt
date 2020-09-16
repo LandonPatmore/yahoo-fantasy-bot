@@ -27,7 +27,6 @@ package com.landonpatmore.yahoofantasybot.backend
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
-import io.ktor.routing.*
 import org.koin.core.context.startKoin
 import org.koin.ktor.ext.inject
 import shared.database.Db
@@ -58,24 +57,8 @@ fun Application.module(testing: Boolean = false) {
     install(CallLogging)
     // TODO: Will move to locations later
 
-    routing {
-        // frontend
-        serveFrontend()
-
-        // get routes
-        getMessagingServices(db)
-        getGameKey(db)
-        getLeagueId(db)
-        getAlerts(db)
-        getMessageType(db)
-        getLatestVersion(this::class.java.classLoader)
-
-        // put routes
-        putMessagingServices(db)
-        putGameKey(db)
-        putLeagueId(db)
-        putAlerts(db)
-        putMessageType(db)
-    }
+    serveFrontend()
+    getRoutes(db, this::class.java.classLoader)
+    putRoutes(db)
 }
 
