@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/399.l.1116595/transactions" time="32.390832901001ms" copyright="Data provided by Yahoo! and STATS, LLC" refresh_rate="60">
+  <league>
+    <league_key>399.l.1116595</league_key>
+    <league_id>1116595</league_id>
+    <name>Yahoo Public 1116595</name>
+    <url>https://football.fantasysports.yahoo.com/f1/1116595</url>
+    <logo_url>https://s.yimg.com/cv/api/default/20180206/default-league-logo@2x.png</logo_url>
+    <draft_status>postdraft</draft_status>
+    <num_teams>10</num_teams>
+    <edit_key>2</edit_key>
+    <weekly_deadline />
+    <league_update_timestamp>1600156929</league_update_timestamp>
+    <scoring_type>head</scoring_type>
+    <league_type>public</league_type>
+    <renew />
+    <renewed />
+    <iris_group_chat_id />
+    <allow_add_to_dl_extra_pos>0</allow_add_to_dl_extra_pos>
+    <is_pro_league>0</is_pro_league>
+    <is_cash_league>0</is_cash_league>
+    <current_week>2</current_week>
+    <start_week>1</start_week>
+    <start_date>2020-09-10</start_date>
+    <end_week>16</end_week>
+    <end_date>2020-12-28</end_date>
+    <game_code>nfl</game_code>
+    <season>2020</season>
+    <transactions count="8">
+      <transaction>
+        <transaction_key>399.l.1116595.tr.9</transaction_key>
+        <transaction_id>9</transaction_id>
+        <type>add</type>
+        <status>successful</status>
+        <timestamp>1600013435</timestamp>
+        <players count="1">
+          <player>
+            <player_key>399.p.26644</player_key>
+            <player_id>26644</player_id>
+            <name>
+              <full>Tyler Eifert</full>
+              <first>Tyler</first>
+              <last>Eifert</last>
+              <ascii_first>Tyler</ascii_first>
+              <ascii_last>Eifert</ascii_last>
+            </name>
+            <editorial_team_abbr>Jax</editorial_team_abbr>
+            <display_position>TE</display_position>
+            <position_type>O</position_type>
+            <transaction_data>
+              <type>add</type>
+              <source_type>freeagents</source_type>
+              <destination_type>team</destination_type>
+              <destination_team_key>399.l.1116595.t.1</destination_team_key>
+              <destination_team_name>Landon's Choice Team</destination_team_name>
+            </transaction_data>
+          </player>
+        </players>
+      </transaction>
+      <transaction>
+        <transaction_key>399.l.1116595.tr.8</transaction_key>
+        <transaction_id>8</transaction_id>
+        <type>add/drop</type>
+        <status>successful</status>
+        <timestamp>1599895775</timestamp>
+        <players count="2">
+          <player>
+            <player_key>399.p.24830</player_key>
+            <player_id>24830</player_id>
+            <name>
+              <full>Kyle Rudolph</full>
+              <first>Kyle</first>
+              <last>Rudolph</last>
+              <ascii_first>Kyle</ascii_first>
+              <ascii_last>Rudolph</ascii_last>
+            </name>
+            <editorial_team_abbr>Min</editorial_team_abbr>
+            <display_position>TE</display_position>
+            <position_type>O</position_type>
+            <transaction_data>
+              <type>add</type>
+              <source_type>waivers</source_type>
+              <destination_type>team</destination_type>
+              <destination_team_key>399.l.1116595.t.1</destination_team_key>
+              <destination_team_name>Landon's Choice Team</destination_team_name>
+            </transaction_data>
+          </player>
+          <player>
+            <player_key>399.p.28592</player_key>
+            <player_id>28592</player_id>
+            <name>
+              <full>Darren Waller</full>
+              <first>Darren</first>
+              <last>Waller</last>
+              <ascii_first>Darren</ascii_first>
+              <ascii_last>Waller</ascii_last>
+            </name>
+            <editorial_team_abbr>LV</editorial_team_abbr>
+            <display_position>TE</display_position>
+            <position_type>O</position_type>
+            <transaction_data>
+              <type>drop</type>
+              <source_type>team</source_type>
+              <source_team_key>399.l.1116595.t.1</source_team_key>
+              <source_team_name>Landon's Choice Team</source_team_name>
+              <destination_type>waivers</destination_type>
+            </transaction_data>
+          </player>
+        </players>
+      </transaction>
+      <transaction>
+        <transaction_key>399.l.1116595.tr.7</transaction_key>
+        <transaction_id>7</transaction_id>
+        <type>add</type>
+        <status>successful</status>
+        <timestamp>1599895775</timestamp>
+        <players count="1">
+          <player>
+            <player_key>399.p.8826</player_key>
+            <player_id>8826</player_id>
+            <name>
+              <full>DeSean Jackson</full>
+              <first>DeSean</first>
+              <last>Jackson</last>
+              <ascii_first>DeSean</ascii_first>
+              <ascii_last>Jackson</ascii_last>
+            </name>
+            <editorial_team_abbr>Phi</editorial_team_abbr>
+            <display_position>WR</display_position>
+            <position_type>O</position_type>
+            <transaction_data>
+              <type>add</type>
+              <source_type>waivers</source_type>
+              <destination_type>team</destination_type>
+              <destination_team_key>399.l.1116595.t.1</destination_team_key>
+              <destination_team_name>Landon's Choice Team</destination_team_name>
+            </transaction_data>
+          </player>
+        </players>
+      </transaction>
+      <transaction>
+        <transaction_key>399.l.1116595.tr.6</transaction_key>
+        <transaction_id>6</transaction_id>
+        <type>add/drop</type>
+        <status>successful</status>
+        <timestamp>1599895775</timestamp>
+        <players count="2">
+          <player>
+            <player_key>399.p.33138</player_key>
+            <player_id>33138</player_id>
+            <name>
+              <full>James Robinson</full>
+              <first>James</first>
+              <last>Robinson</last>
+              <ascii_first>James</ascii_first>
+              <ascii_last>Robinson</ascii_last>
+            </name>
+            <editorial_team_abbr>Jax</editorial_team_abbr>
+            <display_position>RB</display_position>
+            <position_type>O</position_type>
+            <transaction_data>
+              <type>add</type>
+              <source_type>waivers</source_type>
+              <destination_type>team</destination_type>
+              <destination_team_key>399.l.1116595.t.6</destination_team_key>
+              <destination_team_name>Robert's Team</destination_team_name>
+            </transaction_data>
+          </player>
+          <player>
+            <player_key>399.p.31905</player_key>
+            <player_id>31905</player_id>
+            <name>
+              <full>David Montgomery</full>
+              <first>David</first>
+              <last>Montgomery</last>
+              <ascii_first>David</ascii_first>
+              <ascii_last>Montgomery</ascii_last>
+            </name>
+            <editorial_team_abbr>Chi</editorial_team_abbr>
+            <display_position>RB</display_position>
+            <position_type>O</position_type>
+            <transaction_data>
+              <type>drop</type>
+              <source_type>team</source_type>
+              <source_team_key>399.l.1116595.t.6</source_team_key>
+              <source_team_name>Robert's Team</source_team_name>
+              <destination_type>waivers</destination_type>
+            </transaction_data>
+          </player>
+        </players>
+      </transaction>
+      <transaction>
+        <transaction_key>399.l.1116595.tr.5</transaction_key>
+        <transaction_id>5</transaction_id>
+        <type>add/drop</type>
+        <status>successful</status>
+        <timestamp>1599895775</timestamp>
+        <players count="2">
+          <player>
+            <player_key>399.p.27120</player_key>
+            <player_id>27120</player_id>
+            <name>
+              <full>Brandon McManus</full>
+              <first>Brandon</first>
+              <last>McManus</last>
+              <ascii_first>Brandon</ascii_first>
+              <ascii_last>McManus</ascii_last>
+            </name>
+            <editorial_team_abbr>Den</editorial_team_abbr>
+            <display_position>K</display_position>
+            <position_type>K</position_type>
+            <transaction_data>
+              <type>add</type>
+              <source_type>waivers</source_type>
+              <destination_type>team</destination_type>
+              <destination_team_key>399.l.1116595.t.3</destination_team_key>
+              <destination_team_name>T.Y. for the title</destination_team_name>
+            </transaction_data>
+          </player>
+          <player>
+            <player_key>399.p.3727</player_key>
+            <player_id>3727</player_id>
+            <name>
+              <full>Adam Vinatieri</full>
+              <first>Adam</first>
+              <last>Vinatieri</last>
+              <ascii_first>Adam</ascii_first>
+              <ascii_last>Vinatieri</ascii_last>
+            </name>
+            <editorial_team_abbr>Ind</editorial_team_abbr>
+            <display_position>K</display_position>
+            <position_type>K</position_type>
+            <transaction_data>
+              <type>drop</type>
+              <source_type>team</source_type>
+              <source_team_key>399.l.1116595.t.3</source_team_key>
+              <source_team_name>T.Y. for the title</source_team_name>
+              <destination_type>waivers</destination_type>
+            </transaction_data>
+          </player>
+        </players>
+      </transaction>
+      <transaction>
+        <transaction_key>399.l.1116595.tr.4</transaction_key>
+        <transaction_id>4</transaction_id>
+        <type>drop</type>
+        <status>successful</status>
+        <timestamp>1599756801</timestamp>
+        <players count="1">
+          <player>
+            <player_key>399.p.100014</player_key>
+            <player_id>100014</player_id>
+            <name>
+              <full>Los Angeles</full>
+              <first>Los Angeles</first>
+              <last />
+              <ascii_first>Los Angeles</ascii_first>
+              <ascii_last />
+            </name>
+            <editorial_team_abbr>LAR</editorial_team_abbr>
+            <display_position>DEF</display_position>
+            <position_type>DT</position_type>
+            <transaction_data>
+              <type>drop</type>
+              <source_type>team</source_type>
+              <source_team_key>399.l.1116595.t.1</source_team_key>
+              <source_team_name>Landon's Choice Team</source_team_name>
+              <destination_type>waivers</destination_type>
+            </transaction_data>
+          </player>
+        </players>
+      </transaction>
+      <transaction>
+        <transaction_key>399.l.1116595.tr.3</transaction_key>
+        <transaction_id>3</transaction_id>
+        <type>drop</type>
+        <status>successful</status>
+        <timestamp>1599692550</timestamp>
+        <players count="1">
+          <player>
+            <player_key>399.p.30784</player_key>
+            <player_id>30784</player_id>
+            <name>
+              <full>Blake Jarwin</full>
+              <first>Blake</first>
+              <last>Jarwin</last>
+              <ascii_first>Blake</ascii_first>
+              <ascii_last>Jarwin</ascii_last>
+            </name>
+            <editorial_team_abbr>Dal</editorial_team_abbr>
+            <display_position>TE</display_position>
+            <position_type>O</position_type>
+            <transaction_data>
+              <type>drop</type>
+              <source_type>team</source_type>
+              <source_team_key>399.l.1116595.t.1</source_team_key>
+              <source_team_name>Landon's Choice Team</source_team_name>
+              <destination_type>waivers</destination_type>
+            </transaction_data>
+          </player>
+        </players>
+      </transaction>
+      <transaction>
+        <transaction_key>399.l.1116595.tr.2</transaction_key>
+        <transaction_id>2</transaction_id>
+        <type>drop</type>
+        <status>successful</status>
+        <timestamp>1599686011</timestamp>
+        <players count="1">
+          <player>
+            <player_key>399.p.32756</player_key>
+            <player_id>32756</player_id>
+            <name>
+              <full>Zack Moss</full>
+              <first>Zack</first>
+              <last>Moss</last>
+              <ascii_first>Zack</ascii_first>
+              <ascii_last>Moss</ascii_last>
+            </name>
+            <editorial_team_abbr>Buf</editorial_team_abbr>
+            <display_position>RB</display_position>
+            <position_type>O</position_type>
+            <transaction_data>
+              <type>drop</type>
+              <source_type>team</source_type>
+              <source_team_key>399.l.1116595.t.1</source_team_key>
+              <source_team_name>Landon's Choice Team</source_team_name>
+              <destination_type>waivers</destination_type>
+            </transaction_data>
+          </player>
+        </players>
+      </transaction>
+    </transactions>
+  </league>
+</fantasy_content>
