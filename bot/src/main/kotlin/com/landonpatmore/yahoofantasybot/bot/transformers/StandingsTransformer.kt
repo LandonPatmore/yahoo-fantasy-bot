@@ -25,7 +25,6 @@
 package com.landonpatmore.yahoofantasybot.bot.transformers
 
 import com.landonpatmore.yahoofantasybot.bot.messaging.Message
-import com.landonpatmore.yahoofantasybot.bot.utils.toPercentage
 import io.reactivex.rxjava3.core.Observable
 import org.jsoup.nodes.Document
 
@@ -34,84 +33,32 @@ fun Observable<Document>.convertToStandingsMessage(): Observable<Message> =
         it.select("team")
     }.map {
         val name = it.select("name").text()
-        val manager =
-            it.select("managers").select("manager").first().select("nickname")
-                .text()
-        val waiverPriority = it.select("waiver_priority").text().toIntOrNull()
-        val faab = it.select("faab_balance").text().toIntOrNull()
-        val clinchedPlayoffs =
-            it.select("clinched_playoffs").text()?.let { cp ->
-                if (cp.isEmpty() || cp == "0") {
-                    null
-                } else {
-                    "Yes"
-                }
-            }
+        val clinchedPlayoffs = it.select("clinched_playoffs").text()?.let { cp ->
+            !(cp.isEmpty() || cp == "0")
+        } ?: false
 
         val teamStandings = it.select("team_standings")
-        val rank = teamStandings.select("rank").text()?.let { rank ->
-            if (rank.isEmpty()) {
-                0
-            } else {
-                rank.toInt()
-            }
-        } ?: 0
+        val rank = teamStandings.select("rank").text()
 
         val outcomeTotals = teamStandings.select("outcome_totals")
         val wins = outcomeTotals.select("wins").text()
         val losses = outcomeTotals.select("losses").text()
         val ties = outcomeTotals.select("ties").text()
-        val wltPercentage =
-            outcomeTotals.select("percentage").text().toDouble().toPercentage()
 
-        var streakType = ""
-        var streakAmount = 0
-        teamStandings.select("streak")?.let { streak ->
-            streakType = if (streak.select("type").text() == "win") {
-                "W"
-            } else {
-                "L"
-            }
-            streakAmount = streak.select("value").text().toInt()
+        var streakType: String? = null
+        var streakAmount: String? = null
+        val streak = teamStandings.select("streak")?.let { streak ->
+            streakType = if (streak.select("type").text() == "win") "W" else "L"
+            streakAmount = streak.select("value").text()
         }
 
         val pointsFor = teamStandings.select("points_for").text()
         val pointsAgainst = teamStandings.select("points_against").text()
 
-        Message.Standings("""
-            |$rank ${generateTeamName(name, manager)}
-            |Record: <b>$wins-$losses-$ties</b>
-            |Win %: <b>$wltPercentage</b>
-            |${
-            if (streakAmount > 1) {
-                "Streak: <b>$streakAmount$streakType</b>"
-            } else {
-                ""
-            }
-        }
-            |Points For: <b>$pointsFor</b>, Against: <b>$pointsAgainst</b>
-            |${
-            faab?.let {
-                "FAAB: <b>$faab</b>"
-            } ?: "Waiver Priority: <b>$waiverPriority</b>"
-        }
-        |${
-            clinchedPlayoffs?.let {
-                "Clinched?: <b>$clinchedPlayoffs</b>"
-            }
-        }
-        """.trimMargin()
-        )
-    }
+        val finalMessage = "${if (rank.isNotEmpty()) "$rank. " else ""} $name\\n" +
+                "Record: $wins-$losses-$ties ${if (streak != null) "($streakAmount$streakType)" else ""}\\n" +
+                "PF: $pointsFor | PA: $pointsAgainst" +
+                if (clinchedPlayoffs) "\\nClinched Playoffs!" else ""
 
-private fun generateTeamName(team: String, manager: String): String {
-    return """
-        |<b>$team</b> ${
-        if (!team.contains(manager, true) && !manager.contains("hidden")) {
-            "($manager)"
-        } else {
-            ""
-        }
+        Message.Standings(finalMessage)
     }
-    """.trimMargin()
-}

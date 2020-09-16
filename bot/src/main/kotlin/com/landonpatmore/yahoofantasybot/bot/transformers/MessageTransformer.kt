@@ -38,10 +38,11 @@ fun Observable<Message>.convertToStringMessage(): Observable<String> =
 
 private fun createTitle(title: String?): String? {
     return title?.let {
-        "\uD83D\uDCE3 <b>${it} Alert</b>\\n━━━━━━━━━".toUpperCase()
+        "\uD83D\uDCE3 <b>${("$it Alert").toUpperCase()}</b>\\n━━━━━━━━━"
     }
 }
 
+// TODO: Here is where to modify the message per service
 private fun createMessage(alertTitle: String?, message: String): String {
     return alertTitle?.let {
         "$it\\n$message"
