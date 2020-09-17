@@ -14,6 +14,8 @@ application {
 
 node {
     nodeModulesDir = file("../frontend")
+    version = "14.5.0"
+    download = true
 }
 
 repositories {
