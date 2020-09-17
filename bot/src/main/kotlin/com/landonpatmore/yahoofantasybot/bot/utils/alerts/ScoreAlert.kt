@@ -25,16 +25,14 @@
 package com.landonpatmore.yahoofantasybot.bot.utils.alerts
 
 import com.landonpatmore.yahoofantasybot.bot.bridges.ScoreUpdateBridge
-import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
 import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
+import org.koin.core.inject
 import org.quartz.JobExecutionContext
 
-class ScoreAlert(
-    private val dataRetriever: DataRetriever,
-    private val scoreUpdateBridge: ScoreUpdateBridge
-) :
-    BaseAlert() {
+class ScoreAlert : BaseAlert() {
     override val name = "Score"
+
+    private val scoreUpdateBridge: ScoreUpdateBridge by inject()
 
     override fun execute(context: JobExecutionContext?) {
         super.execute(context)

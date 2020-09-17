@@ -25,16 +25,14 @@
 package com.landonpatmore.yahoofantasybot.bot.utils.alerts
 
 import com.landonpatmore.yahoofantasybot.bot.bridges.StandingsBridge
-import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
 import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
+import org.koin.core.inject
 import org.quartz.JobExecutionContext
 
-class StandingsAlert(
-    private val dataRetriever: DataRetriever,
-    private val standingsBridge: StandingsBridge
-) :
-    BaseAlert() {
+class StandingsAlert : BaseAlert() {
     override val name = "Standings"
+
+    private val standingsBridge: StandingsBridge by inject()
 
     override fun execute(context: JobExecutionContext?) {
         super.execute(context)

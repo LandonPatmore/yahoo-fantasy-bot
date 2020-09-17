@@ -27,14 +27,13 @@ package com.landonpatmore.yahoofantasybot.bot.utils.alerts
 import com.landonpatmore.yahoofantasybot.bot.bridges.MatchUpBridge
 import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
 import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
+import org.koin.core.inject
 import org.quartz.JobExecutionContext
 
-class MatchUpAlert(
-    private val dataRetriever: DataRetriever,
-    private val matchUpBridge: MatchUpBridge
-) :
-    BaseAlert() {
+class MatchUpAlert : BaseAlert() {
     override val name = "MatchUp"
+
+    private val matchUpBridge: MatchUpBridge by inject()
 
     override fun execute(context: JobExecutionContext?) {
         super.execute(context)

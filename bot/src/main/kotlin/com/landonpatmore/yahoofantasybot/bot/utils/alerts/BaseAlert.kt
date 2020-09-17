@@ -24,11 +24,16 @@
 
 package com.landonpatmore.yahoofantasybot.bot.utils.alerts
 
+import com.landonpatmore.yahoofantasybot.bot.utils.IDataRetriever
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 
-abstract class BaseAlert : Job {
+abstract class BaseAlert : Job, KoinComponent {
     protected abstract val name: String
+
+    protected val dataRetriever: IDataRetriever by inject()
 
     override fun execute(context: JobExecutionContext?) {
         println("$name update job running...")

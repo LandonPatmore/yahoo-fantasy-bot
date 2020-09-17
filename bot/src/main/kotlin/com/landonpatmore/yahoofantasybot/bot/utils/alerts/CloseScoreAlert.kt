@@ -27,13 +27,13 @@ package com.landonpatmore.yahoofantasybot.bot.utils.alerts
 import com.landonpatmore.yahoofantasybot.bot.bridges.CloseScoreUpdateBridge
 import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
 import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
+import org.koin.core.inject
 import org.quartz.JobExecutionContext
 
-class CloseScoreAlert(
-    private val dataRetriever: DataRetriever,
-    private val closeScoreUpdateBridge: CloseScoreUpdateBridge
-) : BaseAlert() {
+class CloseScoreAlert : BaseAlert() {
     override val name = "CloseScore"
+
+    private val closeScoreUpdateBridge: CloseScoreUpdateBridge by inject()
 
     override fun execute(context: JobExecutionContext?) {
         super.execute(context)
