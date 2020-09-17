@@ -25,6 +25,12 @@
 package com.landonpatmore.yahoofantasybot.shared.database.models
 
 data class MessagingService(
-    val service: String,
+    val service: Int,
     val url: String
-)
+) {
+    companion object {
+        const val DISCORD = 0
+        const val SLACK = 1
+        const val GROUP_ME = 2
+    }
+}

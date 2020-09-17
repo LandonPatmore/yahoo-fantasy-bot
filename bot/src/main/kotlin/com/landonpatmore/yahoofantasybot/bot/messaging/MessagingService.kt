@@ -27,13 +27,11 @@ package com.landonpatmore.yahoofantasybot.bot.messaging
 import com.mashape.unirest.http.exceptions.UnirestException
 import com.mashape.unirest.request.body.RequestBodyEntity
 
-abstract class MessagingService : IMessagingService {
+abstract class MessagingService(protected val url: String) : IMessagingService {
 
     protected abstract val name: String
 
     protected abstract val maxMessageLength: Int
-
-    protected abstract val url: String
 
     protected abstract fun generateRequest(message: String): RequestBodyEntity
 

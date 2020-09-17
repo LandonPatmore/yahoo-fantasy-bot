@@ -27,17 +27,17 @@ package com.landonpatmore.yahoofantasybot.bot.messaging
 import com.mashape.unirest.http.Unirest
 import com.mashape.unirest.request.body.RequestBodyEntity
 
-class GroupMe : MessagingService() {
+class GroupMe(botId: String) : MessagingService(botId) {
     override val name = "GroupMe"
 
     override val maxMessageLength = 1000
 
-    override val url = "https://api.groupme.com/v3/bots/post"
+    private val postUrl = "https://api.groupme.com/v3/bots/post"
 
     override fun generateRequest(message: String): RequestBodyEntity =
-        Unirest.post(url)
+        Unirest.post(postUrl)
             .header("Content-Type", "application/json")
-            .body("{\"text\" : \"$message\", \"bot_id\" : \"${TODO()}\"}")
+            .body("{\"text\" : \"$message\", \"bot_id\" : \"${url}\"}")
 
     override fun cleanMessage(message: String): String =
         message.replace("**", "")

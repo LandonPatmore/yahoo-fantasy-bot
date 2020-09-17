@@ -25,12 +25,17 @@
 package com.landonpatmore.yahoofantasybot.bot.utils
 
 import com.landonpatmore.yahoofantasybot.bot.bridges.*
-import com.landonpatmore.yahoofantasybot.bot.messaging.IMessagingService
+import com.landonpatmore.yahoofantasybot.bot.messaging.Discord
+import com.landonpatmore.yahoofantasybot.bot.messaging.GroupMe
 import com.landonpatmore.yahoofantasybot.bot.messaging.Message
+import com.landonpatmore.yahoofantasybot.bot.messaging.Slack
 import com.landonpatmore.yahoofantasybot.bot.transformers.*
+import com.landonpatmore.yahoofantasybot.bot.utils.models.Configuration
 import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
 import com.landonpatmore.yahoofantasybot.shared.database.Db
+import com.landonpatmore.yahoofantasybot.shared.database.models.MessagingService
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 
 class Arbiter(
@@ -42,9 +47,13 @@ class Arbiter(
     private val closeScoreUpdateBridge: CloseScoreUpdateBridge,
     private val standingsBridge: StandingsBridge,
     private val matchUpBridge: MatchUpBridge,
-    private val database: Db,
-    private val messageServices: List<IMessagingService>
+    private val configurationBridge: ConfigurationBridge,
+    private val database: Db
 ) {
+
+    private val messagingDisposable = CompositeDisposable()
+    private val messages = messageBridge.eventStream
+        .convertToMessageInfo()
 
     private fun setup() {
         setupTransactionsBridge()
@@ -54,6 +63,7 @@ class Arbiter(
         setupStandingsBridge()
         setupMessageBridge()
         sendInitialMessage()
+        alertsRunner.start()
     }
 
     fun start() {
@@ -126,11 +136,40 @@ class Arbiter(
     }
 
     private fun setupMessageBridge() {
-        val messages = messageBridge.eventStream
-            .convertToMessageInfo()
+        configurationBridge.eventStream
+            .ofType(Configuration.MessagingServices::class.java)
+            .map {
+                it.messagingServices
+            }.subscribe {
+                configureMessagingServices(it)
+            }
+    }
 
-        messageServices.forEach {
-            messages.subscribe(it)
+    private fun configureMessagingServices(services: List<MessagingService>) {
+        messagingDisposable.clear()
+
+        services.map {
+            if (validateMessagingService(it.service)) {
+                when (it.service) {
+                    MessagingService.DISCORD -> Discord(it.url)
+                    MessagingService.SLACK -> Slack(it.url)
+                    MessagingService.GROUP_ME -> GroupMe(it.url)
+                    else -> null
+                }
+            } else {
+                null
+            }
+        }.forEach {
+            it?.let {
+                messagingDisposable.add(messages.subscribe(it))
+            }
+        }
+    }
+
+    private fun validateMessagingService(service: Int): Boolean {
+        return when (service) {
+            MessagingService.DISCORD, MessagingService.SLACK, MessagingService.GROUP_ME -> true
+            else -> false
         }
     }
 }

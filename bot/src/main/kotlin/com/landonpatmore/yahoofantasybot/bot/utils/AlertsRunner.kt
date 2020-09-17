@@ -42,17 +42,17 @@ import java.util.*
 class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
     private val jobs = ArrayList<Job>()
 
-    init {
+    fun start() {
         configurationBridge.eventStream
             .ofType(Configuration.Alerts::class.java)
             .map {
                 it.alerts
             }.subscribe {
-
+                generateJobs(it)
             }
     }
 
-    fun generateJobs(alerts: List<Alert>) {
+    private fun generateJobs(alerts: List<Alert>) {
         removeAllJobs()
         alerts.forEach {
             generateCron(it)?.let { cron ->
@@ -65,6 +65,7 @@ class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
                         else -> null
                     }, cron
                 )
+                runJobs()
             } ?: println("Invalid cron, not creating alert")
         }
     }
@@ -79,7 +80,6 @@ class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
         ) {
             return "0 ${alert.minute} ${alert.hour} ? ${alert.startMonth}-${alert.endMonth} $day *"
         }
-
         return null
     }
 

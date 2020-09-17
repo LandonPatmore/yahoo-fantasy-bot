@@ -27,12 +27,10 @@ package com.landonpatmore.yahoofantasybot.bot.messaging
 import com.mashape.unirest.http.Unirest
 import com.mashape.unirest.request.body.RequestBodyEntity
 
-class Slack : MessagingService() {
+class Slack(url: String) : MessagingService(url) {
     override val name = "Slack"
 
     override val maxMessageLength = 40000
-
-    override val url = TODO()
 
     override fun generateRequest(message: String): RequestBodyEntity =
         Unirest.post(url)

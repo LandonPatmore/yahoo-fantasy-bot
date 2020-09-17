@@ -25,13 +25,11 @@
 package com.landonpatmore.yahoofantasybot.bot.modules
 
 import com.landonpatmore.yahoofantasybot.bot.messaging.Discord
-import com.landonpatmore.yahoofantasybot.bot.messaging.GroupMe
 import com.landonpatmore.yahoofantasybot.bot.messaging.IMessagingService
-import com.landonpatmore.yahoofantasybot.bot.messaging.Slack
 import org.koin.dsl.module
 
 val messagingModule = module {
-    single { Discord() }
+    single { Discord(it.url) }
 //    single { Slack() }
 //    single { GroupMe() }
     single {
