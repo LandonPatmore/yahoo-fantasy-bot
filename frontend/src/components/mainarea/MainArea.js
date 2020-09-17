@@ -1,7 +1,6 @@
 import React from 'react'
 import './MainArea.scss'
 import Alerts from '../alerts/Alerts'
-import Authenticate from '../authenticate/Authenticate'
 
 class MainArea extends React.Component {
     constructor(props) {
@@ -10,12 +9,10 @@ class MainArea extends React.Component {
         this.state = {
             authenticated: false
         }
-
-        this.showAlerts = this.showAlerts.bind(this)
     }
 
     componentDidMount() {
-        fetch("/auth")
+        fetch("/authenticate")
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
@@ -28,24 +25,14 @@ class MainArea extends React.Component {
                 })
     }
 
-    showAlerts() {
-        if (this.state.authenticated) {
-            return <div id="main-area">
+    render() {
+        return (
+            <main id="main-area">
                 <h1 id="dashboard-text">Dashboard</h1>
-                <Alerts/>
+                <Alerts />
                 {/* <Leagues/>
                 <MessagingServices/>
                 <MessageType/> */}
-            </div>
-        } else {
-            return <Authenticate />
-        }
-    }
-
-    render() {
-        return (
-            <main>
-                {this.showAlerts()}
             </main>
         )
     }
