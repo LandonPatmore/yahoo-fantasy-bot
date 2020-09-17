@@ -27,6 +27,7 @@ package com.landonpatmore.yahoofantasybot.bot.bridges
 import com.jakewharton.rxrelay3.PublishRelay
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.functions.Consumer
+import io.reactivex.rxjava3.schedulers.Schedulers
 import org.jsoup.nodes.Document
 
 class TransactionsBridge : Bridge<Pair<Long, Document>> {
@@ -36,5 +37,5 @@ class TransactionsBridge : Bridge<Pair<Long, Document>> {
         get() = dataBridge
 
     override val eventStream: Observable<Pair<Long, Document>>
-        get() = dataBridge
+        get() = dataBridge.subscribeOn(Schedulers.io())
 }
