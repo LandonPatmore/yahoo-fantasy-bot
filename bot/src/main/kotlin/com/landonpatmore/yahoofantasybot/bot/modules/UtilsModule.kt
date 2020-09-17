@@ -26,14 +26,17 @@ package com.landonpatmore.yahoofantasybot.bot.modules
 
 import com.landonpatmore.yahoofantasybot.bot.utils.Arbiter
 import com.landonpatmore.yahoofantasybot.bot.utils.AlertsRunner
+import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
+import com.landonpatmore.yahoofantasybot.bot.utils.IDataRetriever
 import org.koin.dsl.module
 
 val utilsModule = module {
-    single { AlertsRunner() }
-//    single { DataRetriever(get()) }
+    single { AlertsRunner(get()) }
+    single { DataRetriever(get()) as IDataRetriever }
     single {
         Arbiter(
-//            get(),
+            get(),
+            get(),
             get(),
             get(),
             get(),

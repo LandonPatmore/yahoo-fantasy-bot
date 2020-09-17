@@ -36,9 +36,9 @@ interface IMessagingService : Consumer<Pair<String, String>> {
 
     fun sendMessage(message: String)
 
-    fun createMessage(message: Pair<String, String>)
+    fun createMessage(message: Pair<String, String>, title: Boolean = true)
 
     fun correctMessage(message: String): String
 
-    fun generateMessage(message: Pair<String, String>): String
+    fun generateMessage(message: Pair<String, String>, title: Boolean): String
 }

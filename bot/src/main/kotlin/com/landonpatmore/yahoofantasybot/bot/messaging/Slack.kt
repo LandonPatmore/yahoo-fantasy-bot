@@ -40,7 +40,11 @@ class Slack(url: String) : MessagingService(url) {
     override fun cleanMessage(message: String): String =
         message.replace("**", "*")
 
-    override fun generateMessage(message: Pair<String, String>): String {
-        return "${message.first}\\n>>> ${message.second}"
+    override fun generateMessage(message: Pair<String, String>, title: Boolean): String {
+        return if (title) {
+            "${message.first}\\n>>> ${message.second}"
+        } else {
+            ">>> ${message.second}"
+        }
     }
 }

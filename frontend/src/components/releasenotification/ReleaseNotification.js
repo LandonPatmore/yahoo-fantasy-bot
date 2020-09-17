@@ -20,13 +20,12 @@ class ReleaseNotification extends React.Component {
         fetch("http://localhost:8080/releaseInformation")
             .then(res => res.json())
             .then((result) => {
-                console.log(result)
                 this.setState({
                     releaseInformation: result
                 })
             },
                 (error) => {
-                    console.log("Error mate!")
+                    console.log(error)
                 })
     }
 

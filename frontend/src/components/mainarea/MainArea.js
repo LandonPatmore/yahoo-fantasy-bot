@@ -1,23 +1,51 @@
 import React from 'react'
 import './MainArea.scss'
 import Alerts from '../alerts/Alerts'
-import Leagues from '../leagues/Leagues'
-import MessagingServices from '../messagingservices/MessagingServices'
-import MessageType from '../messagetype/MessageType'
+import Authenticate from '../authenticate/Authenticate'
 
 class MainArea extends React.Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            authenticated: false
+        }
+
+        this.showAlerts = this.showAlerts.bind(this)
+    }
+
+    componentDidMount() {
+        fetch("http://localhost:8080/auth")
+            .then(res => res.json())
+            .then((result) => {
+                console.log(result)
+                this.setState({
+                    authenticated: result.authenticated
+                })
+            },
+                (error) => {
+                    console.log("Error mate!")
+                })
+    }
+
+    showAlerts() {
+        if (this.state.authenticated) {
+            return <div id="main-area">
+                <h1 id="dashboard-text">Dashboard</h1>
+                <Alerts/>
+                {/* <Leagues/>
+                <MessagingServices/>
+                <MessageType/> */}
+            </div>
+        } else {
+            return <Authenticate />
+        }
     }
 
     render() {
-        return(
-            <main id="main-area">
-                <h1 id="dashboard-text">Dashboard</h1>
-                <Alerts/>
-                <Leagues/>
-                <MessagingServices/>
-                <MessageType/>
+        return (
+            <main>
+                {this.showAlerts()}
             </main>
         )
     }

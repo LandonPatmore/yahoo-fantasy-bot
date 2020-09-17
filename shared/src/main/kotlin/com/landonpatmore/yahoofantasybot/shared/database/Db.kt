@@ -31,9 +31,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class Db(
-    private val url: String,
-    private val user: String = "test",
-    private val password: String = "test"
+    private val url: String
 ) {
 
     init {
@@ -47,7 +45,7 @@ class Db(
     private fun connect() {
         Database.connect(
             url,
-            driver = "org.postgresql.Driver", user, password
+            driver = "org.postgresql.Driver"
         )
     }
 

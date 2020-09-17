@@ -13,6 +13,21 @@
   "website": "https://github.com/LandonPatmore/yahoo-fantasy-bot",
   "repository": "https://github.com/LandonPatmore/yahoo-fantasy-bot",
   "env": {
+    "GROUP_ME_BOT_ID": {
+      "description": "GroupMe Bot ID",
+      "value": "",
+      "required": false
+    },
+    "DISCORD_WEBHOOK_URL": {
+      "description": "Discord Web Hook URL",
+      "value": "",
+      "required": false
+    },
+    "SLACK_WEBHOOK_URL": {
+      "description": "Slack Web Hook URL",
+      "value": "",
+      "required": false
+    },
     "YAHOO_CLIENT_ID": {
       "description": "Yahoo Client ID",
       "value": "",
@@ -23,13 +38,13 @@
       "value": "",
       "required": true
     },
-    "USER_NAME": {
-      "description": "Account name to access the frontend. It was be whatever you like.",
+    "YAHOO_GAME_KEY": {
+      "description": "Yahoo Game Key: (NFL, NBA, MLB)",
       "value": "",
       "required": true
     },
-    "USER_PASSWORD": {
-      "description": "Account password to access the frontend. It was be whatever you like.",
+    "YAHOO_LEAGUE_ID": {
+      "description": "Yahoo League ID",
       "value": "",
       "required": true
     }

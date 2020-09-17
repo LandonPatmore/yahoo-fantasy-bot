@@ -30,11 +30,11 @@ import com.github.scribejava.core.oauth.OAuth20Service
 import com.landonpatmore.yahoofantasybot.backend.models.Authentication
 import com.landonpatmore.yahoofantasybot.backend.models.ReleaseInformation
 import com.landonpatmore.yahoofantasybot.shared.database.Db
+import com.landonpatmore.yahoofantasybot.shared.utils.models.EnvVariable
 import io.ktor.application.*
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.json.*
-import io.ktor.client.request.*
 import io.ktor.features.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -114,8 +114,8 @@ fun Route.auth(db: Db) {
         @Suppress("BlockingMethodInNonBlockingContext")
         service?.getAccessToken(call.request.queryParameters["code"])?.let {
             db.saveToken(it)
-            call.respond(Authentication(true))
-        } ?: call.respondRedirect("/authenticate")
+            call.respondRedirect("/")
+        } ?: call.respond(Authentication(false))
     }
 }
 
@@ -145,8 +145,8 @@ private fun versionChecker(
 }
 
 private fun authenticationUrl(url: String): String? {
-    service = ServiceBuilder(System.getenv("YAHOO_CLIENT_ID"))
-        .apiSecret(System.getenv("YAHOO_CLIENT_SECRET"))
+    service = ServiceBuilder(EnvVariable.Str.YahooClientId.variable)
+        .apiSecret(System.getenv(EnvVariable.Str.YahooClientSecret.variable))
         .callback("$url/auth")
         .build(YahooApi20.instance())
 

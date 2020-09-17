@@ -24,6 +24,7 @@
 
 package com.landonpatmore.yahoofantasybot.backend.routes
 
+import com.landonpatmore.yahoofantasybot.shared.database.Db
 import io.ktor.application.*
 import io.ktor.http.content.*
 import io.ktor.routing.*

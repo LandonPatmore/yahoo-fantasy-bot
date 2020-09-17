@@ -24,28 +24,14 @@
 
 package com.landonpatmore.yahoofantasybot.bot
 
-import com.landonpatmore.yahoofantasybot.bot.modules.bridgesModule
-import com.landonpatmore.yahoofantasybot.bot.modules.messagingModule
-import com.landonpatmore.yahoofantasybot.bot.modules.utilsModule
 import com.landonpatmore.yahoofantasybot.bot.utils.Arbiter
 import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
+import com.landonpatmore.yahoofantasybot.shared.utils.EnvVariablesChecker
 import org.koin.core.KoinComponent
-import org.koin.core.context.startKoin
 import org.koin.core.inject
-import com.landonpatmore.yahoofantasybot.shared.modules.sharedModule
 
 class Bot : KoinComponent {
     val dataRetriever: DataRetriever by inject()
+    val envVariablesChecker: EnvVariablesChecker by inject()
     val arbiter: Arbiter by inject()
-}
-
-fun main() {
-    startKoin {
-        modules(sharedModule, bridgesModule, messagingModule, utilsModule)
-    }
-
-    val bot = Bot()
-//    bot.envVariablesChecker.check()
-//    bot.dataRetriever.getAuthenticationToken()
-    bot.arbiter.start()
 }

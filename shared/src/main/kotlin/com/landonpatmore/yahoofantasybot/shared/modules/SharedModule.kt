@@ -24,9 +24,12 @@
 
 package com.landonpatmore.yahoofantasybot.shared.modules
 
-import org.koin.dsl.module
 import com.landonpatmore.yahoofantasybot.shared.database.Db
+import com.landonpatmore.yahoofantasybot.shared.utils.EnvVariablesChecker
+import com.landonpatmore.yahoofantasybot.shared.utils.models.EnvVariable
+import org.koin.dsl.module
 
 val sharedModule = module {
-    single { Db("jdbc:postgresql://localhost:5432/test") }
+    single { EnvVariablesChecker() }
+    single { Db(EnvVariable.Str.JdbcDatabaseUrl.variable) }
 }

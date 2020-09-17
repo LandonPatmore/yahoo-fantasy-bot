@@ -34,4 +34,5 @@ val bridgesModule = module {
     single { ScoreUpdateBridge() }
     single { StandingsBridge() }
     single { TransactionsBridge() }
+    single { ConfigurationBridge() }
 }

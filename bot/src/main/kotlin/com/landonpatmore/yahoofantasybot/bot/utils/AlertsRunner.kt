@@ -40,9 +40,11 @@ import java.util.*
 
 
 class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
-    private val jobs = ArrayList<Job>()
+
+    private val scheduler = StdSchedulerFactory.getDefaultScheduler()
 
     fun start() {
+        scheduler.start()
         configurationBridge.eventStream
             .ofType(Configuration.Alerts::class.java)
             .map {
@@ -53,7 +55,7 @@ class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
     }
 
     private fun generateJobs(alerts: List<Alert>) {
-        removeAllJobs()
+        removeJobs(alerts)
         alerts.forEach {
             generateCron(it)?.let { cron ->
                 createJob(
@@ -63,9 +65,8 @@ class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
                         Alert.STANDINGS -> StandingsAlert::class.java
                         Alert.MATCHUP -> MatchUpAlert::class.java
                         else -> null
-                    }, cron
+                    }, it.uuid, cron
                 )
-                runJobs()
             } ?: println("Invalid cron, not creating alert")
         }
     }
@@ -112,12 +113,15 @@ class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
         }
     }
 
-    private fun removeAllJobs() {
-        jobs.clear()
+    private fun removeJobs(alerts: List<Alert>) {
         val scheduler = StdSchedulerFactory.getDefaultScheduler()
         for (groupName: String in scheduler.jobGroupNames) {
             for (jobKey: JobKey in scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
-                scheduler.deleteJob(jobKey)
+                alerts.forEach {
+                    if (jobKey.name != it.uuid) {
+                        scheduler.deleteJob(jobKey)
+                    }
+                }
             }
         }
     }
@@ -127,12 +131,14 @@ class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
      * @param jobClass job class
      * @param cron cron string
      */
-    private fun createJob(jobClass: Class<out org.quartz.Job>?, cron: String) {
+    private fun createJob(jobClass: Class<out org.quartz.Job>?, jobKey: String, cron: String) {
         if (jobClass == null) {
             return
         }
 
-        val jobDetail = newJob(jobClass).build()
+        val jobDetail = newJob(jobClass)
+            .withIdentity(jobKey)
+            .build()
 
         val trigger = newTrigger()
             .startNow()
@@ -141,24 +147,16 @@ class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
                     .inTimeZone(TimeZone.getTimeZone("UTC"))
             ).build()
 
-        jobs.add(Job(jobDetail, trigger))
+        scheduleJob(Job(jobDetail, trigger))
     }
 
     /**
      * Runs the jobs that were created.
      */
-    fun runJobs() {
+    private fun scheduleJob(job: Job) {
         try {
-            val scheduler = StdSchedulerFactory.getDefaultScheduler()
-
-            scheduler.start()
-
-            for (j in jobs) {
-                scheduler.scheduleJob(j.jobDetail, j.trigger)
-            }
-
+            scheduler.scheduleJob(job.jobDetail, job.trigger)
         } catch (e: SchedulerException) {
-            println(e.message)
         }
 
     }

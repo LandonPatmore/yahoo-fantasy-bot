@@ -1,5 +1,4 @@
 import React from 'react'
-import logo from './logo.svg'
 import './App.scss'
 import ReleaseNotification from './components/releasenotification/ReleaseNotification'
 import Header from './components/header/Header'

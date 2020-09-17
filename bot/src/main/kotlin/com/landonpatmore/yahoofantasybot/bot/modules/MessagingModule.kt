@@ -25,18 +25,21 @@
 package com.landonpatmore.yahoofantasybot.bot.modules
 
 import com.landonpatmore.yahoofantasybot.bot.messaging.Discord
+import com.landonpatmore.yahoofantasybot.bot.messaging.GroupMe
 import com.landonpatmore.yahoofantasybot.bot.messaging.IMessagingService
+import com.landonpatmore.yahoofantasybot.bot.messaging.Slack
+import com.landonpatmore.yahoofantasybot.shared.utils.models.EnvVariable
 import org.koin.dsl.module
 
 val messagingModule = module {
-    single { Discord(it.url) }
-//    single { Slack() }
-//    single { GroupMe() }
+    single { Discord(EnvVariable.Str.DiscordWebhookUrl.variable) }
+    single { Slack(EnvVariable.Str.SlackWebhookUrl.variable) }
+    single { GroupMe(EnvVariable.Str.GroupMeBotId.variable) }
     single {
         listOf<IMessagingService>(
-            get<Discord>()
-//            get<Slack>(),
-//            get<GroupMe>()
+            get<Discord>(),
+            get<Slack>(),
+            get<GroupMe>()
         )
     }
 }

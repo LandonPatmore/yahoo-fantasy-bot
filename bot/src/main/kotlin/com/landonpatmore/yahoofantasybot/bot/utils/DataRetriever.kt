@@ -32,25 +32,21 @@ import com.github.scribejava.core.model.OAuthRequest
 import com.github.scribejava.core.model.Verb
 import com.github.scribejava.core.oauth.OAuth20Service
 import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
+import com.landonpatmore.yahoofantasybot.shared.database.Db
+import com.landonpatmore.yahoofantasybot.shared.utils.models.EnvVariable
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.parser.Parser
-import com.landonpatmore.yahoofantasybot.shared.database.Db
 
 class DataRetriever(private val database: Db) : IDataRetriever {
     private var currentToken: Pair<Long, OAuth2AccessToken>? = null
 
-    private lateinit var oauthService: OAuth20Service
-    private lateinit var gameKeyUrl: String
+    private val oauthService = ServiceBuilder(EnvVariable.Str.YahooClientId.variable)
+        .apiSecret(EnvVariable.Str.YahooClientSecret.variable)
+        .callback(OAuthConstants.OOB)
+        .build(YahooApi20.instance())
+    private val gameKeyUrl = "/game/${EnvVariable.Str.YahooGameKey.variable}"
     private var leagueUrl: String? = null
-
-    fun setup() {
-        oauthService = ServiceBuilder(TODO())
-            .apiSecret(TODO())
-            .callback(OAuthConstants.OOB)
-            .build(YahooApi20.instance())
-        gameKeyUrl = "/game/${TODO()}"
-    }
 
     override fun isTokenExpired(retrieved: Long, expiresIn: Int): Boolean {
         val timeElapsed = ((System.currentTimeMillis() - retrieved) / 1000)
@@ -107,8 +103,7 @@ class DataRetriever(private val database: Db) : IDataRetriever {
 
     override fun yahooApiRequest(yahooApiRequest: YahooApiRequest): Document {
         if (leagueUrl == null) {
-            leagueUrl =
-                "/league/${retrieveGameKey()}.l.${TODO()}"
+            leagueUrl = "/league/${retrieveGameKey()}.l.${EnvVariable.Str.YahooLeagueId.variable}"
         }
 
         return when (yahooApiRequest) {

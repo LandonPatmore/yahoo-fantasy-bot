@@ -3,8 +3,9 @@
     display: grid;
     grid-template-areas:
     "header header"
-    "alerts leagues"
-    "messagingServices messageType";
+    "alerts alerts";
+    // "alerts leagues"
+    // "messagingServices messageType";
     grid-gap: 1em;
 }
 
@@ -13,9 +14,9 @@
     grid-area: header;
 }
 
-.area-header {
-    background-color: red;
-}
+// .area-header {
+//     background-color: red;
+// }
 
 .add-area {
     display: flex;

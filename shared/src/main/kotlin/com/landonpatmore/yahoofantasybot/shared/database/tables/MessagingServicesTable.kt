@@ -27,6 +27,6 @@ package com.landonpatmore.yahoofantasybot.shared.database.tables
 import org.jetbrains.exposed.sql.Table
 
 object MessagingServicesTable : Table() {
-    val service = text("service")
+    val service = integer("service")
     val url = text("url").uniqueIndex()
 }

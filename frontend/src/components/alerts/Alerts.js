@@ -30,13 +30,12 @@ class Alerts extends React.Component {
         fetch("http://localhost:8080/alerts")
             .then(res => res.json())
             .then((result) => {
-                console.log(result)
                 this.setState({
                     alerts: result
                 })
             },
                 (error) => {
-                    console.log("Error mate!")
+                    console.log(error)
                 })
     }
 
@@ -74,6 +73,7 @@ class Alerts extends React.Component {
     handleTypeChange = (event) => {
         this.setState({
             addAlert: {
+                ...this.state.addAlert,
                 type: parseInt(event.target.value)
             }
         })
@@ -134,9 +134,15 @@ class Alerts extends React.Component {
 //    }
 
     addAlert() {
+        for (const property in this.state.addAlert) {
+            console.log(`${property} ${this.state.addAlert[property]}`)
+            if(this.state.addAlert[property] == null || this.state.addAlert[property] == "") {
+                return
+            }
+          }
+
         const alerts = [...this.state.alerts]
         alerts.push(this.state.addAlert)
-        console.log(alerts)
 
         fetch("http://localhost:8080/alerts", {
             method: "PUT",
@@ -144,15 +150,13 @@ class Alerts extends React.Component {
         })
         .then(res => res.json())
         .then((result) => {
-            console.log(result)
             this.setState({
                 alerts: result
             })
         },
         (error) => {
-            console.log("Error mate!")
+            console.log(error)
         })
-        console.log(this.state)
     }
 
     deleteAlert(event, index) {
@@ -192,13 +196,13 @@ class Alerts extends React.Component {
 
         return (
             <div id="alerts-area">
-                <h2 className="area-header">Alerts</h2>
+                <h2 className="area-header">Alerts (all times are UTC | <a id="utc-converter" href="https://www.timeanddate.com/worldclock/converter.html?iso=20200917T200000&p1=1440">Time Converter</a>)</h2>
                 <table>
                     <thead>
                         <tr>
                             {
                                 columns.map(column => {
-                                    return <th>{column}</th>
+                                    return <th key={column}>{column}</th>
                                 })
                             }
                         </tr>
@@ -206,7 +210,7 @@ class Alerts extends React.Component {
                     <tbody>
                         {
                             this.state.alerts.map((alert, index) => {
-                                return <tr>
+                                return <tr key={index}>
                                     <td>{this.mapToAlertName(alert.type)}</td>
                                     <td>{alert.hour}</td>
                                     <td>{this.formatMinute(alert.minute)}</td>
@@ -222,55 +226,55 @@ class Alerts extends React.Component {
                 </table>
                 <div>
                     <div className="add-area">
-                        <select name="type" onChange={this.handleTypeChange} value={this.state.type}>
-                            <option value="" disabled selected>Type</option>
+                        <select name="type" defaultValue={""} onChange={this.handleTypeChange} value={this.state.type}>
+                            <option value="" disabled>Type</option>
                             {
                                 Array.from(Array(4).keys()).map(num => {
-                                    return <option value={num + 1}>{this.mapToAlertName(num)}</option>
+                                    return <option key={num} value={num + 1}>{this.mapToAlertName(num)}</option>
                                 })
                             }
                         </select>
-                        <select name="hour" onChange={this.handleHourChange} value={this.state.hour}>
-                            <option value="" disabled selected>Hour</option>
+                        <select name="hour" defaultValue={""} onChange={this.handleHourChange} value={this.state.hour}>
+                            <option value="" disabled>Hour</option>
                             {
                                 Array.from(Array(24).keys()).map(num => {
-                                    return <option value={num}>{num}</option>
+                                    return <option key={num} value={num}>{num}</option>
                                 })
                             }
                         </select>
-                        <select name="minute" onChange={this.handleMinuteChange} value={this.state.minute}>
-                            <option value="" disabled selected>Minute</option>
+                        <select name="minute" defaultValue={""} onChange={this.handleMinuteChange} value={this.state.minute}>
+                            <option value="" disabled>Minute</option>
                             {
                                 Array.from(Array(60).keys()).map(num => {
-                                    return <option value={num}>{num}</option>
+                                    return <option key={num} value={num}>{num}</option>
                                 })
                             }
                         </select>
-                        <select name="startMonth" onChange={this.handleStartMonth} value={this.state.startMonth}>
-                            <option value="" disabled selected>Start Month</option>
+                        <select name="startMonth" defaultValue={""} onChange={this.handleStartMonth} value={this.state.startMonth}>
+                            <option value="" disabled>Start Month</option>
                             {
                                 Array.from(Array(12).keys()).map(num => {
-                                    return <option value={num + 1}>{this.mapToMonth(num + 1)}</option>
+                                    return <option key={num} value={num + 1}>{this.mapToMonth(num + 1)}</option>
                                 })
                             }
                         </select>
-                        <select name="endMonth" onChange={this.handleEndMonth} value={this.state.endMonth}>
-                            <option value="" disabled selected>End Month</option>
+                        <select name="endMonth" defaultValue={""} onChange={this.handleEndMonth} value={this.state.endMonth}>
+                            <option value="" disabled>End Month</option>
                             {
                                 Array.from(Array(12).keys()).map(num => {
-                                    return <option value={num + 1}>{this.mapToMonth(num + 1)}</option>
+                                    return <option key={num} value={num + 1}>{this.mapToMonth(num + 1)}</option>
                                 })
                             }
                         </select>
-                        <select name="dayOfWeek" onChange={this.handleDayOfWeek} value={this.state.dayOfWeek}>
-                            <option value="" disabled selected>Day Of Week</option>
+                        <select name="dayOfWeek" defaultValue={""} onChange={this.handleDayOfWeek} value={this.state.dayOfWeek}>
+                            <option value="" disabled>Day Of Week</option>
                             {
                                 Array.from(Array(7).keys()).map(num => {
-                                    return <option value={num + 1}>{this.mapToDayOfWeek(num + 1)}</option>
+                                    return <option key={num} value={num + 1}>{this.mapToDayOfWeek(num + 1)}</option>
                                 })
                             }
                         </select>
-                        {/* <input placeholder="Time Zone" onChange={this.handleTimeZone} value={this.state.timeZone}></input> */}
+                        {/* <input placeholder="Time Zone" defaultValue={""} onChange={this.handleTimeZone} value={this.state.timeZone}></input> */}
                     </div>
                     <div className="add-button-area">
                         <button id="add-alert-button" type="button" onClick={this.addAlert}>Add Alert</button>

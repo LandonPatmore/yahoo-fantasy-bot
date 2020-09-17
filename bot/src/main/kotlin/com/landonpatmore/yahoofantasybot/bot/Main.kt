@@ -22,22 +22,21 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.shared.database.models
+package com.landonpatmore.yahoofantasybot.bot
 
-data class Alert(
-    val type: Int, // TODO: Map these to actual alerts
-    val hour: Int,
-    val minute: Int,
-    val startMonth: Int,
-    val endMonth: Int,
-    val dayOfWeek: Int,
-    val uuid: String = "${type}${hour}${minute}${startMonth}${endMonth}${dayOfWeek}"
-//    val timeZone: String
-) {
-    companion object {
-        const val SCORE = 0
-        const val CLOSE_SCORE = 1
-        const val STANDINGS = 2
-        const val MATCHUP = 3
+import com.landonpatmore.yahoofantasybot.bot.modules.bridgesModule
+import com.landonpatmore.yahoofantasybot.bot.modules.messagingModule
+import com.landonpatmore.yahoofantasybot.bot.modules.utilsModule
+import com.landonpatmore.yahoofantasybot.shared.modules.sharedModule
+import org.koin.core.context.startKoin
+
+fun main() {
+    startKoin {
+        modules(sharedModule, bridgesModule, messagingModule, utilsModule)
     }
+
+    val bot = Bot()
+    bot.envVariablesChecker.check()
+    bot.dataRetriever.getAuthenticationToken()
+    bot.arbiter.start()
 }

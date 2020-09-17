@@ -36,8 +36,10 @@ abstract class MessagingService(protected val url: String) : IMessagingService {
     protected abstract fun generateRequest(message: String): RequestBodyEntity
 
     override fun accept(message: Pair<String, String>?) {
-        // message should never be null, this is just a safety check
-        message?.let { createMessage(it) }
+        if (url.isNotEmpty()) {
+            // message should never be null, this is just a safety check
+            message?.let { createMessage(it) }
+        }
     }
 
     @Throws(UnirestException::class)
@@ -46,16 +48,19 @@ abstract class MessagingService(protected val url: String) : IMessagingService {
         println("$name status code: ${response.status}")
     }
 
-    override fun createMessage(messageInfo: Pair<String, String>) {
+    override fun createMessage(messageInfo: Pair<String, String>, title: Boolean) {
         try {
             // TODO: Remove this sleep
-            val message = generateMessage(messageInfo)
+            val message = generateMessage(messageInfo, title)
             Thread.sleep(1000)
-//            if (message.length > maxMessageLength) {
-//                val subMessage = message.substring(0, maxMessageLength + 1)
-//                sendMessage(correctMessage(subMessage))
-//                createMessage(message.substring(maxMessageLength + 1))
-//            }
+            if (message.length > maxMessageLength) {
+                val subMessage = message.substring(0, maxMessageLength + 1)
+                sendMessage(correctMessage(subMessage))
+                createMessage(
+                    Pair(messageInfo.first, message.substring(maxMessageLength + 1)),
+                    false
+                )
+            }
             sendMessage(correctMessage(message))
         } catch (e: Exception) {
             println(e.message)
@@ -81,7 +86,11 @@ abstract class MessagingService(protected val url: String) : IMessagingService {
         }.trim()
     }
 
-    override fun generateMessage(message: Pair<String, String>): String {
-        return "${message.first}\\n${message.second}"
+    override fun generateMessage(message: Pair<String, String>, title: Boolean): String {
+        return if (title) {
+            "${message.first}\\n${message.second}"
+        } else {
+            message.second
+        }
     }
 }

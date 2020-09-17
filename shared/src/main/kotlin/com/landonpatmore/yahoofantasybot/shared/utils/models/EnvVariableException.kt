@@ -22,22 +22,9 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.shared.database.models
+package com.landonpatmore.yahoofantasybot.shared.utils.models
 
-data class Alert(
-    val type: Int, // TODO: Map these to actual alerts
-    val hour: Int,
-    val minute: Int,
-    val startMonth: Int,
-    val endMonth: Int,
-    val dayOfWeek: Int,
-    val uuid: String = "${type}${hour}${minute}${startMonth}${endMonth}${dayOfWeek}"
-//    val timeZone: String
-) {
-    companion object {
-        const val SCORE = 0
-        const val CLOSE_SCORE = 1
-        const val STANDINGS = 2
-        const val MATCHUP = 3
-    }
+class EnvVariableException(private val variable: EnvVariable) : Exception() {
+    override val message: String
+        get() = "Environment variable $variable was not entered correctly.  Please fix and restart dynos."
 }
