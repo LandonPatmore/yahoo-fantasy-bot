@@ -34,6 +34,7 @@ import org.koin.core.context.startKoin
 import org.koin.ktor.ext.inject
 import com.landonpatmore.yahoofantasybot.shared.database.Db
 import com.landonpatmore.yahoofantasybot.shared.modules.sharedModule
+import io.ktor.http.*
 
 fun main(args: Array<String>): Unit {
     startKoin {
@@ -59,6 +60,8 @@ fun Application.module(testing: Boolean = false) {
     install(Compression)
     install(CallLogging)
     install(CORS) {
+        method(HttpMethod.Options)
+        method(HttpMethod.Put)
         anyHost()
     }
     // TODO: Will move to locations later

@@ -32,4 +32,11 @@ data class Alert(
     val endMonth: Int,
     val dayOfWeek: Int,
     val timeZone: String
-)
+) {
+    companion object {
+        const val SCORE = 0
+        const val CLOSE_SCORE = 1
+        const val STANDINGS = 2
+        const val MATCHUP = 3
+    }
+}

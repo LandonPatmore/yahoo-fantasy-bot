@@ -32,7 +32,7 @@ data class ReleaseInformation(
     @SerializedName(value = "latestVersion", alternate = ["tag_name"])
     val latestVersion: String,
     var currentVersion: String? = null,
-    var upgrade: Boolean
+    var upgrade: Boolean = false
 ) {
     companion object {
         const val URL =

@@ -25,12 +25,15 @@
 package com.landonpatmore.yahoofantasybot.backend.routes
 
 import com.google.gson.Gson
+import com.landonpatmore.yahoofantasybot.shared.database.Db
+import com.landonpatmore.yahoofantasybot.shared.database.models.Alert
+import com.landonpatmore.yahoofantasybot.shared.database.models.League
+import com.landonpatmore.yahoofantasybot.shared.database.models.MessageType
+import com.landonpatmore.yahoofantasybot.shared.database.models.MessagingService
 import io.ktor.application.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import com.landonpatmore.yahoofantasybot.shared.database.Db
-import com.landonpatmore.yahoofantasybot.shared.database.models.*
 
 fun Application.putRoutes(db: Db) {
     routing {
@@ -43,37 +46,37 @@ fun Application.putRoutes(db: Db) {
 
 private fun Route.putMessagingServices(db: Db) {
     put("/messagingServices") {
-        val services = call.receiveArray<Array<MessagingService>>()
+        val services = call.receiveJson<Array<MessagingService>>()
         db.saveMessagingServices(services)
-        call.respond("Received!")
+        call.respond(db.getMessagingServices())
     }
 }
 
 private fun Route.putLeagues(db: Db) {
     put("/leagues") {
-        val leagues = call.receiveArray<Array<League>>()
+        val leagues = call.receiveJson<Array<League>>()
         db.saveLeagues(leagues)
-        call.respond("Received!")
+        call.respond(db.getLeagues())
     }
 }
 
 private fun Route.putAlerts(db: Db) {
     put("/alerts") {
-        val alerts = call.receiveArray<Array<Alert>>()
+        val alerts = call.receiveJson<Array<Alert>>()
         db.saveAlerts(alerts)
-        call.respond("Received!")
+        call.respond(db.getAlerts())
     }
 }
 
 private fun Route.putMessageType(db: Db) {
     put("/messageType") {
-        val messageType = call.receive<MessageType>()
+        val messageType = call.receiveJson<MessageType>()
         db.saveMessageType(messageType)
-        call.respond("Received!")
+        call.respond(db.getMessageType())
     }
 }
 
-private suspend inline fun <reified T> ApplicationCall.receiveArray(): T {
+private suspend inline fun <reified T> ApplicationCall.receiveJson(): T {
     val json = this.receiveOrNull<String>()
     return Gson().fromJson(json, T::class.java)
 }

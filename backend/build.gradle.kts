@@ -9,7 +9,7 @@ plugins {
 }
 
 application {
-    mainClassName = "io.ktor.server.netty.EngineMain"
+    mainClassName = "com.landonpatmore.yahoofantasybot.backend.ApplicationKt"
 }
 
 node {
@@ -55,4 +55,8 @@ tasks.create<com.moowork.gradle.node.npm.NpmTask>("buildFrontend") {
     dependsOn("npmInstall")
     setArgs(listOf("run", "build"))
     finalizedBy("copyFrontend")
+}
+
+tasks.getByName<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+    dependsOn("buildFrontend")
 }

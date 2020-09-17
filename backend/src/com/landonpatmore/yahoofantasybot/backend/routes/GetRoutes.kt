@@ -84,7 +84,8 @@ private fun Route.getReleaseInformation(currentVersion: String?) {
                 serializer = GsonSerializer()
             }
         }.use {
-            it.get<ReleaseInformation>(ReleaseInformation.URL)
+//            it.get<ReleaseInformation>(ReleaseInformation.URL)
+            ReleaseInformation("Nice!", "2.3.2")
         }.apply {
             this.currentVersion = currentVersion
             upgrade = versionChecker(currentVersion, latestVersion)
