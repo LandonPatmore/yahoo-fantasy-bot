@@ -11,6 +11,7 @@
     "react-dom": "^16.13.1",
     "react-github-btn": "^1.2.0",
     "react-icons": "^3.11.0",
+    "react-modal": "^3.11.2",
     "react-scripts": "3.4.3",
     "react-table": "^7.5.0"
   },

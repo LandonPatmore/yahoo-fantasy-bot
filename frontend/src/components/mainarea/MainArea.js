@@ -1,5 +1,5 @@
-import React from 'react';
-import './MainArea.scss';
+import React from 'react'
+import './MainArea.scss'
 import Alerts from '../alerts/Alerts'
 import Leagues from '../leagues/Leagues'
 import MessagingServices from '../messagingservices/MessagingServices'
@@ -23,4 +23,4 @@ class MainArea extends React.Component {
     }
 }
 
-export default MainArea;
+export default MainArea

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 import GitHubButton from 'react-github-btn'
-import './Header.scss';
+import './Header.scss'
 
 class Header extends React.Component {
     constructor(props) {
@@ -42,4 +42,4 @@ class Header extends React.Component {
     }
 }
 
-export default Header;
+export default Header
