@@ -115,7 +115,7 @@ fun Route.auth(db: Db) {
         service?.getAccessToken(call.request.queryParameters["code"])?.let {
             db.saveToken(it)
             call.respondRedirect("/")
-        } ?: call.respond(Authentication(false))
+        } ?: call.respondRedirect("/authenticate")
     }
 }
 
