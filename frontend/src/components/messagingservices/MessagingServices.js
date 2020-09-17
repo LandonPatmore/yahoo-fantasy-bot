@@ -11,6 +11,8 @@ class MessagingServices extends React.Component {
             service: "",
             url: ""
         }
+
+        this.addMessagingService = this.addMessagingService.bind(this)
     }
 
     componentDidMount() {
@@ -27,13 +29,13 @@ class MessagingServices extends React.Component {
                 })
     }
 
-    handleLeagueId = (event) => {
+    handleService = (event) => {
         this.setState({
             service: event.target.value
         })
     }
 
-    handleGameKey = (event) => {
+    handleUrl = (event) => {
         this.setState({
             url: event.target.value
         })

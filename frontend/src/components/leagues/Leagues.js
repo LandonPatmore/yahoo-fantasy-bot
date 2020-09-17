@@ -40,7 +40,7 @@ class Leagues extends React.Component {
 
     handleLeagueId = (event) => {
         this.setState({
-            leagueId: parseInt(event.target.value)
+            leagueId: event.target.value
         })
     }
 
