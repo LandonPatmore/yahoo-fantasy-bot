@@ -14,7 +14,7 @@ class MessageType extends React.Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:8080/messageType")
+        fetch("/messageType")
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
@@ -42,7 +42,7 @@ class MessageType extends React.Component {
     }
 
     setMessageType() {
-        fetch("http://localhost:8080/messageType", {
+        fetch("/messageType", {
             method: "PUT",
             body: JSON.stringify({
                 type: this.state.type

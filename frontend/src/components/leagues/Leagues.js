@@ -16,7 +16,7 @@ class Leagues extends React.Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:8080/leagues")
+        fetch("/leagues")
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
@@ -58,7 +58,7 @@ class Leagues extends React.Component {
         })
         console.log(leagues)
 
-        fetch("http://localhost:8080/leagues", {
+        fetch("/leagues", {
             method: "PUT",
             body: JSON.stringify(leagues)
         })
@@ -80,7 +80,7 @@ class Leagues extends React.Component {
         leagues.splice(index, 1)
         console.log(leagues)
 
-        fetch("http://localhost:8080/leagues", {
+        fetch("/leagues", {
             method: "PUT",
             body: JSON.stringify(leagues)
         })

@@ -15,7 +15,7 @@ class MainArea extends React.Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:8080/auth")
+        fetch("/auth")
             .then(res => res.json())
             .then((result) => {
                 console.log(result)

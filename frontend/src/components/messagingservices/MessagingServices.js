@@ -16,7 +16,7 @@ class MessagingServices extends React.Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:8080/messagingServices")
+        fetch("/messagingServices")
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
@@ -58,7 +58,7 @@ class MessagingServices extends React.Component {
         })
         console.log(messagingServices)
 
-        fetch("http://localhost:8080/messagingServices", {
+        fetch("/messagingServices", {
             method: "PUT",
             body: JSON.stringify(messagingServices)
         })
@@ -80,7 +80,7 @@ class MessagingServices extends React.Component {
         messagingServices.splice(index, 1)
         console.log(messagingServices)
 
-        fetch("http://localhost:8080/messagingServices", {
+        fetch("/messagingServices", {
             method: "PUT",
             body: JSON.stringify(messagingServices)
         })

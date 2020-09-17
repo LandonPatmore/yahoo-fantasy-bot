@@ -12,7 +12,7 @@ class Header extends React.Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:8080/releaseInformation")
+        fetch("/releaseInformation")
         .then(res => res.json())
         .then((result) => {
             this.setState({

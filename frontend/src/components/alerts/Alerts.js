@@ -27,7 +27,7 @@ class Alerts extends React.Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:8080/alerts")
+        fetch("/alerts")
             .then(res => res.json())
             .then((result) => {
                 this.setState({
@@ -144,7 +144,7 @@ class Alerts extends React.Component {
         const alerts = [...this.state.alerts]
         alerts.push(this.state.addAlert)
 
-        fetch("http://localhost:8080/alerts", {
+        fetch("/alerts", {
             method: "PUT",
             body: JSON.stringify(alerts)
         })
@@ -164,7 +164,7 @@ class Alerts extends React.Component {
         alerts.splice(index, 1)
         console.log(alerts)
 
-        fetch("http://localhost:8080/alerts", {
+        fetch("/alerts", {
             method: "PUT",
             body: JSON.stringify(alerts)
         })
