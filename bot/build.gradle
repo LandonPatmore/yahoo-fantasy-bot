@@ -1,6 +1,6 @@
 apply plugin: 'application'
 
-mainClassName = 'bot.Bot'
+mainClassName = 'com.landonpatmore.yahoofantasybot.bot.Bot'
 
 dependencies {
     compile(project(":shared"))
