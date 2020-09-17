@@ -35,6 +35,7 @@ import io.ktor.application.*
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.json.*
+import io.ktor.client.request.*
 import io.ktor.features.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -84,8 +85,7 @@ private fun Route.getReleaseInformation(currentVersion: String?) {
                 serializer = GsonSerializer()
             }
         }.use {
-//            it.get<ReleaseInformation>(ReleaseInformation.URL)
-            ReleaseInformation("Nice!", "2.3.2")
+            it.get<ReleaseInformation>(ReleaseInformation.URL)
         }.apply {
             this.currentVersion = currentVersion
             upgrade = versionChecker(currentVersion, latestVersion)
@@ -100,7 +100,7 @@ private fun Route.getReleaseInformation(currentVersion: String?) {
 fun Route.authenticate(db: Db) {
     get("/authenticate") {
         if (db.getLatestTokenData() == null) {
-            authenticationUrl("${call.request.origin.scheme}://${call.request.origin.host}")?.let {
+            authenticationUrl("https://${call.request.origin.host}")?.let {
                 call.respondRedirect(it)
             }
         } else {

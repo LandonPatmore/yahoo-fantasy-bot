@@ -36,7 +36,7 @@ fun main() {
     }
 
     val bot = Bot()
-    bot.envVariablesChecker.check()
+//    bot.envVariablesChecker.check()
     bot.dataRetriever.getAuthenticationToken()
     bot.arbiter.start()
 }
