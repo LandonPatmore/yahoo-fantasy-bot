@@ -22,15 +22,25 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.bot.utils.jobs
+package com.landonpatmore.yahoofantasybot.bot.utils.alerts
 
-import org.quartz.Job
+import com.landonpatmore.yahoofantasybot.bot.bridges.StandingsBridge
+import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
+import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
 import org.quartz.JobExecutionContext
 
-abstract class BaseJob : Job {
-    protected abstract val name: String
+class StandingsAlert(
+    private val dataRetriever: DataRetriever,
+    private val standingsBridge: StandingsBridge
+) :
+    BaseAlert() {
+    override val name = "Standings"
 
     override fun execute(context: JobExecutionContext?) {
-        println("$name update job running...")
+        super.execute(context)
+
+        val data = dataRetriever.yahooApiRequest(YahooApiRequest.Standings)
+        standingsBridge.consumer.accept(data)
     }
+
 }

@@ -79,7 +79,7 @@ class Db(
                     it[startMonth] = alert.startMonth
                     it[endMonth] = alert.endMonth
                     it[dayOfWeek] = alert.dayOfWeek
-                    it[timeZone] = alert.timeZone
+//                    it[timeZone] = alert.timeZone
                 }
             }
         }
@@ -175,11 +175,9 @@ class Db(
      */
     fun wasStartupMessageReceived(): Boolean {
         return transaction {
-            StartupMessageTable.selectAll().orderBy(
-                StartupMessageTable.received to SortOrder.DESC
-            ).limit(1).map {
+            StartupMessageTable.selectAll().firstOrNull()?.let {
                 it[StartupMessageTable.received]
-            }.first()
+            } ?: false
         }
     }
 
@@ -256,8 +254,8 @@ class Db(
                     it[AlertsTable.minute],
                     it[AlertsTable.startMonth],
                     it[AlertsTable.endMonth],
-                    it[AlertsTable.dayOfWeek],
-                    it[AlertsTable.timeZone]
+                    it[AlertsTable.dayOfWeek]
+//                    it[AlertsTable.timeZone]
                 )
             }
         }

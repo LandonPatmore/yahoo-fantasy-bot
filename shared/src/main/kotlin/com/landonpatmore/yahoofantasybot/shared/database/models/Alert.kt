@@ -30,8 +30,8 @@ data class Alert(
     val minute: Int,
     val startMonth: Int,
     val endMonth: Int,
-    val dayOfWeek: Int,
-    val timeZone: String
+    val dayOfWeek: Int
+//    val timeZone: String
 ) {
     companion object {
         const val SCORE = 0

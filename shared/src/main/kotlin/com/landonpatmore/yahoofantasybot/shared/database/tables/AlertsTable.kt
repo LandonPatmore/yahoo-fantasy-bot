@@ -33,5 +33,5 @@ object AlertsTable : UUIDTable() {
     val startMonth = integer("start_month")
     val endMonth = integer("end_month")
     val dayOfWeek = integer("day_of_week")
-    val timeZone = text("time_zone")
+//    val timeZone = text("time_zone")
 }

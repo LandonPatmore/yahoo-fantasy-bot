@@ -22,27 +22,15 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.bot.modules
+package com.landonpatmore.yahoofantasybot.bot.utils.alerts
 
-import com.landonpatmore.yahoofantasybot.bot.utils.Arbiter
-import com.landonpatmore.yahoofantasybot.bot.utils.AlertsRunner
-import org.koin.dsl.module
+import org.quartz.Job
+import org.quartz.JobExecutionContext
 
-val utilsModule = module {
-    single { AlertsRunner() }
-//    single { DataRetriever(get()) }
-    single {
-        Arbiter(
-//            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get()
-        )
+abstract class BaseAlert : Job {
+    protected abstract val name: String
+
+    override fun execute(context: JobExecutionContext?) {
+        println("$name update job running...")
     }
 }

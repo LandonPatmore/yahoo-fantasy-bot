@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.bot.utils.jobs
+package com.landonpatmore.yahoofantasybot.bot.utils.alerts
 
 import com.landonpatmore.yahoofantasybot.bot.bridges.CloseScoreUpdateBridge
 import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
 import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
 import org.quartz.JobExecutionContext
 
-class CloseScoreUpdateJob(
+class CloseScoreAlert(
     private val dataRetriever: DataRetriever,
     private val closeScoreUpdateBridge: CloseScoreUpdateBridge
-) : BaseJob() {
+) : BaseAlert() {
     override val name = "CloseScore"
 
     override fun execute(context: JobExecutionContext?) {

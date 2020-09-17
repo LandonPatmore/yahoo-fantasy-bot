@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit
 class Arbiter(
     private val dataRetriever: IDataRetriever,
     private val messageBridge: MessageBridge,
-    private val jobRunner: JobRunner,
+    private val alertsRunner: AlertsRunner,
     private val transactionsBridge: TransactionsBridge,
     private val scoreUpdateBridge: ScoreUpdateBridge,
     private val closeScoreUpdateBridge: CloseScoreUpdateBridge,

@@ -22,6 +22,14 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.shared.database.models
+package com.landonpatmore.yahoofantasybot.bot.utils.models
 
-data class LeagueId(val id: String)
+import com.landonpatmore.yahoofantasybot.shared.database.models.*
+
+sealed class Configuration {
+    class Alerts(val alerts: List<Alert>) : Configuration()
+    class GameKeys(val gameKeys: List<GameKey>) : Configuration()
+    class Leagues(val leagues: List<League>) : Configuration()
+    class MessagingServices(val messagingServices: List<MessagingService>) : Configuration()
+    class MType(val messageType: MessageType) : Configuration()
+}

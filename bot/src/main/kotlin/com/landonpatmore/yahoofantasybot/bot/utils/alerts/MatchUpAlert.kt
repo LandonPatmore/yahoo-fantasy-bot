@@ -22,25 +22,24 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.bot.utils.jobs
+package com.landonpatmore.yahoofantasybot.bot.utils.alerts
 
-import com.landonpatmore.yahoofantasybot.bot.bridges.ScoreUpdateBridge
+import com.landonpatmore.yahoofantasybot.bot.bridges.MatchUpBridge
 import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
 import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
 import org.quartz.JobExecutionContext
 
-class ScoreUpdateJob(
+class MatchUpAlert(
     private val dataRetriever: DataRetriever,
-    private val scoreUpdateBridge: ScoreUpdateBridge
+    private val matchUpBridge: MatchUpBridge
 ) :
-    BaseJob() {
-    override val name = "Score"
+    BaseAlert() {
+    override val name = "MatchUp"
 
     override fun execute(context: JobExecutionContext?) {
         super.execute(context)
 
         val data = dataRetriever.yahooApiRequest(YahooApiRequest.TeamsData)
-        scoreUpdateBridge.consumer.accept(data)
+        matchUpBridge.consumer.accept(data)
     }
-
 }

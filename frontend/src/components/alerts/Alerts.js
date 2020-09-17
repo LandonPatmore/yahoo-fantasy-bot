@@ -19,7 +19,7 @@ class Alerts extends React.Component {
                 startMonth: null,
                 endMonth: null,
                 dayOfWeek: null,
-                timeZone: ""
+            //    timeZone: ""
             }
         }
 
@@ -124,14 +124,14 @@ class Alerts extends React.Component {
         })
     }
 
-    handleTimeZone = (event) => {
-        this.setState({
-            addAlert: {
-                ...this.state.addAlert,
-                timeZone: event.target.value
-            }
-        })
-    }
+//    handleTimeZone = (event) => {
+//        this.setState({
+//            addAlert: {
+//                ...this.state.addAlert,
+//                timeZone: event.target.value
+//            }
+//        })
+//    }
 
     addAlert() {
         const alerts = [...this.state.alerts]
@@ -184,8 +184,8 @@ class Alerts extends React.Component {
             "Minute",
             "Start Month",
             "End Month",
-            "Day Of Week",
-            "Time Zone"
+            "Day Of Week"
+//            "Time Zone"
         ]
 
         // TODO: 12/24hr time conversion
@@ -213,7 +213,7 @@ class Alerts extends React.Component {
                                     <td>{this.mapToMonth(alert.startMonth)}</td>
                                     <td>{this.mapToMonth(alert.endMonth)}</td>
                                     <td>{this.mapToDayOfWeek(alert.dayOfWeek)}</td>
-                                    <td>{alert.timeZone}</td>
+                                    {/* <td>{alert.timeZone}</td> */}
                                     <td><button onClick={(event) => this.deleteAlert(event, index)}><MdDeleteForever/></button></td>
                                 </tr>
                             })
@@ -270,7 +270,7 @@ class Alerts extends React.Component {
                                 })
                             }
                         </select>
-                        <input placeholder="Time Zone" onChange={this.handleTimeZone} value={this.state.timeZone}></input>
+                        {/* <input placeholder="Time Zone" onChange={this.handleTimeZone} value={this.state.timeZone}></input> */}
                     </div>
                     <div className="add-button-area">
                         <button id="add-alert-button" type="button" onClick={this.addAlert}>Add Alert</button>

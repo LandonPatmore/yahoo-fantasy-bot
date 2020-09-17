@@ -22,25 +22,20 @@
  * SOFTWARE.
  */
 
-package com.landonpatmore.yahoofantasybot.bot.utils.jobs
+package com.landonpatmore.yahoofantasybot.bot.bridges
 
-import com.landonpatmore.yahoofantasybot.bot.bridges.StandingsBridge
-import com.landonpatmore.yahoofantasybot.bot.utils.DataRetriever
-import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
-import org.quartz.JobExecutionContext
+import com.jakewharton.rxrelay3.PublishRelay
+import com.landonpatmore.yahoofantasybot.bot.utils.models.Configuration
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.functions.Consumer
+import io.reactivex.rxjava3.schedulers.Schedulers
 
-class StandingsJob(
-    private val dataRetriever: DataRetriever,
-    private val standingsBridge: StandingsBridge
-) :
-    BaseJob() {
-    override val name = "Standings"
+class ConfigurationBridge : Bridge<Configuration> {
+    private val dataBridge = PublishRelay.create<Configuration>()
 
-    override fun execute(context: JobExecutionContext?) {
-        super.execute(context)
+    override val consumer: Consumer<Configuration>
+        get() = dataBridge
 
-        val data = dataRetriever.yahooApiRequest(YahooApiRequest.Standings)
-        standingsBridge.consumer.accept(data)
-    }
-
+    override val eventStream: Observable<Configuration>
+        get() = dataBridge.subscribeOn(Schedulers.io())
 }
