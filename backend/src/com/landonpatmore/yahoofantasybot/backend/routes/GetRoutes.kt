@@ -146,7 +146,7 @@ private fun versionChecker(
 
 private fun authenticationUrl(url: String): String? {
     service = ServiceBuilder(EnvVariable.Str.YahooClientId.variable)
-        .apiSecret(System.getenv(EnvVariable.Str.YahooClientSecret.variable))
+        .apiSecret(EnvVariable.Str.YahooClientSecret.variable)
         .callback("$url/auth")
         .build(YahooApi20.instance())
 
