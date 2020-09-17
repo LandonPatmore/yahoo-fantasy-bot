@@ -153,7 +153,7 @@ class Db(
                 it[type] = token.tokenType
                 it[accessToken] = token.accessToken
                 it[expireTime] = token.expiresIn
-                it[scope] = token.scope
+                it[scope] = token.scope ?: ""
             }
         }
     }
