@@ -29,6 +29,8 @@ Bot that alerts GroupMe, Slack, and Discord users about various things happening
 ## What it can do:
 
 - You can customize all alerts and send them whenever and however many times you want!
+
+![](https://i.imgur.com/1Ol63Al.png)
  
 ## Follow these steps EXACTLY!
 1. Click the `Deploy to Heroku` button at the top. It will auto-deploy the application to Heroku.
