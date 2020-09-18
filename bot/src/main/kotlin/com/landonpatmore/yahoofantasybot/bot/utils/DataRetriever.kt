@@ -30,7 +30,6 @@ import com.github.scribejava.core.model.OAuth2AccessToken
 import com.github.scribejava.core.model.OAuthConstants
 import com.github.scribejava.core.model.OAuthRequest
 import com.github.scribejava.core.model.Verb
-import com.github.scribejava.core.oauth.OAuth20Service
 import com.landonpatmore.yahoofantasybot.bot.utils.models.YahooApiRequest
 import com.landonpatmore.yahoofantasybot.shared.database.Db
 import com.landonpatmore.yahoofantasybot.shared.utils.models.EnvVariable

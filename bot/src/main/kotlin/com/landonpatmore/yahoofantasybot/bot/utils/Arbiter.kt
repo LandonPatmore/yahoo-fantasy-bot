@@ -76,7 +76,7 @@ class Arbiter(
                                     System.currentTimeMillis() - 15
                                 } else {
                                     latestTimeChecked.time
-                                }, event
+                                } / 1000, event
                             )
                         )
                     }
