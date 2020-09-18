@@ -9,10 +9,12 @@ class MainArea extends React.Component {
         this.state = {
             authenticated: false
         }
+
+        this.showAlerts = this.showAlerts.bind(this)
     }
 
     componentDidMount() {
-        fetch("/authenticate")
+        fetch("/checkAuth")
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
@@ -25,14 +27,24 @@ class MainArea extends React.Component {
                 })
     }
 
-    render() {
-        return (
-            <main id="main-area">
+    showAlerts() {
+        if (this.state.authenticated) {
+            return <div id="main-area">
                 <h1 id="dashboard-text">Dashboard</h1>
-                <Alerts />
+                <Alerts/>
                 {/* <Leagues/>
                 <MessagingServices/>
                 <MessageType/> */}
+            </div>
+        } else {
+            return <div><a href="/authenticate"><button id="auth-button">Authenticate</button></a></div>
+        }
+    }
+
+    render() {
+        return (
+            <main>
+                {this.showAlerts()}
             </main>
         )
     }

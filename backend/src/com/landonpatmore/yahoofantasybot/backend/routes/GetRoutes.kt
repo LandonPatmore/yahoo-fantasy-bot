@@ -89,7 +89,7 @@ private fun Route.getReleaseInformation(currentVersion: String?) {
         }.apply {
             this.currentVersion = currentVersion
             upgrade = versionChecker(currentVersion, latestVersion)
-            if(!upgrade) {
+            if (!upgrade) {
                 changelog = null
             }
         }
@@ -104,6 +104,16 @@ fun Route.authenticate(db: Db) {
                 call.respondRedirect(it)
             }
         } else {
+            call.respondRedirect("/")
+        }
+    }
+}
+
+fun Route.checkAuth(db: Db) {
+    get("/checkAuth") {
+        if (db.getLatestTokenData() == null) {
+            call.respond(Authentication(false))
+        } else {
             call.respond(Authentication(true))
         }
     }
@@ -114,8 +124,8 @@ fun Route.auth(db: Db) {
         @Suppress("BlockingMethodInNonBlockingContext")
         service?.getAccessToken(call.request.queryParameters["code"])?.let {
             db.saveToken(it)
-            call.respondRedirect("/")
-        } ?: call.respondRedirect("/authenticate")
+        }
+        call.respondRedirect("/")
     }
 }
 

@@ -68,7 +68,18 @@ class Arbiter(
                 try {
                     val event = dataRetriever.yahooApiRequest(YahooApiRequest.Transactions)
                     val latestTimeChecked = database.getLatestTimeChecked()
-                    transactionsBridge.consumer.accept(Pair(latestTimeChecked.time, event))
+                    if (latestTimeChecked.time != -1L) {
+                        transactionsBridge.consumer.accept(
+                            Pair(
+                                if (latestTimeChecked.time == -1L) {
+                                    // we say -15 so that we can grab anything right before we got this bad value
+                                    System.currentTimeMillis() - 15
+                                } else {
+                                    latestTimeChecked.time
+                                }, event
+                            )
+                        )
+                    }
                     database.saveLatestTimeChecked(System.currentTimeMillis())
                 } catch (e: Exception) {
                     println(e.message)
