@@ -136,7 +136,7 @@ class Alerts extends React.Component {
     addAlert() {
         for (const property in this.state.addAlert) {
             console.log(`${property} ${this.state.addAlert[property]}`)
-            if(this.state.addAlert[property] == "") {
+            if(this.state.addAlert[property] === "") {
                 return
             }
           }
