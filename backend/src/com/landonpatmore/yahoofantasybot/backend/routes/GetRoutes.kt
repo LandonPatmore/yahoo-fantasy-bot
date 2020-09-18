@@ -47,6 +47,7 @@ fun Application.getRoutes(db: Db, currentVersion: String?) {
         getMessagingServices(db)
         getLeagues(db)
         getAlerts(db)
+        checkAuth(db)
         getMessageType(db)
         getReleaseInformation(currentVersion)
         authenticate(db)
