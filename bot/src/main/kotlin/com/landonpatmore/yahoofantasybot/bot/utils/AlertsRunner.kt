@@ -55,7 +55,7 @@ class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
     }
 
     private fun generateJobs(alerts: List<Alert>) {
-        removeJobs(alerts)
+        removeJobs(alerts.map { it.uuid })
         alerts.forEach {
             generateCron(it)?.let { cron ->
                 createJob(
@@ -113,14 +113,12 @@ class AlertsRunner(private val configurationBridge: ConfigurationBridge) {
         }
     }
 
-    private fun removeJobs(alerts: List<Alert>) {
+    private fun removeJobs(uuids: List<String>) {
         val scheduler = StdSchedulerFactory.getDefaultScheduler()
         for (groupName: String in scheduler.jobGroupNames) {
             for (jobKey: JobKey in scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
-                alerts.forEach {
-                    if (jobKey.name != it.uuid) {
-                        scheduler.deleteJob(jobKey)
-                    }
+                if(!uuids.contains(jobKey.name)) {
+                    scheduler.deleteJob(jobKey)
                 }
             }
         }
