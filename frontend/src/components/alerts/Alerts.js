@@ -13,12 +13,12 @@ class Alerts extends React.Component {
         this.state = {
             alerts: [],
             addAlert: {
-                type: null,
-                hour: null,
-                minute: null,
-                startMonth: null,
-                endMonth: null,
-                dayOfWeek: null,
+                type: "",
+                hour: "",
+                minute: "",
+                startMonth: "",
+                endMonth: "",
+                dayOfWeek: "",
             //    timeZone: ""
             }
         }
@@ -136,7 +136,7 @@ class Alerts extends React.Component {
     addAlert() {
         for (const property in this.state.addAlert) {
             console.log(`${property} ${this.state.addAlert[property]}`)
-            if(this.state.addAlert[property] == null || this.state.addAlert[property] == "") {
+            if(this.state.addAlert[property] == "") {
                 return
             }
           }
