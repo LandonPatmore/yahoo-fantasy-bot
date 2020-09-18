@@ -1,5 +1,7 @@
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
+**Note: Frontend does not work in safari (v3.0.0)**
+
 ### Feel free to contribute!
 
 #### Current Roadmap
@@ -16,22 +18,6 @@
 # Yahoo Fantasy Bot
 Bot that alerts GroupMe, Slack, and Discord users about various things happening in their Yahoo Fantasy Football League.
 ## What it does:
->Sends out messages at certain intervals: (All times are in UTC since it is not affected by DST. Will be sent at the correct times across timezones.)
->
->**Weekly Updates**
->| Type                                        | Weekday  | Time      |
->|---------------------------------------------|----------|-----------|
->| Weekly Matchups                             | Thursday | 23:30 UTC |
->| Score Update                                | Friday   | 03:55 UTC |
->| Score Update                                | Sunday   | 17:00 UTC |
->| Score Update                                | Sunday   | 20:00 UTC |
->| Score Update                                | Monday   | 00:00 UTC |
->| Score Update                                | Monday   | 03:55 UTC |
->| Close Score Update (matches within 15 pts)* | Monday   | 23:30 UTC |
->| Weekly Standings                            | Tuesday  | 16:30 UTC |
->| Score Update                                | Tuesday  | 03:55 UTC |
->
-(\* If set to show Close Score Update)
 
 >**League Transaction Alerts**
 >* ADD
@@ -39,6 +25,10 @@ Bot that alerts GroupMe, Slack, and Discord users about various things happening
 >* ADD/DROP
 >* TRADE
 >* COMMISH CHANGES
+
+## What it can do:
+
+- You can customize all alerts and send them whenever and however many times you want!
  
 ## Follow these steps EXACTLY!
 1. Click the `Deploy to Heroku` button at the top. It will auto-deploy the application to Heroku.
@@ -194,12 +184,13 @@ You will need a Yahoo Access Token, Client ID, and Client Secret for this bot to
 ![](https://imgur.com/8k1tZPs.png)
 
 2. Fill out all the variables (You can have any combination of messaging services (0..n).)
-3. Click "Deploy App". This will automatically configure the dynos and run all required scripts to create the bot.
+3. Click "Deploy App". This will automatically configure the dynos and run all required scripts to create the bot. (this will take a bit)
 4. Click "Overview"
 5. Click "Configure Dynos" and turn on the "web" and "bot" dyno
 6. Click "Open App" at the top right
-7. Follow the setup and then close the window once it says "You are authorized".
-8. Once you are authorized, Click "Configure Dynos" and turn OFF the "web" dyno (failing to do this will put your bot to sleep because of heroku policy, thus your bot will not function.)
+7. Follow the setup
+8. Once you are authorized you can add all types of alerts for your league!
+9. IMPORTANT: Once done adding alerts, Click "Configure Dynos" and turn OFF the "web" dyno (failing to do this will put your bot to sleep because of heroku policy, thus your bot will not function.)
 
 ### You are all set! Enjoy the bot!
 
