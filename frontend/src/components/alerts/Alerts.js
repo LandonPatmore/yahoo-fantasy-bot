@@ -230,7 +230,7 @@ class Alerts extends React.Component {
                             <option value="" disabled>Type</option>
                             {
                                 Array.from(Array(4).keys()).map(num => {
-                                    return <option key={num} value={num + 1}>{this.mapToAlertName(num)}</option>
+                                    return <option key={num} value={num}>{this.mapToAlertName(num)}</option>
                                 })
                             }
                         </select>
