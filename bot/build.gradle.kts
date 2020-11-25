@@ -1,6 +1,10 @@
-apply plugin: 'application'
+plugins {
+    application
+}
 
-mainClassName = 'com.landonpatmore.yahoofantasybot.bot.MainKt'
+application {
+    mainClassName = "com.landonpatmore.yahoofantasybot.bot.MainKt"
+}
 
 dependencies {
     compile(project(":shared"))
