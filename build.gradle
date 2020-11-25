@@ -49,11 +49,11 @@ apply from: file('gradle/heroku/clean.gradle.kts')
 project(":bot") {
     apply plugin: 'com.github.johnrengelman.shadow'
 
-    apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle")
+    apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle.kts")
 }
 
 project(":backend") {
     apply plugin: 'com.github.johnrengelman.shadow'
 
-    apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle")
+    apply from: file("$rootProject.projectDir/gradle/heroku/stage.gradle.kts")
 }
