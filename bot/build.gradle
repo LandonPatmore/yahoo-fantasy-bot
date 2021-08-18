@@ -4,9 +4,10 @@ mainClassName = 'com.landonpatmore.yahoofantasybot.bot.MainKt'
 
 dependencies {
     compile(project(":shared"))
-    implementation("io.reactivex.rxjava3:rxjava:3.0.4")
-    implementation("io.reactivex.rxjava3:rxkotlin:3.0.0")
-    implementation("com.jakewharton.rxrelay3:rxrelay:3.0.0")
+    implementation("com.squareup.workflow1:workflow-core-jvm:1.0.0-alpha18")
+//    implementation("io.reactivex.rxjava3:rxjava:3.0.4")
+//    implementation("io.reactivex.rxjava3:rxkotlin:3.0.0")
+//    implementation("com.jakewharton.rxrelay3:rxrelay:3.0.0")
     implementation("com.mashape.unirest:unirest-java:1.4.9")
     implementation("org.quartz-scheduler:quartz:2.3.0")
     implementation("org.jsoup:jsoup:1.7.2")
