@@ -47,44 +47,44 @@ class DataRetriever(private val database: Db) : IDataRetriever {
     private val gameKeyUrl = "/game/${EnvVariable.Str.YahooGameKey.variable}"
     private var leagueUrl: String? = null
 
-    override fun isTokenExpired(retrieved: Long, expiresIn: Int): Boolean {
-        val timeElapsed = ((System.currentTimeMillis() - retrieved) / 1000)
-        return timeElapsed >= expiresIn
-    }
+//    override fun isTokenExpired(retrieved: Long, expiresIn: Int): Boolean {
+//        val timeElapsed = ((System.currentTimeMillis() - retrieved) / 1000)
+//        return timeElapsed >= expiresIn
+//    }
 
-    override fun refreshExpiredToken() {
-        currentToken?.let {
-            if (isTokenExpired(it.first, it.second.expiresIn)) {
-                val refreshToken =
-                    oauthService.refreshAccessToken(it.second.refreshToken)
-                currentToken = Pair(System.currentTimeMillis(), refreshToken)
-                database.saveToken(refreshToken)
-            }
-        }
-    }
+//    override fun refreshExpiredToken() {
+//        currentToken?.let {
+//            if (isTokenExpired(it.first, it.second.expiresIn)) {
+//                val refreshToken =
+//                    oauthService.refreshAccessToken(it.second.refreshToken)
+//                currentToken = Pair(System.currentTimeMillis(), refreshToken)
+//                database.saveToken(refreshToken)
+//            }
+//        }
+//    }
 
-    override fun getAuthenticationToken() {
-        while (true) {
-            currentToken = database.getLatestTokenData()
-            if (currentToken == null) { // This will run only if there is no data in the database
-                println("There is currently no token data in the database.  Please authenticate with Yahoo.")
-            } else {
-                return
-            }
+//    override fun getAuthenticationToken() {
+//        while (true) {
+//            currentToken = database.getLatestTokenData()
+//            if (currentToken == null) { // This will run only if there is no data in the database
+//                println("There is currently no token data in the database. Please authenticate with Yahoo.")
+//            } else {
+//                return
+//            }
+//
+//            Thread.sleep(5000)
+//        }
+//    }
 
-            Thread.sleep(5000)
-        }
-    }
-
-    override fun grabData(url: String): Document {
-        refreshExpiredToken()
-        println("Grabbing Data...")
-        val request = OAuthRequest(Verb.GET, url)
-        oauthService.signRequest(currentToken?.second, request)
-        val response = oauthService.execute(request)
-        println("Data grabbed.")
-        return Jsoup.parse(response.body, "", Parser.xmlParser())
-    }
+//    override fun grabData(url: String): Document {
+//        refreshExpiredToken()
+//        println("Grabbing Data...")
+//        val request = OAuthRequest(Verb.GET, url)
+//        oauthService.signRequest(currentToken?.second, request)
+//        val response = oauthService.execute(request)
+//        println("Data grabbed.")
+//        return Jsoup.parse(response.body, "", Parser.xmlParser())
+//    }
 
     override fun retrieveGameKey(): String? {
         while (true) {
