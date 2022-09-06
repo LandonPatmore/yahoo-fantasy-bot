@@ -1,3 +1,5 @@
+# **THIS REPO HAS BEEN ARCHIVED AND IS NOT BEING ACTIVELY MAINTAINED ANYMORE. IT WAS A FUN 4 YEARS, BUT I DON'T USE YAHOO FANTASY ANYMORE AND SADLY DON'T HAVE THE TIME TO SUPPORT IT. THANKS EVERYONE FOR USING IT!**
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 **Note: Frontend does not work in safari (v3.0.0)**
